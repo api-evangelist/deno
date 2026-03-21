@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-evangelist/deno/schemas/deno/deployment.json",
+  "title": "Deno Deployment",
+  "description": "Represents a Deno Deploy deployment, which is an immutable unit of code, static assets, environment variables, and configuration that runs on Deno Deploy edge infrastructure. Deployments are created from a set of assets and an entry point, and become active when attached to a domain or project subdomain. In the v2 API, deployments are called revisions.",
+  "type": "object",
+  "required": ["id", "projectId", "status"],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier for the deployment, assigned by Deno Deploy at creation time"
+    },
+    "projectId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the project that owns this deployment"
+    },
+    "status": {
+      "type": "string",
+      "description": "Current lifecycle status of the deployment",
+      "enum": ["pending", "failed", "success"]
+    },
+    "domains": {
+      "type": "array",
+      "description": "List of custom domain names currently serving traffic from this deployment",
+      "items": {
+        "type": "string",
+        "description": "A fully qualified domain name attached to this deployment"
+      }
+    },
+    "envVars": {
+      "type": "object",
+      "description": "Environment variables configured for this deployment. Secret variable values are redacted in API responses.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    },
+    "databases": {
+      "type": "object",
+      "description": "Deno KV database associations for this deployment, keyed by the binding name used within the deployment code",
+      "additionalProperties": {
+        "type": "string",
+        "format": "uuid",
+        "description": "UUID of an associated Deno KV database"
+      }
+    },
+    "assets": {
+      "type": "object",
+      "description": "Map of file paths to asset definitions included in this deployment",
+      "additionalProperties": {
+        "$ref": "#/$defs/DeploymentAsset"
+      }
+    },
+    "entryPointUrl": {
+      "type": "string",
+      "description": "Relative path to the main entry point module within the assets, executed when the deployment receives a request"
+    },
+    "compilerOptions": {
+      "$ref": "#/$defs/CompilerOptions"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when the deployment was created"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when the deployment was last modified"
+    }
+  },
+  "$defs": {
+    "DeploymentAsset": {
+      "type": "object",
+      "description": "An individual file asset included in a Deno Deploy deployment. Assets can be UTF-8 text files, base64-encoded binary files, references to previously uploaded git blob objects by SHA-1 hash, or symbolic links.",
+      "required": ["kind"],
+      "properties": {
+        "kind": {
+          "type": "string",
+          "description": "The asset type, determining how the content field is interpreted",
+          "enum": ["file", "symlink"]
+        },
+        "content": {
+          "type": "string",
+          "description": "The file content as a UTF-8 string (for text files) or a base64-encoded string (for binary files). Not used for symlink assets."
+        },
+        "encoding": {
+          "type": "string",
+          "description": "The encoding of the content field for file assets",
+          "enum": ["utf-8", "base64"]
+        },
+        "gitSha1": {
+          "type": "string",
+          "description": "SHA-1 hash of a previously uploaded git blob object. When provided, the content and encoding fields are ignored and the blob content is used instead.",
+          "pattern": "^[0-9a-f]{40}$",
+          "minLength": 40,
+          "maxLength": 40
+        },
+        "target": {
+          "type": "string",
+          "description": "Target path for symlink assets, relative to the project root"
+        }
+      }
+    },
+    "CompilerOptions": {
+      "type": "object",
+      "description": "TypeScript compiler options applied when building a Deno Deploy deployment",
+      "properties": {
+        "jsx": {
+          "type": "string",
+          "description": "JSX transform mode controlling how JSX syntax is compiled",
+          "enum": ["react", "react-jsx", "react-jsxdev", "preserve"]
+        },
+        "jsxFactory": {
+          "type": "string",
+          "description": "The function called to create JSX elements (default: React.createElement)"
+        },
+        "jsxFragmentFactory": {
+          "type": "string",
+          "description": "The function called to create JSX fragments (default: React.Fragment)"
+        },
+        "jsxImportSource": {
+          "type": "string",
+          "description": "Module specifier used as the source for the JSX automatic runtime"
+        }
+      }
+    },
+    "BuildLogEntry": {
+      "type": "object",
+      "description": "A single entry from a deployment's build log, capturing output from the compilation and bundling process",
+      "properties": {
+        "level": {
+          "type": "string",
+          "description": "Log severity level",
+          "enum": ["debug", "info", "warning", "error"]
+        },
+        "message": {
+          "type": "string",
+          "description": "Log message content produced during the build"
+        },
+        "ts": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when this build log entry was produced"
+        }
+      }
+    },
+    "AppLogEntry": {
+      "type": "object",
+      "description": "A single runtime application log entry emitted by a running deployment. Entries are produced by console.log and related calls within the deployed code.",
+      "properties": {
+        "level": {
+          "type": "string",
+          "description": "Log severity level",
+          "enum": ["debug", "info", "warning", "error"]
+        },
+        "message": {
+          "type": "string",
+          "description": "Log message content"
+        },
+        "region": {
+          "type": "string",
+          "description": "Deno Deploy region identifier where this log entry was produced (e.g., us-east-1)"
+        },
+        "deploymentId": {
+          "type": "string",
+          "description": "Identifier of the deployment that produced this log entry"
+        },
+        "ts": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when this log entry was produced"
+        }
+      }
+    },
+    "DeploymentEvent": {
+      "type": "object",
+      "description": "A system-level event recorded in deployment logs. Events capture significant runtime lifecycle occurrences such as isolate boot, memory limit exceeded, or CPU time limit exceeded.",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of deployment event",
+          "enum": ["boot", "memory_limit", "cpu_time_limit"]
+        },
+        "message": {
+          "type": "string",
+          "description": "Human-readable event message, for example 'isolate start time: 96.67 ms (user time: 6.13 ms)'"
+        },
+        "urn": {
+          "type": "string",
+          "description": "Optional URN for cross-referencing with observability artifacts, present on limit events"
+        },
+        "ts": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when the event occurred"
+        }
+      }
+    }
+  }
+}

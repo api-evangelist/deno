@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/api-evangelist/deno/schemas/deno/kv-database.json",
+  "title": "Deno KV Database",
+  "description": "Represents a Deno KV database managed by Deno Deploy. Deno KV is a key-value database built into the Deno runtime and available as a globally distributed store on Deno Deploy. Locally it uses SQLite; on Deno Deploy data is replicated across regions. Databases are accessed from Deno code via Deno.openKv() using a KV Connect URL.",
+  "type": "object",
+  "required": ["databaseId"],
+  "properties": {
+    "databaseId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Unique identifier for the KV database, used in the KV Connect URL"
+    },
+    "description": {
+      "type": ["string", "null"],
+      "description": "Optional human-readable description of the database's purpose or contents"
+    },
+    "kvConnect": {
+      "type": "string",
+      "format": "uri",
+      "description": "KV Connect URL used to open this database from Deno code: https://api.deno.com/databases/{database-id}/connect",
+      "pattern": "^https://api\\.deno\\.com/databases/[0-9a-f-]+/connect$"
+    },
+    "organizationId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "UUID of the organization that owns this database"
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when the database was created"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp when the database was last modified"
+    }
+  },
+  "$defs": {
+    "KvKey": {
+      "type": "array",
+      "description": "A Deno KV key, which is an ordered tuple of key parts. Parts can be strings, numbers, booleans, Uint8Arrays, or BigInts. Keys are lexicographically ordered, enabling hierarchical data modeling.",
+      "items": {
+        "description": "A single key part, which can be a string, number, boolean, or byte array",
+        "oneOf": [
+          {"type": "string"},
+          {"type": "number"},
+          {"type": "boolean"}
+        ]
+      },
+      "minItems": 1
+    },
+    "KvEntry": {
+      "type": "object",
+      "description": "A key-value entry in a Deno KV database, consisting of a key tuple, a value, and a versionstamp for optimistic concurrency control",
+      "required": ["key", "value", "versionstamp"],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/KvKey"
+        },
+        "value": {
+          "description": "The stored value, which can be any structured-serializable JavaScript value including objects, arrays, strings, numbers, booleans, Uint8Arrays, and Deno.KvU64"
+        },
+        "versionstamp": {
+          "type": "string",
+          "description": "A monotonically increasing hex string representing the version of this entry, used for optimistic concurrency control in atomic operations"
+        }
+      }
+    },
+    "KvListSelector": {
+      "type": "object",
+      "description": "A selector for listing entries from a Deno KV database, supporting prefix-based and range-based queries",
+      "properties": {
+        "prefix": {
+          "$ref": "#/$defs/KvKey",
+          "description": "List all entries whose key starts with this prefix"
+        },
+        "start": {
+          "$ref": "#/$defs/KvKey",
+          "description": "List entries with keys greater than or equal to this key"
+        },
+        "end": {
+          "$ref": "#/$defs/KvKey",
+          "description": "List entries with keys less than this key"
+        }
+      }
+    },
+    "KvAtomicOperation": {
+      "type": "object",
+      "description": "An atomic operation on a Deno KV database, consisting of optional checks and mutations that are applied atomically. The operation succeeds only if all checks pass.",
+      "properties": {
+        "checks": {
+          "type": "array",
+          "description": "Preconditions that must all be satisfied for the operation to succeed. Each check verifies that a key's versionstamp matches an expected value.",
+          "items": {
+            "$ref": "#/$defs/KvCheck"
+          }
+        },
+        "mutations": {
+          "type": "array",
+          "description": "Mutations to apply if all checks pass",
+          "items": {
+            "$ref": "#/$defs/KvMutation"
+          }
+        }
+      }
+    },
+    "KvCheck": {
+      "type": "object",
+      "description": "A precondition check for a Deno KV atomic operation, verifying that a key's current versionstamp matches an expected value",
+      "required": ["key"],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/KvKey"
+        },
+        "versionstamp": {
+          "type": ["string", "null"],
+          "description": "Expected versionstamp of the entry. Null means the entry must not exist."
+        }
+      }
+    },
+    "KvMutation": {
+      "type": "object",
+      "description": "A single mutation to apply within a Deno KV atomic operation",
+      "required": ["type", "key"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of mutation to perform",
+          "enum": ["set", "delete", "sum", "max", "min"]
+        },
+        "key": {
+          "$ref": "#/$defs/KvKey"
+        },
+        "value": {
+          "description": "The value to set (for set/sum/max/min mutations)"
+        },
+        "expireIn": {
+          "type": "integer",
+          "description": "Time-to-live in milliseconds for the entry (for set mutations)",
+          "minimum": 1
+        }
+      }
+    },
+    "KvDatabaseBackup": {
+      "type": "object",
+      "description": "Configuration for automatic S3 backup of a Deno KV database",
+      "required": ["id", "databaseId"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid",
+          "description": "Unique identifier for the backup configuration"
+        },
+        "databaseId": {
+          "type": "string",
+          "format": "uuid",
+          "description": "UUID of the KV database being backed up"
+        },
+        "bucketName": {
+          "type": "string",
+          "description": "Name of the S3 bucket where backups are stored"
+        },
+        "bucketRegion": {
+          "type": "string",
+          "description": "AWS region of the S3 bucket (e.g., us-east-1)"
+        },
+        "status": {
+          "type": "string",
+          "description": "Current status of the backup job",
+          "enum": ["pending", "active", "failed", "disabled"]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when the backup was configured"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp when the backup configuration was last modified"
+        }
+      }
+    }
+  }
+}

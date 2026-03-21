@@ -1,0 +1,1055 @@
+openapi: 3.1.0
+info:
+  title: Deno Deploy API v2
+  description: >-
+    The Deno Deploy REST API v2 enables programmatic management of applications,
+    revisions, layers, and configuration on the Deno Deploy serverless edge platform.
+    The v2 API replaces the v1 API (which sunsets July 20, 2026) and introduces a
+    revised resource model with Apps replacing Projects, Revisions replacing
+    Deployments, and Layers providing reusable shared configuration. All requests
+    require Bearer token authentication using tokens formatted as ddo_your_token_here,
+    generated from the Deno Deploy dashboard. Cursor-based pagination is used for
+    all list endpoints, and streaming endpoints support Server-Sent Events and
+    newline-delimited JSON (NDJSON).
+  version: '2.0'
+  contact:
+    name: Deno Deploy Support
+    url: https://deno.com/deploy
+  termsOfService: https://deno.com/deploy/terms
+externalDocs:
+  description: Deno Deploy API v2 Reference
+  url: https://api.deno.com/v2/docs
+servers:
+  - url: https://api.deno.com/v2
+    description: Deno Deploy Production API v2
+tags:
+  - name: Apps
+    description: >-
+      Create, list, retrieve, update, and delete applications. Apps are the
+      top-level containers for deployable code on Deno Deploy v2.
+  - name: Revisions
+    description: >-
+      Deploy new revisions, track build progress, cancel builds, and delete
+      revisions. Revisions are immutable snapshots of deployed code.
+  - name: Logs
+    description: Query or stream runtime application logs for apps
+security:
+  - bearerAuth: []
+paths:
+  /apps:
+    get:
+      operationId: listApps
+      summary: List apps
+      description: >-
+        Returns a cursor-paginated list of all applications accessible to the
+        authenticated token. Supports filtering by labels and by associated
+        layer. Results are ordered by creation date descending by default.
+      tags:
+        - Apps
+      parameters:
+        - name: cursor
+          in: query
+          description: Opaque pagination cursor from the previous response Link header
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of apps to return (1-100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 30
+        - name: labels
+          in: query
+          description: Filter apps by label key-value pairs (deepObject style)
+          style: deepObject
+          explode: true
+          schema:
+            type: object
+            additionalProperties:
+              type: string
+        - name: layer
+          in: query
+          description: Filter apps by layer ID or slug
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Apps listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppListItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createApp
+      summary: Create app
+      description: >-
+        Creates a new application. An app slug must be unique within the
+        organization and follows DNS-compatible naming rules. Labels, layers,
+        environment variables, and build/runtime configuration can optionally
+        be set at creation time.
+      tags:
+        - Apps
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppRequest'
+      responses:
+        '200':
+          description: App created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /apps/{app}:
+    get:
+      operationId: getApp
+      summary: Get app details
+      description: >-
+        Retrieves complete details for a specific application identified by
+        its UUID or human-readable slug, including its labels, attached layers,
+        environment variables, and configuration.
+      tags:
+        - Apps
+      parameters:
+        - $ref: '#/components/parameters/app'
+      responses:
+        '200':
+          description: App retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateApp
+      summary: Update app
+      description: >-
+        Updates one or more mutable properties of an existing application.
+        The slug, labels, layers, environment variables, and configuration
+        can each be modified independently. Label updates replace all existing
+        labels. Layer updates replace all layer references. Environment variable
+        updates use deep merge semantics.
+      tags:
+        - Apps
+      parameters:
+        - $ref: '#/components/parameters/app'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAppRequest'
+      responses:
+        '200':
+          description: App updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteApp
+      summary: Delete app
+      description: >-
+        Permanently deletes an application and all of its revisions. This
+        operation cannot be undone. All custom domain associations must be
+        removed before an app can be deleted.
+      tags:
+        - Apps
+      parameters:
+        - $ref: '#/components/parameters/app'
+      responses:
+        '204':
+          description: App deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /apps/{app}/deploy:
+    post:
+      operationId: deployApp
+      summary: Create revision
+      description: >-
+        Creates a new revision (deployment) for an application by uploading
+        assets and optional configuration. Assets are key-value pairs where
+        keys are file paths relative to /app/src and values describe file
+        content as UTF-8 text, base64-encoded binary, or symlinks. The revision
+        progresses through queued, building, and succeeded (or failed) states.
+        Build progress can be tracked via the revisions progress endpoint.
+      tags:
+        - Revisions
+      parameters:
+        - $ref: '#/components/parameters/app'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DeployRequest'
+      responses:
+        '202':
+          description: Revision created and build queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revision'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /apps/{app}/revisions:
+    get:
+      operationId: listRevisions
+      summary: List revisions for app
+      description: >-
+        Returns a cursor-paginated list of all revisions for a specific
+        application, optionally filtered by build status. Results are ordered
+        by creation date descending.
+      tags:
+        - Revisions
+      parameters:
+        - $ref: '#/components/parameters/app'
+        - name: cursor
+          in: query
+          description: Opaque pagination cursor from the previous response Link header
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of revisions to return (1-100)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 30
+        - name: status
+          in: query
+          description: Filter revisions by build status
+          schema:
+            type: string
+            enum: [skipped, queued, building, succeeded, failed]
+      responses:
+        '200':
+          description: Revisions listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RevisionListItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /apps/{app}/logs:
+    get:
+      operationId: getAppLogs
+      summary: Get or stream app logs
+      description: >-
+        Queries or streams runtime logs for an application. A start datetime
+        is required. When an end datetime is omitted, the endpoint streams
+        logs in real time using Server-Sent Events or newline-delimited JSON
+        depending on the Accept header. Supports filtering by revision ID,
+        log level, and full-text search. Cursor-based pagination applies to
+        historical queries.
+      tags:
+        - Logs
+      parameters:
+        - $ref: '#/components/parameters/app'
+        - name: start
+          in: query
+          required: true
+          description: Start of the log time range as an ISO 8601 datetime
+          schema:
+            type: string
+            format: date-time
+        - name: end
+          in: query
+          description: >-
+            End of the log time range as an ISO 8601 datetime. Omit to
+            stream logs in real time.
+          schema:
+            type: string
+            format: date-time
+        - name: revision_id
+          in: query
+          description: Filter logs to a specific revision by its ID
+          schema:
+            type: string
+        - name: level
+          in: query
+          description: Filter logs by severity level
+          schema:
+            type: string
+            enum: [debug, info, warn, error]
+        - name: query
+          in: query
+          description: Full-text search query to filter log messages
+          schema:
+            type: string
+        - name: cursor
+          in: query
+          description: Pagination cursor for historical log queries
+          schema:
+            type: string
+        - name: limit
+          in: query
+          description: Maximum number of log entries to return (1-1000)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 1000
+            default: 100
+      responses:
+        '200':
+          description: Logs returned or streaming initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeLogsResponse'
+            application/x-ndjson:
+              schema:
+                type: string
+                description: Newline-delimited JSON stream of log entries
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream of log entries
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /revisions/{revision}:
+    get:
+      operationId: getRevision
+      summary: Get revision details
+      description: >-
+        Retrieves complete details for a specific revision by its globally
+        unique revision ID, including build status, failure reason, labels,
+        layers, environment variables, and runtime configuration.
+      tags:
+        - Revisions
+      parameters:
+        - $ref: '#/components/parameters/revision'
+      responses:
+        '200':
+          description: Revision retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revision'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteRevision
+      summary: Delete revision
+      description: >-
+        Permanently deletes a specific revision. Revisions that are currently
+        serving production or preview traffic cannot be deleted until the
+        associated app is updated to use a different revision.
+      tags:
+        - Revisions
+      parameters:
+        - $ref: '#/components/parameters/revision'
+      responses:
+        '204':
+          description: Revision deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /revisions/{revision}/cancel:
+    post:
+      operationId: cancelRevision
+      summary: Cancel revision build
+      description: >-
+        Requests cancellation of an in-progress revision build. Only revisions
+        in the queued or building state can be cancelled. The revision status
+        transitions to failed upon successful cancellation.
+      tags:
+        - Revisions
+      parameters:
+        - $ref: '#/components/parameters/revision'
+      responses:
+        '200':
+          description: Revision build cancellation requested
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Revision'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /revisions/{revision}/progress:
+    get:
+      operationId: streamRevisionProgress
+      summary: Stream revision build progress
+      description: >-
+        Streams real-time build progress for a revision as it moves through
+        the preparing, installing, building, and deploying stages. Returns a
+        Server-Sent Events stream or newline-delimited JSON stream depending
+        on the Accept header. The stream emits message events containing
+        RevisionProgress objects, a done event on completion, and an error
+        event on failure.
+      tags:
+        - Revisions
+      parameters:
+        - $ref: '#/components/parameters/revision'
+      responses:
+        '200':
+          description: Build progress stream started
+          content:
+            text/event-stream:
+              schema:
+                type: string
+                description: >-
+                  Server-Sent Events stream. Events: message (RevisionProgress
+                  data), done (build complete), error (build failed).
+            application/x-ndjson:
+              schema:
+                type: string
+                description: Newline-delimited JSON stream of RevisionProgress objects
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        Bearer token authentication using Deno Deploy access tokens. Tokens
+        are formatted as ddo_your_token_here and generated in the Deno Deploy
+        dashboard under Settings > Access Tokens.
+  parameters:
+    app:
+      name: app
+      in: path
+      required: true
+      description: App UUID or human-readable slug
+      schema:
+        type: string
+    revision:
+      name: revision
+      in: path
+      required: true
+      description: Globally unique revision ID
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Conflict - a resource with this identifier already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      description: Standard error response returned on all API error conditions
+      required: [error]
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+    AppListItem:
+      type: object
+      description: Summary representation of an app returned in list responses
+      required: [id, slug]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the app
+        slug:
+          type: string
+          description: Human-readable URL-safe identifier for the app
+        labels:
+          type: object
+          description: User-defined key-value labels for organizing apps
+          additionalProperties:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the app was created
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the app was last modified
+    App:
+      type: object
+      description: >-
+        A Deno Deploy v2 application. Apps are top-level containers for
+        deployable code, replacing the Project concept from v1. Each app
+        has a unique slug, optional labels for organization, references to
+        configuration layers, app-scoped environment variables, and a
+        build/runtime configuration.
+      required: [id, slug]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the app
+        slug:
+          type: string
+          description: Human-readable URL-safe identifier, unique within the organization
+          pattern: '^[a-z][a-z0-9-]{2,62}$'
+        labels:
+          type: object
+          description: Up to 5 user-defined key-value labels for organizing apps
+          additionalProperties:
+            type: string
+        layers:
+          type: array
+          description: Ordered list of layer references providing shared configuration
+          items:
+            $ref: '#/components/schemas/LayerRef'
+        env_vars:
+          type: array
+          description: App-scoped environment variables
+          items:
+            $ref: '#/components/schemas/EnvVar'
+        config:
+          $ref: '#/components/schemas/Config'
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the app was created
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the app was last modified
+    CreateAppRequest:
+      type: object
+      description: Request body for creating a new application
+      properties:
+        slug:
+          type: string
+          description: >-
+            Optional human-readable URL-safe identifier. If omitted, one is
+            generated automatically. Must be unique within the organization.
+          pattern: '^[a-z][a-z0-9-]{2,62}$'
+        labels:
+          type: object
+          description: User-defined key-value labels (maximum 5)
+          additionalProperties:
+            type: string
+        layers:
+          type: array
+          description: Layer references to associate with the app
+          items:
+            $ref: '#/components/schemas/LayerRefInput'
+        env_vars:
+          type: array
+          description: Initial environment variables for the app
+          items:
+            $ref: '#/components/schemas/EnvVarInput'
+        config:
+          $ref: '#/components/schemas/Config'
+    UpdateAppRequest:
+      type: object
+      description: >-
+        Request body for updating an existing application. All fields are
+        optional; only provided fields are modified.
+      properties:
+        slug:
+          type: string
+          description: New slug for the app
+          pattern: '^[a-z][a-z0-9-]{2,62}$'
+        labels:
+          type: object
+          description: Replacement labels; replaces all existing labels
+          additionalProperties:
+            type: string
+        layers:
+          type: array
+          description: Replacement layer references; replaces all existing layer refs
+          items:
+            $ref: '#/components/schemas/LayerRefInput'
+        env_vars:
+          type: array
+          description: Environment variable updates using deep merge semantics
+          items:
+            $ref: '#/components/schemas/EnvVarUpdate'
+        config:
+          $ref: '#/components/schemas/Config'
+    DeployRequest:
+      type: object
+      description: Request body for creating a new revision (deployment)
+      required: [assets]
+      properties:
+        assets:
+          type: object
+          description: >-
+            Map of file paths to asset objects. Keys are paths relative to
+            /app/src (e.g., "main.ts"). Values describe content as UTF-8
+            text, base64-encoded binary, or symlinks.
+          additionalProperties:
+            $ref: '#/components/schemas/Asset'
+        config:
+          $ref: '#/components/schemas/Config'
+        layers:
+          type: array
+          description: Layer references for this revision; overrides app-level layers
+          items:
+            $ref: '#/components/schemas/LayerRefInput'
+        env_vars:
+          type: array
+          description: Revision-scoped environment variables
+          items:
+            $ref: '#/components/schemas/EnvVarInputForDeploy'
+        labels:
+          type: object
+          description: Labels to assign to this revision
+          additionalProperties:
+            type: string
+        production:
+          type: boolean
+          description: Whether to deploy this revision to the production slot
+          default: true
+        preview:
+          type: boolean
+          description: Whether to deploy this revision to the preview slot
+          default: false
+    RevisionListItem:
+      type: object
+      description: Summary representation of a revision returned in list responses
+      required: [id, status]
+      properties:
+        id:
+          type: string
+          description: Globally unique identifier for the revision
+        status:
+          type: string
+          description: Current build status of the revision
+          enum: [skipped, queued, building, succeeded, failed]
+        failure_reason:
+          type: string
+          description: Human-readable reason for failure, present only when status is failed
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the revision was created
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the revision was last modified
+    Revision:
+      type: object
+      description: >-
+        An immutable snapshot of deployed code on Deno Deploy v2. Revisions
+        replace the Deployment concept from v1. Once created, a revision cannot
+        be modified; a new revision must be deployed to make changes.
+        Revisions progress through: queued -> building -> succeeded (or failed/skipped).
+      required: [id, status]
+      properties:
+        id:
+          type: string
+          description: Globally unique identifier for the revision
+        status:
+          type: string
+          description: Current build and deployment status
+          enum: [skipped, queued, building, succeeded, failed]
+        failure_reason:
+          type: string
+          description: Human-readable reason for failure when status is failed
+        labels:
+          type: object
+          description: Labels assigned to this revision
+          additionalProperties:
+            type: string
+        layers:
+          type: array
+          description: Layer references active for this revision
+          items:
+            $ref: '#/components/schemas/LayerRef'
+        env_vars:
+          type: array
+          description: Environment variables set for this revision
+          items:
+            $ref: '#/components/schemas/EnvVar'
+        config:
+          $ref: '#/components/schemas/Config'
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the revision was created
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the revision was last modified
+    RevisionProgress:
+      type: object
+      description: >-
+        Real-time build progress for a revision, streamed via the progress
+        endpoint. Tracks the status of each build stage: preparing, installing,
+        building, and deploying.
+      properties:
+        queued:
+          $ref: '#/components/schemas/StageStatus'
+        preparing:
+          $ref: '#/components/schemas/StageStatus'
+        installing:
+          $ref: '#/components/schemas/StageStatus'
+        building:
+          $ref: '#/components/schemas/StageStatus'
+        deploying:
+          $ref: '#/components/schemas/DeployingStageStatus'
+    StageStatus:
+      type: object
+      description: Status and timing for a single build stage
+      properties:
+        status:
+          type: string
+          description: Current status of this build stage
+          enum: [pending, running, succeeded, failed, skipped]
+        started_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when this stage started
+        finished_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when this stage completed
+    DeployingStageStatus:
+      type: object
+      description: >-
+        Status of the deploying stage, which includes per-region timeline
+        progress for multi-region deployments.
+      properties:
+        status:
+          type: string
+          description: Overall status of the deploying stage
+          enum: [pending, running, succeeded, failed, skipped]
+        timelines:
+          type: array
+          description: Per-region deployment timeline progress
+          items:
+            $ref: '#/components/schemas/DeploymentTimeline'
+    DeploymentTimeline:
+      type: object
+      description: Deployment progress for a single region
+      properties:
+        region:
+          type: string
+          description: Identifier of the deployment region
+        status:
+          type: string
+          description: Deployment status in this region
+          enum: [pending, running, succeeded, failed]
+        started_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when deployment started in this region
+        finished_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when deployment finished in this region
+    RuntimeLogsResponse:
+      type: object
+      description: Response containing runtime log entries for historical log queries
+      properties:
+        logs:
+          type: array
+          description: Array of log entries matching the query
+          items:
+            $ref: '#/components/schemas/RuntimeLogEntry'
+        cursor:
+          type: string
+          description: Pagination cursor for retrieving the next page of results
+    RuntimeLogEntry:
+      type: object
+      description: A single runtime log entry from a running application
+      properties:
+        level:
+          type: string
+          description: Log severity level
+          enum: [debug, info, warn, error]
+        message:
+          type: string
+          description: Log message content
+        revision_id:
+          type: string
+          description: ID of the revision that produced this log entry
+        region:
+          type: string
+          description: Deno Deploy region where the log was emitted
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the log entry was produced
+    LayerRef:
+      type: object
+      description: A reference to a configuration layer attached to an app or revision
+      required: [id]
+      properties:
+        id:
+          type: string
+          description: UUID or slug of the referenced layer
+        slug:
+          type: string
+          description: Human-readable slug of the layer
+    LayerRefInput:
+      type: object
+      description: Input for specifying a layer reference when creating or updating an app
+      required: [id]
+      properties:
+        id:
+          type: string
+          description: UUID or slug of the layer to reference
+    EnvVar:
+      type: object
+      description: An environment variable associated with an app or revision
+      required: [id, key]
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the environment variable entry
+        key:
+          type: string
+          description: Environment variable name (alphanumeric and underscores, max 128 chars)
+          pattern: '^[A-Za-z_][A-Za-z0-9_]*$'
+          maxLength: 128
+        value:
+          type: string
+          description: >-
+            Environment variable value. Omitted for secret variables to prevent
+            accidental exposure.
+          maxLength: 4096
+        secret:
+          type: boolean
+          description: Whether the variable is treated as a secret (value is redacted)
+        contexts:
+          description: >-
+            Deployment contexts in which this variable is active. Use "all"
+            for all contexts or an array of specific context names.
+          oneOf:
+            - type: string
+              enum: [all]
+            - type: array
+              items:
+                type: string
+    EnvVarInput:
+      type: object
+      description: Input for creating a new environment variable
+      required: [key, value]
+      properties:
+        key:
+          type: string
+          description: Environment variable name
+          pattern: '^[A-Za-z_][A-Za-z0-9_]*$'
+          maxLength: 128
+        value:
+          type: string
+          description: Environment variable value
+          maxLength: 4096
+        secret:
+          type: boolean
+          description: Whether to treat this variable as a secret
+          default: false
+        contexts:
+          description: Contexts in which this variable is active
+          oneOf:
+            - type: string
+              enum: [all]
+            - type: array
+              items:
+                type: string
+    EnvVarUpdate:
+      type: object
+      description: >-
+        Input for updating an environment variable using deep merge semantics.
+        Specify id to update an existing variable, or key to create a new one.
+        Set value to null to delete a variable.
+      properties:
+        id:
+          type: string
+          description: ID of an existing environment variable to update
+        key:
+          type: string
+          description: Key of the environment variable (used when creating new variables)
+          pattern: '^[A-Za-z_][A-Za-z0-9_]*$'
+          maxLength: 128
+        value:
+          type: [string, 'null']
+          description: New value for the variable, or null to delete it
+          maxLength: 4096
+        secret:
+          type: boolean
+          description: Whether to treat this variable as a secret
+        contexts:
+          description: Contexts for this variable
+          oneOf:
+            - type: string
+              enum: [all]
+            - type: array
+              items:
+                type: string
+    EnvVarInputForDeploy:
+      type: object
+      description: Environment variable input specific to revision deployment
+      required: [key, value]
+      properties:
+        key:
+          type: string
+          description: Environment variable name
+          pattern: '^[A-Za-z_][A-Za-z0-9_]*$'
+          maxLength: 128
+        value:
+          type: string
+          description: Environment variable value
+          maxLength: 4096
+        secret:
+          type: boolean
+          description: Whether to treat this variable as a secret
+          default: false
+        contexts:
+          description: Contexts in which this variable is active
+          oneOf:
+            - type: string
+              enum: [all]
+            - type: array
+              items:
+                type: string
+    Asset:
+      type: object
+      description: >-
+        A file asset included in a deployment. Supports UTF-8 text files,
+        base64-encoded binary files, and symbolic links. File paths are
+        relative to /app/src.
+      required: [kind]
+      properties:
+        kind:
+          type: string
+          description: Asset type
+          enum: [file, symlink]
+        encoding:
+          type: string
+          description: Content encoding for file assets
+          enum: [utf-8, base64]
+        content:
+          type: string
+          description: File content as a UTF-8 string or base64-encoded string
+        target:
+          type: string
+          description: Target path for symlink assets
+    Config:
+      type: object
+      description: >-
+        Build and runtime configuration for an app or revision. Supports
+        framework-specific presets (Next.js, Astro, Fresh) or custom
+        dynamic/static runtime configurations.
+      properties:
+        framework:
+          type: string
+          description: >-
+            Framework preset to use for build and runtime configuration.
+            Supported values include nextjs, astro, fresh, and others.
+        install:
+          type: string
+          description: Custom install command to run before building
+        build:
+          type: string
+          description: Custom build command
+        predeploy:
+          type: string
+          description: Command to run after build and before deployment
+        runtime:
+          $ref: '#/components/schemas/Runtime'
+        crons:
+          type: array
+          description: Cron job definitions for scheduled task execution
+          items:
+            $ref: '#/components/schemas/CronJob'
+    Runtime:
+      type: object
+      description: Runtime configuration for the deployed application
+      required: [type]
+      properties:
+        type:
+          type: string
+          description: Runtime execution type
+          enum: [dynamic, static]
+        entrypoint:
+          type: string
+          description: >-
+            Entry point file path for dynamic runtimes, relative to /app/src
+        args:
+          type: array
+          description: Additional arguments passed to the runtime entry point
+          items:
+            type: string
+        cwd:
+          type: string
+          description: Working directory for the runtime process
+        spa:
+          type: boolean
+          description: >-
+            Whether to enable single-page application fallback routing for
+            static runtimes (serves index.html for unmatched paths)
+    CronJob:
+      type: object
+      description: A scheduled cron job definition for periodic task execution
+      required: [name, schedule, handler]
+      properties:
+        name:
+          type: string
+          description: Human-readable name for the cron job
+        schedule:
+          type: string
+          description: Cron expression defining the execution schedule
+        handler:
+          type: string
+          description: Function or module path to invoke on each scheduled execution

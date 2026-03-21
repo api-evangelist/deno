@@ -1,0 +1,918 @@
+openapi: 3.1.0
+info:
+  title: Deno Subhosting API
+  description: >-
+    The Deno Subhosting API enables platforms and SaaS products to run
+    untrusted, user-submitted JavaScript and TypeScript code securely on
+    Deno Deploy infrastructure. It shares the same base URL and Bearer token
+    authentication as the Deno Deploy REST API but is scoped to subhosting
+    use cases such as provisioning isolated projects per tenant, creating
+    deployments, and managing custom domains and KV databases on behalf of
+    end users. Common use cases include cloud IDEs, no-code platforms, and
+    multi-tenant application hosting. The v1 API is scheduled for sunset on
+    July 20, 2026.
+  version: '1.0'
+  contact:
+    name: Deno Subhosting Support
+    url: https://deno.com/subhosting
+  termsOfService: https://deno.com/deploy/terms
+externalDocs:
+  description: Deno Subhosting Documentation
+  url: https://docs.deno.com/subhosting/manual/
+servers:
+  - url: https://api.deno.com/v1
+    description: Deno Subhosting Production API
+tags:
+  - name: Organizations
+    description: Retrieve organization details and analytics for subhosting implementations
+  - name: Projects
+    description: Provision and manage isolated tenant projects
+  - name: Deployments
+    description: Create and manage deployments within tenant projects
+  - name: Domains
+    description: Manage custom domains mapped to tenant deployments
+  - name: KV Databases
+    description: Provision and manage Deno KV databases for tenant deployments
+security:
+  - bearerAuth: []
+paths:
+  /organizations/{organizationId}:
+    get:
+      operationId: getOrganization
+      summary: Get organization
+      description: >-
+        Retrieves organization details for the subhosting implementation.
+        The organization is the top-level container for all tenant projects,
+        deployments, and analytics data.
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+      responses:
+        '200':
+          description: Organization retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Organization'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /organizations/{organizationId}/analytics:
+    get:
+      operationId: getOrganizationAnalytics
+      summary: Get organization analytics
+      description: >-
+        Returns aggregated time-series analytics for the entire subhosting
+        organization in 15-minute intervals. Covers request counts and
+        bandwidth across all tenant projects over the specified time range
+        (maximum 24 hours).
+      tags:
+        - Organizations
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+        - name: since
+          in: query
+          required: true
+          description: Start of the time range in RFC 3339 format
+          schema:
+            type: string
+            format: date-time
+        - name: until
+          in: query
+          required: true
+          description: End of the time range in RFC 3339 format
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Analytics data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Analytics'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /organizations/{organizationId}/projects:
+    get:
+      operationId: listProjects
+      summary: List projects
+      description: >-
+        Returns a paginated list of all tenant projects within the subhosting
+        organization. In subhosting, each project typically represents an
+        isolated tenant environment.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/q'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/order'
+      responses:
+        '200':
+          description: Projects listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: createProject
+      summary: Create project
+      description: >-
+        Provisions a new isolated project for a tenant. Projects in
+        subhosting are free to create and each can host multiple deployments.
+        Typically one project is provisioned per end user or tenant account.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+      responses:
+        '200':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /projects/{projectId}:
+    get:
+      operationId: getProject
+      summary: Get project
+      description: >-
+        Retrieves details for a specific tenant project by UUID.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/projectId'
+      responses:
+        '200':
+          description: Project retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateProject
+      summary: Update project
+      description: >-
+        Updates mutable fields of an existing tenant project.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/projectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectRequest'
+      responses:
+        '200':
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteProject
+      summary: Delete project
+      description: >-
+        Permanently deletes a tenant project and all its deployments.
+        This should be called when an end user account is deprovisioned.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/projectId'
+      responses:
+        '200':
+          description: Project deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /projects/{projectId}/analytics:
+    get:
+      operationId: getProjectAnalytics
+      summary: Get project analytics
+      description: >-
+        Returns time-series analytics for a specific tenant project in 15-minute
+        intervals, covering request counts and bandwidth for that tenant's
+        deployments.
+      tags:
+        - Projects
+      parameters:
+        - $ref: '#/components/parameters/projectId'
+        - name: since
+          in: query
+          required: true
+          description: Start of the time range in RFC 3339 format
+          schema:
+            type: string
+            format: date-time
+        - name: until
+          in: query
+          required: true
+          description: End of the time range in RFC 3339 format
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Analytics retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Analytics'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /projects/{projectId}/deployments:
+    get:
+      operationId: listDeployments
+      summary: List deployments
+      description: >-
+        Returns a paginated list of all deployments for a tenant project.
+        Deployments are immutable units of code, assets, and configuration
+        that run on Deno Deploy isolates.
+      tags:
+        - Deployments
+      parameters:
+        - $ref: '#/components/parameters/projectId'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+        - $ref: '#/components/parameters/q'
+        - $ref: '#/components/parameters/sort'
+        - $ref: '#/components/parameters/order'
+      responses:
+        '200':
+          description: Deployments listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Deployment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: createDeployment
+      summary: Create deployment
+      description: >-
+        Creates a new deployment within a tenant project. Deployments consist
+        of assets (code and static files), environment variables, compiler
+        options, and optional KV database associations. Assets support UTF-8
+        text, base64-encoded binary, git SHA-1 references, and symlinks.
+        Note that Deno Cron and Queues are not available for subhosting
+        deployments.
+      tags:
+        - Deployments
+      parameters:
+        - $ref: '#/components/parameters/projectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeploymentRequest'
+      responses:
+        '200':
+          description: Deployment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /deployments/{deploymentId}:
+    get:
+      operationId: getDeployment
+      summary: Get deployment
+      description: >-
+        Retrieves the details of a specific tenant deployment, including
+        its status, domains, environment variables, and configuration.
+      tags:
+        - Deployments
+      parameters:
+        - $ref: '#/components/parameters/deploymentId'
+      responses:
+        '200':
+          description: Deployment retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteDeployment
+      summary: Delete deployment
+      description: >-
+        Permanently deletes a tenant deployment.
+      tags:
+        - Deployments
+      parameters:
+        - $ref: '#/components/parameters/deploymentId'
+      responses:
+        '200':
+          description: Deployment deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /deployments/{deploymentId}/build_logs:
+    get:
+      operationId: getBuildLogs
+      summary: Get build logs
+      description: >-
+        Retrieves build logs for a tenant deployment. Returns output from
+        the deployment build process as a JSON array or NDJSON stream.
+      tags:
+        - Deployments
+      parameters:
+        - $ref: '#/components/parameters/deploymentId'
+      responses:
+        '200':
+          description: Build logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuildLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /deployments/{deploymentId}/app_logs:
+    get:
+      operationId: getAppLogs
+      summary: Get application logs
+      description: >-
+        Retrieves or streams runtime logs for a tenant deployment. Supports
+        filtering by log level, region, and time range. When no until parameter
+        is specified, the endpoint streams logs in real time.
+      tags:
+        - Deployments
+      parameters:
+        - $ref: '#/components/parameters/deploymentId'
+        - name: level
+          in: query
+          description: Filter logs by severity level
+          schema:
+            type: string
+            enum: [debug, info, warning, error]
+        - name: region
+          in: query
+          description: Filter logs by the region that emitted them
+          schema:
+            type: string
+        - name: since
+          in: query
+          description: Return logs after this RFC 3339 timestamp
+          schema:
+            type: string
+            format: date-time
+        - name: until
+          in: query
+          description: Return logs before this RFC 3339 timestamp; omit to stream
+          schema:
+            type: string
+            format: date-time
+        - name: limit
+          in: query
+          description: Maximum number of log entries to return
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 300
+        - name: cursor
+          in: query
+          description: Pagination cursor from a previous response
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Application logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /organizations/{organizationId}/domains:
+    get:
+      operationId: listDomains
+      summary: List domains
+      description: >-
+        Returns a paginated list of all custom domains registered in the
+        subhosting organization. Domains can be dynamically mapped to tenant
+        deployments.
+      tags:
+        - Domains
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: Domains listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Domain'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: createDomain
+      summary: Create domain
+      description: >-
+        Registers a new custom domain for use with tenant deployments.
+        The domain must be verified via DNS and have TLS certificates
+        configured before it can route traffic.
+      tags:
+        - Domains
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDomainRequest'
+      responses:
+        '200':
+          description: Domain created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /organizations/{organizationId}/databases:
+    get:
+      operationId: listKvDatabases
+      summary: List KV databases
+      description: >-
+        Returns a paginated list of Deno KV databases in the subhosting
+        organization. KV databases can be attached to tenant deployments
+        for persistent storage.
+      tags:
+        - KV Databases
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+        - $ref: '#/components/parameters/page'
+        - $ref: '#/components/parameters/limit'
+      responses:
+        '200':
+          description: KV databases listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KvDatabase'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: createKvDatabase
+      summary: Create KV database
+      description: >-
+        Creates a new Deno KV database that can be associated with tenant
+        deployments for persistent, globally distributed key-value storage.
+      tags:
+        - KV Databases
+      parameters:
+        - $ref: '#/components/parameters/organizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateKvDatabaseRequest'
+      responses:
+        '200':
+          description: KV database created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KvDatabase'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: >-
+        Bearer token authentication. Tokens are generated from the Deno Deploy
+        dashboard and provide organization-level access for subhosting operations.
+  parameters:
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the subhosting organization
+      schema:
+        type: string
+        format: uuid
+    projectId:
+      name: projectId
+      in: path
+      required: true
+      description: UUID of the tenant project
+      schema:
+        type: string
+        format: uuid
+    deploymentId:
+      name: deploymentId
+      in: path
+      required: true
+      description: Identifier of the deployment
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    q:
+      name: q
+      in: query
+      description: Search query to filter results
+      schema:
+        type: string
+    sort:
+      name: sort
+      in: query
+      description: Field to sort results by
+      schema:
+        type: string
+    order:
+      name: order
+      in: query
+      description: Sort direction
+      schema:
+        type: string
+        enum: [asc, desc]
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      description: Standard error response
+      required: [error]
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+    Organization:
+      type: object
+      description: >-
+        The subhosting organization, which is the top-level container for
+        all tenant projects, deployments, and associated resources.
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the organization
+        name:
+          type: string
+          description: Human-readable name of the organization
+    Analytics:
+      type: object
+      description: >-
+        Time-series analytics data in 15-minute intervals covering request
+        counts and bandwidth usage.
+      properties:
+        fields:
+          type: array
+          description: Field names present in each data row
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Field name
+              type:
+                type: string
+                description: Data type
+        values:
+          type: array
+          description: Array of data rows, each a 15-minute interval
+          items:
+            type: array
+            items: {}
+    Project:
+      type: object
+      description: >-
+        An isolated tenant project on Deno Subhosting. Each project
+        represents a separate tenant environment with its own deployments,
+        domains, and KV databases.
+      required: [id, name]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the project
+        name:
+          type: string
+          description: Human-readable name of the project
+        organizationId:
+          type: string
+          format: uuid
+          description: UUID of the owning organization
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the project was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the project was last modified
+    CreateProjectRequest:
+      type: object
+      description: Request body for creating a new tenant project
+      required: [name]
+      properties:
+        name:
+          type: string
+          description: Human-readable name for the project
+          minLength: 3
+          maxLength: 26
+    UpdateProjectRequest:
+      type: object
+      description: Request body for updating a tenant project
+      properties:
+        name:
+          type: string
+          description: New name for the project
+          minLength: 3
+          maxLength: 26
+    Deployment:
+      type: object
+      description: >-
+        An immutable deployment within a tenant project. Deployments contain
+        code assets, environment variables, and configuration that run on
+        Deno Deploy isolates. Deno Cron and Queues are not available for
+        subhosting deployments.
+      required: [id, projectId, status]
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the deployment
+        projectId:
+          type: string
+          format: uuid
+          description: UUID of the project this deployment belongs to
+        status:
+          type: string
+          description: Current deployment status
+          enum: [pending, failed, success]
+        domains:
+          type: array
+          description: Custom domains currently attached to this deployment
+          items:
+            type: string
+        envVars:
+          type: object
+          description: Environment variables (values redacted)
+          additionalProperties:
+            type: string
+        databases:
+          type: object
+          description: KV database associations keyed by binding name
+          additionalProperties:
+            type: string
+            format: uuid
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the deployment was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the deployment was last modified
+    CreateDeploymentRequest:
+      type: object
+      description: Request body for creating a new tenant deployment
+      required: [assets, entryPointUrl]
+      properties:
+        entryPointUrl:
+          type: string
+          description: Relative path to the entry point module within the assets
+        assets:
+          type: object
+          description: Map of file paths to asset objects
+          additionalProperties:
+            $ref: '#/components/schemas/DeploymentAsset'
+        envVars:
+          type: object
+          description: Environment variables for this deployment
+          additionalProperties:
+            type: string
+        databases:
+          type: object
+          description: KV database associations by binding name
+          additionalProperties:
+            type: string
+            format: uuid
+    DeploymentAsset:
+      type: object
+      description: A file asset included in a deployment
+      required: [kind]
+      properties:
+        kind:
+          type: string
+          enum: [file, symlink]
+          description: Asset type
+        content:
+          type: string
+          description: File content as UTF-8 or base64-encoded string
+        encoding:
+          type: string
+          enum: [utf-8, base64]
+          description: Content encoding
+        gitSha1:
+          type: string
+          description: SHA-1 hash of a previously uploaded git blob
+          pattern: '^[0-9a-f]{40}$'
+        target:
+          type: string
+          description: Symlink target path
+    BuildLogEntry:
+      type: object
+      description: A single build log entry
+      properties:
+        level:
+          type: string
+          enum: [debug, info, warning, error]
+          description: Log level
+        message:
+          type: string
+          description: Log message
+        ts:
+          type: string
+          format: date-time
+          description: Timestamp of the log entry
+    AppLogEntry:
+      type: object
+      description: A single runtime application log entry
+      properties:
+        level:
+          type: string
+          enum: [debug, info, warning, error]
+          description: Log severity level
+        message:
+          type: string
+          description: Log message content
+        region:
+          type: string
+          description: Region where the log was emitted
+        ts:
+          type: string
+          format: date-time
+          description: Timestamp of the log entry
+    Domain:
+      type: object
+      description: A custom domain registered for use with tenant deployments
+      required: [id, domain]
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the domain
+        domain:
+          type: string
+          description: The fully qualified domain name
+        isValidated:
+          type: boolean
+          description: Whether domain ownership has been verified
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the domain was registered
+    CreateDomainRequest:
+      type: object
+      description: Request body for registering a new custom domain
+      required: [domain]
+      properties:
+        domain:
+          type: string
+          description: The fully qualified domain name to register
+    KvDatabase:
+      type: object
+      description: >-
+        A Deno KV database that can be attached to tenant deployments for
+        persistent, globally distributed key-value storage.
+      required: [databaseId]
+      properties:
+        databaseId:
+          type: string
+          format: uuid
+          description: Unique identifier for the KV database
+        description:
+          type: string
+          description: Human-readable description
+        kvConnect:
+          type: string
+          format: uri
+          description: KV Connect URL for opening the database from Deno code
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the database was created
+    CreateKvDatabaseRequest:
+      type: object
+      description: Request body for creating a new KV database
+      properties:
+        description:
+          type: string
+          description: Optional description for the database
