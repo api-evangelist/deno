@@ -1,17 +1,15 @@
 aid: deno
-url: 
-  https://raw.githubusercontent.com/api-evangelist/deno/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/deno/refs/heads/main/apis.yml
 modified: '2026-03-21'
 apis:
   - aid: deno:runtime-api
     name: Deno Runtime API
     tags:
       - JavaScript
-      - TypeScript
       - Runtime
+      - TypeScript
       - WebAssembly
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.example.com
     humanURL: https://docs.deno.com/api/deno/
     properties:
@@ -30,12 +28,11 @@ apis:
   - aid: deno:kv-api
     name: Deno KV API
     tags:
-      - Key-Value
       - Database
-      - Storage
       - Edge
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Key-Value
+      - Storage
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.deno.com
     humanURL: https://docs.deno.com/deploy/kv/
     properties:
@@ -57,11 +54,10 @@ apis:
     name: Deno Deploy REST API
     tags:
       - Deployment
-      - Serverless
       - Edge
       - Management
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Serverless
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.deno.com/v1
     humanURL: https://docs.deno.com/deploy/api/rest/
     properties:
@@ -83,11 +79,10 @@ apis:
     name: Deno Deploy API V2
     tags:
       - Deployment
-      - Serverless
       - Edge
       - Management
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Serverless
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.deno.com/v2
     humanURL: https://api.deno.com/v2/docs
     properties:
@@ -105,12 +100,11 @@ apis:
   - aid: deno:subhosting-api
     name: Deno Subhosting API
     tags:
-      - Subhosting
-      - Serverless
-      - Multi-Tenant
       - Deployment
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Multi-Tenant
+      - Serverless
+      - Subhosting
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.deno.com/v1
     humanURL: https://docs.deno.com/subhosting/api/
     properties:
@@ -131,12 +125,11 @@ apis:
   - aid: deno:standard-library
     name: Deno Standard Library
     tags:
-      - Standard Library
-      - Utilities
-      - TypeScript
       - Modules
-    image: 
-      https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+      - Standard Library
+      - TypeScript
+      - Utilities
+    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
     baseURL: https://api.example.com
     humanURL: https://docs.deno.com/runtime/fundamentals/standard_library/
     properties:

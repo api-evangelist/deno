@@ -23,16 +23,16 @@ servers:
   - url: https://api.deno.com/v1
     description: Deno Subhosting Production API
 tags:
-  - name: Organizations
-    description: Retrieve organization details and analytics for subhosting implementations
-  - name: Projects
-    description: Provision and manage isolated tenant projects
   - name: Deployments
     description: Create and manage deployments within tenant projects
   - name: Domains
     description: Manage custom domains mapped to tenant deployments
   - name: KV Databases
     description: Provision and manage Deno KV databases for tenant deployments
+  - name: Organizations
+    description: Retrieve organization details and analytics for subhosting implementations
+  - name: Projects
+    description: Provision and manage isolated tenant projects
 security:
   - bearerAuth: []
 paths:

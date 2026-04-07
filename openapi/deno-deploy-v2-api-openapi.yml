@@ -27,12 +27,12 @@ tags:
     description: >-
       Create, list, retrieve, update, and delete applications. Apps are the
       top-level containers for deployable code on Deno Deploy v2.
+  - name: Logs
+    description: Query or stream runtime application logs for apps
   - name: Revisions
     description: >-
       Deploy new revisions, track build progress, cancel builds, and delete
       revisions. Revisions are immutable snapshots of deployed code.
-  - name: Logs
-    description: Query or stream runtime application logs for apps
 security:
   - bearerAuth: []
 paths:

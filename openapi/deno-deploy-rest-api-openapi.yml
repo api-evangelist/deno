@@ -20,16 +20,16 @@ servers:
   - url: https://api.deno.com/v1
     description: Deno Deploy Production API
 tags:
-  - name: Organizations
-    description: Retrieve organization details and analytics
-  - name: Projects
-    description: Create, list, update, and delete Deploy projects
   - name: Deployments
     description: Create, list, retrieve, redeploy, and delete deployments; access build and app logs
   - name: Domains
     description: Register and manage custom domains with TLS certificate support
   - name: KV Databases
     description: Create and manage Deno KV databases and backups
+  - name: Organizations
+    description: Retrieve organization details and analytics
+  - name: Projects
+    description: Create, list, update, and delete Deploy projects
 security:
   - bearerAuth: []
 paths:
