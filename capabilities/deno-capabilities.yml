@@ -1,0 +1,71 @@
+name: Deno Capabilities
+description: >-
+  Capabilities exposed by the Deno runtime, Deno Deploy, Deno KV, Subhosting,
+  and the Deno Standard Library.
+capabilities:
+  - name: TypeScript Native Execution
+    description: Run TypeScript and JavaScript without separate transpilation.
+    api: deno:runtime-api
+  - name: Permissions Model
+    description: Granular runtime permissions for filesystem, network, env, and more.
+    api: deno:runtime-api
+  - name: Filesystem Operations
+    description: Read, write, watch, and stream files via Deno.* APIs.
+    api: deno:runtime-api
+  - name: Networking
+    description: Listen, connect, fetch, and serve HTTP/WebSocket via web standards.
+    api: deno:runtime-api
+  - name: Subprocesses
+    description: Spawn and manage child processes via Deno.Command.
+    api: deno:runtime-api
+  - name: Web Crypto
+    description: Hashing, signing, encryption, and key management via Web Crypto.
+    api: deno:runtime-api
+  - name: Node and npm Compatibility
+    description: Import Node built-ins and npm packages alongside Deno APIs.
+    api: deno:runtime-api
+  - name: KV Get and Set
+    description: Read and write key-value entries with strong consistency.
+    api: deno:kv-api
+  - name: KV Atomic Transactions
+    description: Group multiple operations with optimistic concurrency control.
+    api: deno:kv-api
+  - name: KV List and Range Queries
+    description: Iterate keys by prefix or range with cursor pagination.
+    api: deno:kv-api
+  - name: KV Watch
+    description: Subscribe to changes on selected keys.
+    api: deno:kv-api
+  - name: KV Connect
+    description: Access KV databases over HTTPS from outside Deploy.
+    api: deno:kv-api
+  - name: Project Management
+    description: Create, update, and delete Deploy projects.
+    api: deno:deploy-rest-api
+  - name: Deployment Management
+    description: Create, list, redeploy, and delete deployments.
+    api: deno:deploy-rest-api
+  - name: Domain Management
+    description: Register and manage custom domains and TLS certificates.
+    api: deno:deploy-rest-api
+  - name: Organization Analytics
+    description: Retrieve usage and request analytics for organizations.
+    api: deno:deploy-rest-api
+  - name: Apps and Revisions
+    description: Manage Deno Deploy v2 apps and immutable revisions.
+    api: deno:deploy-v2-api
+  - name: Layers
+    description: Define reusable shared configuration across multiple apps.
+    api: deno:deploy-v2-api
+  - name: Streaming Build Logs
+    description: Stream build progress with Server-Sent Events on v2.
+    api: deno:deploy-v2-api
+  - name: Multi-Tenant Provisioning
+    description: Provision isolated projects per tenant via Subhosting.
+    api: deno:subhosting-api
+  - name: Untrusted Code Execution
+    description: Securely run user-submitted code on Deploy infrastructure.
+    api: deno:subhosting-api
+  - name: Standard Library Modules
+    description: Use audited TypeScript utilities published on JSR under @std.
+    api: deno:standard-library

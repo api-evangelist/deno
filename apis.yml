@@ -1,6 +1,27 @@
 aid: deno
+name: Deno
+description: >-
+  Deno is a modern JavaScript and TypeScript runtime built on V8 that
+  emphasizes security, simplicity, and developer productivity. It provides a
+  comprehensive developer platform including the Deno Deploy serverless edge
+  network, a built-in key-value store, and a standard library of audited
+  modules, all designed to run TypeScript natively without additional tooling.
+type: Index
+image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+tags:
+  - Deployment
+  - Edge
+  - JavaScript
+  - Runtime
+  - Serverless
+  - TypeScript
 url: https://raw.githubusercontent.com/api-evangelist/deno/refs/heads/main/apis.yml
-modified: '2026-03-21'
+created: '2026-03-21'
+modified: '2026-04-28'
+specificationVersion: '0.19'
+xType: opensource
+position: Producer
+access: 3rd-Party
 apis:
   - aid: deno:runtime-api
     name: Deno Runtime API
@@ -24,7 +45,6 @@ apis:
       subprocesses, permissions, and environment variables via the Deno.* namespace.
       The runtime natively supports TypeScript without additional tooling and implements
       Web Platform APIs such as fetch, WebSocket, URL, and Web Crypto.
-
   - aid: deno:kv-api
     name: Deno KV API
     tags:
@@ -49,7 +69,6 @@ apis:
       Keys are ordered tuples that support hierarchical data modeling, and values
       can be any structured-serializable JavaScript value including the special Deno.KvU64
       type for 64-bit unsigned integers.
-
   - aid: deno:deploy-rest-api
     name: Deno Deploy REST API
     tags:
@@ -74,7 +93,6 @@ apis:
       KV databases, as well as retrieving analytics and usage metrics. The API base
       URL is https://api.deno.com/v1 and uses HTTP Bearer token authentication. An
       OpenAPI specification is published and can be used with OpenAPI-compatible tooling.
-
   - aid: deno:deploy-v2-api
     name: Deno Deploy API V2
     tags:
@@ -96,7 +114,6 @@ apis:
       It replaces the v1 API (sunsetting July 20, 2026) with a revised resource model:
       Apps replace Projects, Revisions replace Deployments, and Layers provide reusable
       shared configuration across many apps.
-
   - aid: deno:subhosting-api
     name: Deno Subhosting API
     tags:
@@ -121,7 +138,6 @@ apis:
       as the Deploy REST API but is scoped to subhosting use cases such as provisioning
       isolated projects per tenant, creating deployments, and managing custom domains
       and KV databases on behalf of end users.
-
   - aid: deno:standard-library
     name: Deno Standard Library
     tags:
@@ -145,13 +161,30 @@ apis:
       All modules are guaranteed to work with the current stable Deno release and
       do not rely on third-party dependencies.
 common:
-  - url: json-ld/deno-context.jsonld
-    type: JSON-LD
-  - url: json-schema/deno-deployment-schema.json
-    type: JSONSchema
-  - url: json-schema/deno-kv-database-schema.json
-    type: JSONSchema
-description: >-
-  A guide to Deno's built-in runtime APIs. Learn about file system operations, network
-  functionality, permissions management, and other core capabilities available through
-  the global Deno namespace.
+  - type: Website
+    url: https://deno.com
+  - type: Portal
+    url: https://dash.deno.com
+  - type: Documentation
+    url: https://docs.deno.com
+  - type: Blog
+    url: https://deno.com/blog
+  - type: GitHub Organization
+    url: https://github.com/denoland
+  - type: Login
+    url: https://dash.deno.com/signin
+  - type: JSON-LD
+    url: json-ld/deno-context.jsonld
+  - type: JSONSchema
+    url: json-schema/deno-deployment-schema.json
+  - type: JSONSchema
+    url: json-schema/deno-kv-database-schema.json
+  - type: Vocabulary
+    url: vocabulary/deno-vocabulary.yml
+  - type: Capabilities
+    url: capabilities/deno-capabilities.yml
+  - type: Rules
+    url: rules/deno-rules.yml
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

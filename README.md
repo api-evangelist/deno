@@ -119,10 +119,14 @@ The Deno Standard Library is a collection of audited TypeScript modules maintain
 - [Portal](https://dash.deno.com)
 - [Documentation](https://docs.deno.com)
 - [Blog](https://deno.com/blog)
+- [GitHub Organization](https://github.com/denoland)
 - [Login](https://dash.deno.com/signin)
+- [JSON-LD](json-ld/deno-context.jsonld)
+- [Vocabulary](vocabulary/deno-vocabulary.yml)
+- [Capabilities](capabilities/deno-capabilities.yml)
+- [Rules](rules/deno-rules.yml)
 
 ## Maintainers
 
-**FN:** API Evangelist
-
-**Email:** info@apievangelist.com
+- **FN:** Kin Lane
+- **Email:** kin@apievangelist.com

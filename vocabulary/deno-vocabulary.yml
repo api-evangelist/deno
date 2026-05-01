@@ -1,0 +1,69 @@
+name: Deno Vocabulary
+description: >-
+  Shared vocabulary of terms used across the Deno runtime, Deno Deploy, Deno
+  KV, Subhosting, and the Deno Standard Library.
+terms:
+  - term: Runtime
+    definition: >-
+      The Deno executable that runs JavaScript, TypeScript, and WebAssembly
+      with built-in tooling and a permission-based security model.
+  - term: Permissions
+    definition: >-
+      Capability flags such as --allow-net, --allow-read, and --allow-env that
+      grant access to specific operations at runtime.
+  - term: Deno.* Namespace
+    definition: >-
+      The global namespace exposed by the runtime that provides
+      non-web-standard APIs for filesystem, process, and platform operations.
+  - term: JSR
+    definition: >-
+      The JavaScript Registry where the Deno standard library and other
+      first-party modules are published with TypeScript-aware metadata.
+  - term: Deno Deploy
+    definition: >-
+      A globally distributed serverless edge platform for running Deno
+      applications close to users.
+  - term: Project (v1)
+    definition: >-
+      A logical container for deployments, environment variables, and domains
+      in the Deno Deploy v1 API.
+  - term: App (v2)
+    definition: >-
+      The v2 successor to Project, representing a deployable unit on Deno
+      Deploy.
+  - term: Deployment (v1)
+    definition: >-
+      An immutable build of source code deployed to Deno Deploy in v1.
+  - term: Revision (v2)
+    definition: >-
+      The v2 successor to Deployment, representing an immutable build of an App.
+  - term: Layer
+    definition: >-
+      A reusable bundle of configuration shared across multiple v2 Apps.
+  - term: KV Database
+    definition: >-
+      A globally distributed key-value store provisioned per project on
+      Deno Deploy and accessed via Deno.openKv().
+  - term: KV Connect
+    definition: >-
+      The HTTPS protocol used to access a Deno Deploy KV database from outside
+      the Deploy runtime.
+  - term: Atomic Transaction
+    definition: >-
+      A group of KV operations executed atomically with optimistic concurrency
+      checks via Deno.AtomicOperation.
+  - term: Subhosting
+    definition: >-
+      The Deno Deploy offering that lets a parent platform run untrusted
+      end-user code in isolated projects.
+  - term: Custom Domain
+    definition: >-
+      A user-owned domain attached to a Deploy project with managed TLS.
+  - term: Standard Library
+    definition: >-
+      A collection of audited TypeScript modules maintained by the Deno team
+      and published under the @std scope on JSR.
+  - term: Web Standard API
+    definition: >-
+      Browser-aligned APIs such as fetch, WebSocket, URL, and Web Crypto
+      implemented natively by the runtime.

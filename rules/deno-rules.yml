@@ -1,0 +1,51 @@
+extends:
+  - spectral:oas
+rules:
+  deno-info-contact-email:
+    description: Info object should contain Deno Deploy support contact details.
+    given: $.info.contact
+    severity: warn
+    then:
+      field: name
+      function: truthy
+  deno-server-https:
+    description: Servers should be HTTPS only for Deno Deploy APIs.
+    given: $.servers[*].url
+    severity: error
+    then:
+      function: pattern
+      functionOptions:
+        match: "^https://"
+  deno-bearer-auth-required:
+    description: Deno Deploy APIs use Bearer token authentication.
+    given: $.components.securitySchemes
+    severity: error
+    then:
+      field: bearerAuth
+      function: truthy
+  deno-tag-allowed:
+    description: Tags should match the documented Deno Deploy resource categories.
+    given: $.tags[*].name
+    severity: warn
+    then:
+      function: enumeration
+      functionOptions:
+        values:
+          - Deployments
+          - Domains
+          - KV Databases
+          - Organizations
+          - Projects
+          - Apps
+          - Revisions
+          - Layers
+          - Analytics
+          - Subhosting
+  deno-operation-id-camel:
+    description: Operation IDs should be camelCase.
+    given: $.paths.*[get,post,put,patch,delete].operationId
+    severity: warn
+    then:
+      function: pattern
+      functionOptions:
+        match: "^[a-z][a-zA-Z0-9]+$"
