@@ -1,0 +1,13 @@
+{
+  "repo": "deno",
+  "feeds": [
+    {
+      "source": "https://deno.com/blog",
+      "feed_url": "https://deno.com/feed",
+      "saved": 10,
+      "title": "Deno"
+    }
+  ],
+  "post_count": 10,
+  "fetched": "2026-05-03T23:27:02Z"
+}
