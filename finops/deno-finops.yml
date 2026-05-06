@@ -8,34 +8,41 @@ alignedWith:
   dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
 provider: Deno
 providerId: deno
-publisherName: Deno
-serviceCategory: API
+publisherName: Deno Land Inc.
+serviceCategory: Edge Compute / Serverless Runtime
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: true
 tags:
-  - Deployment
-  - Edge
+  - Edge Compute
+  - Serverless
   - JavaScript
   - Runtime
-  - Serverless
   - TypeScript
   - FinOps
   - Cost Management
   - FOCUS
-description: FinOps framework definition for the Deno API surface. Provides a FOCUS-aligned mapping for
-  cost allocation, usage measurement, and unit-economics reporting across the provider's APIs.
+description: 'FOCUS-aligned FinOps for Deno Deploy: tiered subscription (Free / Pro $20 / Builder $200
+  / Enterprise) with included monthly quotas plus pay-as-you-go overage on requests, bandwidth, CPU/memory
+  time, and KV storage and operations.'
+sources:
+  - https://deno.com/pricing
+  - https://docs.deno.com/deploy/manual/pricing-and-limits
 principles:
   - name: Visibility
-    description: Make API consumption costs visible to engineering, product, and finance teams in near
-      real-time.
+    description: Use the Deno Deploy dashboard's usage and billing pages plus the alert-threshold and
+      hard spending-limit controls to monitor request, bandwidth, CPU/memory, and KV consumption per organization
+      in near real time.
   - name: Allocation
-    description: Tag every chargeable API call with the consuming team, environment, application, and
-      feature so cost can be allocated.
+    description: Tag spend by Deno organization, project, and deployment. Use separate organizations per
+      cost-center where strict allocation is needed since billing rolls up at the org level.
   - name: Optimization
-    description: Continuously evaluate request patterns, caching, batching, and tier selection to reduce
-      cost per useful unit of work.
+    description: Right-size memory and isolate behavior, cache aggressively at the edge to reduce request
+      counts, compress responses to lower egress GB, and prefer KV reads (cheaper) over writes; consolidate
+      deployments to stay inside the included CPU/memory-time quotas.
   - name: Accountability
-    description: Establish budget owners and chargeback or showback flows for each consuming team.
+    description: Set hard spending limits per organization to bound overage from traffic spikes, and assign
+      a billing owner for each Deploy organization in the dashboard's billing settings.
 domains:
   - name: Understand Usage and Cost
     capabilities:
@@ -65,72 +72,89 @@ domains:
       - Onboarding Workloads
       - Intersecting Disciplines
 billingModel:
-  pricingCategory: Usage-Based
+  pricingCategory: Tiered Subscription + Pay-As-You-Go Overage
   billingFrequency: Monthly
   billingCurrency: USD
   chargeCategories:
-    - Usage
     - Purchase
+    - Usage
     - Tax
     - Credit
     - Adjustment
   chargeFrequency: Recurring
 focusColumns:
-  ServiceName: Deno
-  ServiceCategory: Developer Tools / API
+  ServiceName: Deno Deploy
+  ServiceCategory: Edge Compute / Serverless Runtime
   ProviderName: Deno
-  PublisherName: Deno
-  InvoiceIssuerName: Deno
-  PricingCategory: Usage-Based
-  PricingUnit: request
+  PublisherName: Deno Land Inc.
+  InvoiceIssuerName: Deno Land Inc.
+  PricingCategory: Subscription + Usage-Based
+  PricingUnit: varies
   BillingCurrency: USD
   ChargeCategory: Usage
 meters:
-  - name: api_requests
-    description: Count of billable API requests
+  - name: subscription_fee
+    description: Monthly Pro / Builder / Enterprise subscription fee
+    unit: month
+    aggregation: sum
+    dimensions:
+      - plan
+      - organization
+  - name: requests
+    description: HTTP requests served by deployments
     unit: request
     aggregation: sum
     dimensions:
-      - api
-      - endpoint
-      - tier
+      - organization
+      - deployment
       - region
-      - consumer
-  - name: data_egress
-    description: Bytes returned over the network in API responses
+  - name: bandwidth_egress
+    description: Outbound network bandwidth from deployments
     unit: GB
     aggregation: sum
     dimensions:
-      - api
+      - organization
+      - deployment
       - region
-      - consumer
-  - name: compute_seconds
-    description: Server-side compute consumed by the request, where applicable
-    unit: second
+  - name: cpu_time
+    description: Wall-clock CPU time consumed by isolates
+    unit: hour
     aggregation: sum
     dimensions:
-      - api
-      - endpoint
-      - tier
+      - organization
+      - deployment
+  - name: memory_time
+    description: Memory-time product (memory allocation x duration)
+    unit: GB-hour
+    aggregation: sum
+    dimensions:
+      - organization
+      - deployment
+  - name: kv_storage
+    description: Resident KV storage volume
+    unit: GB
+    aggregation: max
+    dimensions:
+      - organization
+  - name: kv_reads
+    description: KV read operations
+    unit: read
+    aggregation: sum
+    dimensions:
+      - organization
+  - name: kv_writes
+    description: KV write operations
+    unit: write
+    aggregation: sum
+    dimensions:
+      - organization
+  - name: volume_storage
+    description: Resident volume storage
+    unit: GB-month
+    aggregation: max
+    dimensions:
+      - organization
 apis:
-  - name: Deno Runtime API
-    baseURL: https://api.example.com
-    tags:
-      - JavaScript
-      - Runtime
-      - TypeScript
-      - WebAssembly
-    serviceName: Deno Runtime API
-    serviceCategory: API
-  - name: Deno KV API
-    baseURL: https://api.deno.com
-    tags:
-      - Database
-      - Edge
-      - Key-Value
-      - Storage
-    serviceName: Deno KV API
-    serviceCategory: API
   - name: Deno Deploy REST API
     baseURL: https://api.deno.com/v1
     tags:
@@ -149,6 +173,15 @@ apis:
       - Serverless
     serviceName: Deno Deploy API V2
     serviceCategory: API
+  - name: Deno KV API
+    baseURL: https://api.deno.com
+    tags:
+      - Database
+      - Edge
+      - Key-Value
+      - Storage
+    serviceName: Deno KV API
+    serviceCategory: API
   - name: Deno Subhosting API
     baseURL: https://api.deno.com/v1
     tags:
@@ -158,21 +191,15 @@ apis:
       - Subhosting
     serviceName: Deno Subhosting API
     serviceCategory: API
-  - name: Deno Standard Library
-    baseURL: https://api.example.com
-    tags:
-      - Modules
-      - Standard Library
-      - TypeScript
-      - Utilities
-    serviceName: Deno Standard Library
-    serviceCategory: API
 unitEconomics:
-  - name: Cost per 1K Requests
-    metric: billed_cost / (api_requests / 1000)
-    target: TBD
-  - name: Cost per Active Consumer
-    metric: billed_cost / active_consumers
+  - name: Cost per 1M Requests
+    metric: billed_cost / (requests / 1000000)
+    target: '$2 above included; $0 within plan quota'
+  - name: Cost per GB Egress
+    metric: bandwidth_cost / bandwidth_gb
+    target: '$0.50 above included'
+  - name: Cost per Active Deployment
+    metric: billed_cost / active_deployments
     target: TBD
 maintainers:
   - FN: Kin Lane

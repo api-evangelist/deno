@@ -4,181 +4,382 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: Deno
 providerId: deno
 created: '2026-05-04'
-modified: '2026-05-04'
+modified: '2026-05-05'
+reconciled: true
 tags:
-  - Deployment
-  - Edge
+  - Edge Compute
+  - Serverless
   - JavaScript
   - Runtime
-  - Serverless
   - TypeScript
-description: Machine-readable plans and pricing scaffold for this API provider. Conforms to the API Commons
-  Plans schema. Tier limits and prices are scaffold defaults; replace with provider-published values.
+  - Deployment
+description: Deno Deploy is priced as tiered subscriptions (Free, Pro $20/mo, Builder $200/mo, Enterprise
+  custom) with included monthly quotas for requests, bandwidth, KV storage, CPU time, and memory time.
+  Pro and Builder bill overage on a usage basis at published per-unit rates. Free hits hard caps.
+sources:
+  - https://deno.com/pricing
+  - https://docs.deno.com/deploy/manual/pricing-and-limits
 plans:
   - id: deno-free
     name: Free
     type: freemium
-    description: Free entry tier for the Deno API surface. Intended for evaluation, prototyping, and low-volume
-      integrations. Real limits and pricing must be reconciled with the provider's published plan documentation.
+    description: Free tier for personal projects, prototypes, and hobby workloads. Hard caps on quotas;
+      no overage billing.
     entries:
-      - label: API Requests
-        description: Monthly API request quota across all included endpoints
-        name: api_requests
+      - label: Monthly Requests
+        description: Included monthly request quota; hard cap on Free.
+        name: requests
         type: quota
-        metric: requests
-        limit: 1000
+        metric: request
+        limit: 1000000
         timeFrame: month
         geo: global
         domains:
-          - https://api.example.com
           - https://api.deno.com
-          - https://api.deno.com/v1
-          - https://api.deno.com/v2
         unit: 1
         price: '0.00'
         userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the free tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 10
-        timeFrame: minute
+      - label: Egress Bandwidth
+        description: Included monthly outbound bandwidth.
+        name: bandwidth
+        type: quota
+        metric: gb
+        limit: 20
+        timeFrame: month
         geo: global
         domains:
-          - https://api.example.com
           - https://api.deno.com
-          - https://api.deno.com/v1
-          - https://api.deno.com/v2
+        unit: 1
+        price: '0.00'
+        userMultiplied: false
+      - label: KV Storage
+        description: Resident Deno KV storage.
+        name: kv_storage
+        type: quota
+        metric: gb
+        limit: 1
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '0.00'
+        userMultiplied: false
+      - label: CPU Time
+        description: CPU-hours consumed by isolates.
+        name: cpu_time
+        type: quota
+        metric: hour
+        limit: 15
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '0.00'
+        userMultiplied: false
+      - label: Memory Time
+        description: GB-hours of memory consumed.
+        name: memory_time
+        type: quota
+        metric: gb-hour
+        limit: 350
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '0.00'
+        userMultiplied: false
+      - label: Custom Domains
+        description: Custom domains per organization.
+        name: custom_domains
+        type: quota
+        metric: domain
+        limit: 50
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
         unit: 1
         price: '0.00'
         userMultiplied: false
     elements:
-      - name: Public Documentation
+      - name: Up to 5 team members
+      - name: 20 active deployments
       - name: Community Support
-      - name: Sandbox Access
-      - name: Deno Runtime API
+      - name: Deno Deploy Edge Network
       - name: Deno KV API
       - name: Deno Deploy REST API
       - name: Deno Deploy API V2
       - name: Deno Subhosting API
-      - name: Deno Standard Library
   - id: deno-pro
-    name: Professional
-    type: paid
-    description: Production tier for Deno. Provides higher quotas, priority support, and access to the
-      broader API portfolio. Pricing placeholder; align with the provider's pricing page.
+    name: Pro
+    type: subscription
+    description: For team collaboration with usage-based overage billing.
     entries:
-      - label: API Requests
-        description: Monthly API request quota
-        name: api_requests
+      - label: Subscription
+        description: Flat monthly subscription fee.
+        name: subscription
+        type: subscription
+        metric: month
+        limit: 1
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '$20'
+        userMultiplied: false
+      - label: Included Monthly Requests
+        description: Requests included in subscription.
+        name: requests_included
         type: quota
-        metric: requests
+        metric: request
+        limit: 5000000
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: included
+        userMultiplied: false
+      - label: Request Overage
+        description: Per-million requests above the included quota.
+        name: requests_overage
+        type: metered
+        metric: request
+        limit: -1
+        timeFrame: usage
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1000000
+        price: '$2'
+        userMultiplied: false
+      - label: Included Bandwidth
+        description: Egress bandwidth included.
+        name: bandwidth_included
+        type: quota
+        metric: gb
+        limit: 200
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: included
+        userMultiplied: false
+      - label: Bandwidth Overage
+        description: Per-GB price above the included bandwidth.
+        name: bandwidth_overage
+        type: metered
+        metric: gb
+        limit: -1
+        timeFrame: usage
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '$0.50'
+        userMultiplied: false
+      - label: CPU Time Overage
+        description: Per-hour price above the included CPU time.
+        name: cpu_overage
+        type: metered
+        metric: hour
+        limit: -1
+        timeFrame: usage
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '$0.05'
+        userMultiplied: false
+      - label: Memory Time Overage
+        description: Per GB-hour price above the included memory time.
+        name: memory_overage
+        type: metered
+        metric: gb-hour
+        limit: -1
+        timeFrame: usage
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '$0.016'
+        userMultiplied: false
+      - label: Volume Storage Overage
+        description: Resident volume storage above included.
+        name: volume_overage
+        type: metered
+        metric: gb-month
+        limit: -1
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '$0.20'
+        userMultiplied: false
+      - label: KV Storage Overage
+        description: Resident KV storage above included.
+        name: kv_storage_overage
+        type: metered
+        metric: gb
+        limit: -1
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '$0.75'
+        userMultiplied: false
+      - label: KV Read Units Overage
+        description: Per million KV read units above included.
+        name: kv_read_overage
+        type: metered
+        metric: read
+        limit: -1
+        timeFrame: usage
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1000000
+        price: '$1'
+        userMultiplied: false
+      - label: KV Write Units Overage
+        description: Per million KV write units above included.
+        name: kv_write_overage
+        type: metered
+        metric: write
+        limit: -1
+        timeFrame: usage
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1000000
+        price: '$2.50'
+        userMultiplied: false
+    elements:
+      - name: Up to 10 team members
+      - name: 100 active deployments
+      - name: 100 custom domains
+      - name: 40 hours CPU time included
+      - name: 1000 GB-hours memory included
+      - name: Email Support
+      - name: Deno KV API
+      - name: Deno Deploy REST API
+      - name: Deno Deploy API V2
+      - name: Deno Subhosting API
+  - id: deno-builder
+    name: Builder
+    type: subscription
+    description: For Subhosting users and growing platforms; same overage rates as Pro with much larger
+      included quotas.
+    entries:
+      - label: Subscription
+        description: Flat monthly subscription fee.
+        name: subscription
+        type: subscription
+        metric: month
+        limit: 1
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: '$200'
+        userMultiplied: false
+      - label: Included Monthly Requests
+        description: Requests included in subscription.
+        name: requests_included
+        type: quota
+        metric: request
+        limit: 20000000
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: included
+        userMultiplied: false
+      - label: Included Bandwidth
+        description: Egress bandwidth included.
+        name: bandwidth_included
+        type: quota
+        metric: gb
+        limit: 300
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: included
+        userMultiplied: false
+      - label: Included KV Storage
+        description: Resident KV storage included.
+        name: kv_storage_included
+        type: quota
+        metric: gb
+        limit: 10
+        timeFrame: month
+        geo: global
+        domains:
+          - https://api.deno.com
+        unit: 1
+        price: included
+        userMultiplied: false
+      - label: Active Deployments
+        description: Active deployments allowed.
+        name: active_deployments
+        type: quota
+        metric: deployment
         limit: 100000
         timeFrame: month
         geo: global
         domains:
-          - https://api.example.com
           - https://api.deno.com
-          - https://api.deno.com/v1
-          - https://api.deno.com/v2
         unit: 1
-        price: TBD
-        userMultiplied: false
-      - label: Rate Limit
-        description: Maximum requests per minute on the professional tier
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 100
-        timeFrame: minute
-        geo: global
-        domains:
-          - https://api.example.com
-          - https://api.deno.com
-          - https://api.deno.com/v1
-          - https://api.deno.com/v2
-        unit: 1
-        price: '0.00'
-        userMultiplied: false
-      - label: Overage
-        description: Per-request price after monthly quota is exceeded
-        name: overage
-        type: metered
-        metric: requests
-        limit: -1
-        timeFrame: month
-        geo: global
-        domains:
-          - https://api.example.com
-          - https://api.deno.com
-          - https://api.deno.com/v1
-          - https://api.deno.com/v2
-        unit: 1000
-        price: TBD
+        price: included
         userMultiplied: false
     elements:
-      - name: All Production Endpoints
-      - name: Email Support
-      - name: SLA Targets
-      - name: Webhook Subscriptions
-      - name: Deno Runtime API
-      - name: Deno KV API
+      - name: Subhosting capability
+      - name: 300 custom domains
+      - name: 10 team members
+      - name: Same overage rates as Pro
+      - name: Deno Subhosting API
       - name: Deno Deploy REST API
       - name: Deno Deploy API V2
-      - name: Deno Subhosting API
-      - name: Deno Standard Library
   - id: deno-enterprise
     name: Enterprise
     type: enterprise
-    description: Custom-negotiated tier for Deno. Includes dedicated capacity, contractual SLAs, security
-      review, data residency options, and named technical account management.
+    description: Custom-negotiated tier with 99.95% SLA, SOC2 Type 1, DPA, and dedicated support.
     entries:
-      - label: API Requests
-        description: Negotiated request volume; -1 indicates uncapped subject to fair use
-        name: api_requests
-        type: quota
-        metric: requests
+      - label: Negotiated Quotas
+        description: All quotas negotiated; pricing custom.
+        name: negotiated
+        type: flat
+        metric: varies
         limit: -1
         timeFrame: month
         geo: configurable
         domains:
-          - https://api.example.com
           - https://api.deno.com
-          - https://api.deno.com/v1
-          - https://api.deno.com/v2
-        unit: 1
-        price: custom
-        userMultiplied: false
-      - label: Rate Limit
-        description: Negotiated burst and steady-state rate
-        name: rate_limit
-        type: rate
-        metric: requests_per_minute
-        limit: 1000
-        timeFrame: minute
-        geo: configurable
-        domains:
-          - https://api.example.com
-          - https://api.deno.com
-          - https://api.deno.com/v1
-          - https://api.deno.com/v2
         unit: 1
         price: custom
         userMultiplied: false
     elements:
-      - name: Unlimited / Negotiated Volume
-      - name: 24/7 Dedicated Support
-      - name: Contractual SLA
-      - name: Security & Compliance Review
-      - name: Dedicated Account Manager
+      - name: 99.95% SLA
+      - name: SOC2 Type 1
+      - name: Data Processing Agreement
+      - name: Dedicated Support
+      - name: Unlimited custom domains
       - name: Custom Data Residency
-      - name: Deno Runtime API
       - name: Deno KV API
       - name: Deno Deploy REST API
       - name: Deno Deploy API V2
       - name: Deno Subhosting API
-      - name: Deno Standard Library
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
