@@ -3,11 +3,11 @@
   "feeds": [
     {
       "source": "https://deno.com/blog",
-      "feed_url": "https://deno.com/feed",
-      "saved": 10,
-      "title": "Deno"
+      "feed_url": "https://deno.com/feed/",
+      "title": "Deno",
+      "saved": 0
     }
   ],
   "post_count": 10,
-  "fetched": "2026-05-03T23:27:02Z"
+  "fetched": "2026-05-09T20:17:51Z"
 }
