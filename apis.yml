@@ -185,6 +185,12 @@ common:
     url: capabilities/deno-capabilities.yml
   - type: Rules
     url: rules/deno-rules.yml
+  - type: Integrations
+    url: https://deno.com/integrations
+integrations:
+  - name: Search powered by Orama
+  - name: Ferris
+  - name: Deno
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
