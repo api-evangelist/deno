@@ -19,7 +19,7 @@ url: https://raw.githubusercontent.com/api-evangelist/deno/refs/heads/main/apis.
 created: '2026-03-21'
 modified: '2026-04-28'
 specificationVersion: '0.19'
-xType: opensource
+kind: opensource
 position: Producer
 access: 3rd-Party
 apis:
@@ -169,11 +169,11 @@ common:
     url: https://docs.deno.com
   - type: Blog
     url: https://deno.com/blog
-  - type: GitHub Organization
+  - type: GitHubOrganization
     url: https://github.com/denoland
   - type: Login
     url: https://dash.deno.com/signin
-  - type: JSON-LD
+  - type: JSONLD
     url: json-ld/deno-context.jsonld
   - type: JSONSchema
     url: json-schema/deno-deployment-schema.json
