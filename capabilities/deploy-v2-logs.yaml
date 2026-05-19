@@ -1,0 +1,116 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Deno Deploy API v2 — Logs
+  description: 'Deno Deploy API v2 — Logs. 1 operations. Lead operation: Get or stream app logs. Self-contained Naftiko capability
+    covering one Deno business surface.'
+  tags:
+  - Deno
+  - Logs
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    DENO_API_KEY: DENO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: deploy-v2-logs
+    baseUri: https://api.deno.com/v2
+    description: Deno Deploy API v2 — Logs business capability. Self-contained, no shared references.
+    resources:
+    - name: apps-app-logs
+      path: /apps/{app}/logs
+      operations:
+      - name: getapplogs
+        method: GET
+        description: Get or stream app logs
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: start
+          in: query
+          type: string
+          description: Start of the log time range as an ISO 8601 datetime
+          required: true
+        - name: end
+          in: query
+          type: string
+          description: End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time.
+        - name: revision_id
+          in: query
+          type: string
+          description: Filter logs to a specific revision by its ID
+        - name: level
+          in: query
+          type: string
+          description: Filter logs by severity level
+        - name: query
+          in: query
+          type: string
+          description: Full-text search query to filter log messages
+        - name: cursor
+          in: query
+          type: string
+          description: Pagination cursor for historical log queries
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of log entries to return (1-1000)
+    authentication:
+      type: bearer
+      token: '{{env.DENO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: deploy-v2-logs-rest
+    port: 8080
+    description: REST adapter for Deno Deploy API v2 — Logs. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/apps/{app}/logs
+      name: apps-app-logs
+      description: REST surface for apps-app-logs.
+      operations:
+      - method: GET
+        name: getapplogs
+        description: Get or stream app logs
+        call: deploy-v2-logs.getapplogs
+        with:
+          start: rest.start
+          end: rest.end
+          revision_id: rest.revision_id
+          level: rest.level
+          query: rest.query
+          cursor: rest.cursor
+          limit: rest.limit
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: deploy-v2-logs-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Deno Deploy API v2 — Logs. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: get-stream-app-logs
+      description: Get or stream app logs
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: deploy-v2-logs.getapplogs
+      with:
+        start: tools.start
+        end: tools.end
+        revision_id: tools.revision_id
+        level: tools.level
+        query: tools.query
+        cursor: tools.cursor
+        limit: tools.limit
+      outputParameters:
+      - type: object
+        mapping: $.

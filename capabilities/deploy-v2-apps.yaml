@@ -1,0 +1,224 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Deno Deploy API v2 — Apps
+  description: 'Deno Deploy API v2 — Apps. 5 operations. Lead operation: List apps. Self-contained Naftiko capability covering
+    one Deno business surface.'
+  tags:
+  - Deno
+  - Apps
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    DENO_API_KEY: DENO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: deploy-v2-apps
+    baseUri: https://api.deno.com/v2
+    description: Deno Deploy API v2 — Apps business capability. Self-contained, no shared references.
+    resources:
+    - name: apps
+      path: /apps
+      operations:
+      - name: listapps
+        method: GET
+        description: List apps
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cursor
+          in: query
+          type: string
+          description: Opaque pagination cursor from the previous response Link header
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of apps to return (1-100)
+        - name: labels
+          in: query
+          type: object
+          description: Filter apps by label key-value pairs (deepObject style)
+        - name: layer
+          in: query
+          type: string
+          description: Filter apps by layer ID or slug
+      - name: createapp
+        method: POST
+        description: Create app
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: apps-app
+      path: /apps/{app}
+      operations:
+      - name: getapp
+        method: GET
+        description: Get app details
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: updateapp
+        method: PATCH
+        description: Update app
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: false
+      - name: deleteapp
+        method: DELETE
+        description: Delete app
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.DENO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: deploy-v2-apps-rest
+    port: 8080
+    description: REST adapter for Deno Deploy API v2 — Apps. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/apps
+      name: apps
+      description: REST surface for apps.
+      operations:
+      - method: GET
+        name: listapps
+        description: List apps
+        call: deploy-v2-apps.listapps
+        with:
+          cursor: rest.cursor
+          limit: rest.limit
+          labels: rest.labels
+          layer: rest.layer
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createapp
+        description: Create app
+        call: deploy-v2-apps.createapp
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/apps/{app}
+      name: apps-app
+      description: REST surface for apps-app.
+      operations:
+      - method: GET
+        name: getapp
+        description: Get app details
+        call: deploy-v2-apps.getapp
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: PATCH
+        name: updateapp
+        description: Update app
+        call: deploy-v2-apps.updateapp
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteapp
+        description: Delete app
+        call: deploy-v2-apps.deleteapp
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: deploy-v2-apps-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Deno Deploy API v2 — Apps. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: list-apps
+      description: List apps
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: deploy-v2-apps.listapps
+      with:
+        cursor: tools.cursor
+        limit: tools.limit
+        labels: tools.labels
+        layer: tools.layer
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-app
+      description: Create app
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: deploy-v2-apps.createapp
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-app-details
+      description: Get app details
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: deploy-v2-apps.getapp
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: update-app
+      description: Update app
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: true
+      call: deploy-v2-apps.updateapp
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-app
+      description: Delete app
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: deploy-v2-apps.deleteapp
+      outputParameters:
+      - type: object
+        mapping: $.

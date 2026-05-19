@@ -1,0 +1,105 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Deno Subhosting API — Domains
+  description: 'Deno Subhosting API — Domains. 2 operations. Lead operation: List domains. Self-contained Naftiko capability
+    covering one Deno business surface.'
+  tags:
+  - Deno
+  - Domains
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    DENO_API_KEY: DENO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: subhosting-domains
+    baseUri: https://api.deno.com/v1
+    description: Deno Subhosting API — Domains business capability. Self-contained, no shared references.
+    resources:
+    - name: organizations-organizationId-domains
+      path: /organizations/{organizationId}/domains
+      operations:
+      - name: listdomains
+        method: GET
+        description: List domains
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: createdomain
+        method: POST
+        description: Create domain
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.DENO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: subhosting-domains-rest
+    port: 8080
+    description: REST adapter for Deno Subhosting API — Domains. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/organizations/{organizationid}/domains
+      name: organizations-organizationid-domains
+      description: REST surface for organizations-organizationId-domains.
+      operations:
+      - method: GET
+        name: listdomains
+        description: List domains
+        call: subhosting-domains.listdomains
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createdomain
+        description: Create domain
+        call: subhosting-domains.createdomain
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: subhosting-domains-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Deno Subhosting API — Domains. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: list-domains
+      description: List domains
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: subhosting-domains.listdomains
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: create-domain
+      description: Create domain
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: subhosting-domains.createdomain
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

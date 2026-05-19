@@ -1,0 +1,254 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: Deno Deploy API v2 — Revisions
+  description: 'Deno Deploy API v2 — Revisions. 6 operations. Lead operation: Create revision. Self-contained Naftiko capability
+    covering one Deno business surface.'
+  tags:
+  - Deno
+  - Revisions
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    DENO_API_KEY: DENO_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: deploy-v2-revisions
+    baseUri: https://api.deno.com/v2
+    description: Deno Deploy API v2 — Revisions business capability. Self-contained, no shared references.
+    resources:
+    - name: apps-app-deploy
+      path: /apps/{app}/deploy
+      operations:
+      - name: deployapp
+        method: POST
+        description: Create revision
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: apps-app-revisions
+      path: /apps/{app}/revisions
+      operations:
+      - name: listrevisions
+        method: GET
+        description: List revisions for app
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: cursor
+          in: query
+          type: string
+          description: Opaque pagination cursor from the previous response Link header
+        - name: limit
+          in: query
+          type: integer
+          description: Maximum number of revisions to return (1-100)
+        - name: status
+          in: query
+          type: string
+          description: Filter revisions by build status
+    - name: revisions-revision
+      path: /revisions/{revision}
+      operations:
+      - name: getrevision
+        method: GET
+        description: Get revision details
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+      - name: deleterevision
+        method: DELETE
+        description: Delete revision
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: revisions-revision-cancel
+      path: /revisions/{revision}/cancel
+      operations:
+      - name: cancelrevision
+        method: POST
+        description: Cancel revision build
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: revisions-revision-progress
+      path: /revisions/{revision}/progress
+      operations:
+      - name: streamrevisionprogress
+        method: GET
+        description: Stream revision build progress
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    authentication:
+      type: bearer
+      token: '{{env.DENO_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: deploy-v2-revisions-rest
+    port: 8080
+    description: REST adapter for Deno Deploy API v2 — Revisions. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/apps/{app}/deploy
+      name: apps-app-deploy
+      description: REST surface for apps-app-deploy.
+      operations:
+      - method: POST
+        name: deployapp
+        description: Create revision
+        call: deploy-v2-revisions.deployapp
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/apps/{app}/revisions
+      name: apps-app-revisions
+      description: REST surface for apps-app-revisions.
+      operations:
+      - method: GET
+        name: listrevisions
+        description: List revisions for app
+        call: deploy-v2-revisions.listrevisions
+        with:
+          cursor: rest.cursor
+          limit: rest.limit
+          status: rest.status
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/revisions/{revision}
+      name: revisions-revision
+      description: REST surface for revisions-revision.
+      operations:
+      - method: GET
+        name: getrevision
+        description: Get revision details
+        call: deploy-v2-revisions.getrevision
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleterevision
+        description: Delete revision
+        call: deploy-v2-revisions.deleterevision
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/revisions/{revision}/cancel
+      name: revisions-revision-cancel
+      description: REST surface for revisions-revision-cancel.
+      operations:
+      - method: POST
+        name: cancelrevision
+        description: Cancel revision build
+        call: deploy-v2-revisions.cancelrevision
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/revisions/{revision}/progress
+      name: revisions-revision-progress
+      description: REST surface for revisions-revision-progress.
+      operations:
+      - method: GET
+        name: streamrevisionprogress
+        description: Stream revision build progress
+        call: deploy-v2-revisions.streamrevisionprogress
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: deploy-v2-revisions-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for Deno Deploy API v2 — Revisions. One tool per consumed operation, routed inline through this
+      capability's consumes block.
+    tools:
+    - name: create-revision
+      description: Create revision
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: deploy-v2-revisions.deployapp
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: list-revisions-app
+      description: List revisions for app
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: deploy-v2-revisions.listrevisions
+      with:
+        cursor: tools.cursor
+        limit: tools.limit
+        status: tools.status
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: get-revision-details
+      description: Get revision details
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: deploy-v2-revisions.getrevision
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: delete-revision
+      description: Delete revision
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: deploy-v2-revisions.deleterevision
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: cancel-revision-build
+      description: Cancel revision build
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: deploy-v2-revisions.cancelrevision
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: stream-revision-build-progress
+      description: Stream revision build progress
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: deploy-v2-revisions.streamrevisionprogress
+      outputParameters:
+      - type: object
+        mapping: $.
