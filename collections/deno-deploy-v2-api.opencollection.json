@@ -1,0 +1,350 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Deno Deploy API v2",
+    "version": "2.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Apps",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List apps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v2/apps",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque pagination cursor from the previous response Link header"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of apps to return (1-100)"
+              },
+              {
+                "name": "labels",
+                "value": "",
+                "type": "query",
+                "description": "Filter apps by label key-value pairs (deepObject style)"
+              },
+              {
+                "name": "layer",
+                "value": "",
+                "type": "query",
+                "description": "Filter apps by layer ID or slug"
+              }
+            ]
+          },
+          "docs": "Returns a cursor-paginated list of all applications accessible to the authenticated token. Supports filtering by labels and by associated layer. Results are ordered by creation date descending by default."
+        },
+        {
+          "info": {
+            "name": "Create app",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v2/apps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new application. An app slug must be unique within the organization and follows DNS-compatible naming rules. Labels, layers, environment variables, and build/runtime configuration can optionally be set at creation time."
+        },
+        {
+          "info": {
+            "name": "Get app details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v2/apps/:app",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              }
+            ]
+          },
+          "docs": "Retrieves complete details for a specific application identified by its UUID or human-readable slug, including its labels, attached layers, environment variables, and configuration."
+        },
+        {
+          "info": {
+            "name": "Update app",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.deno.com/v2/apps/:app",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates one or more mutable properties of an existing application. The slug, labels, layers, environment variables, and configuration can each be modified independently. Label updates replace all existing labels. Layer updates replace all layer references. Environment variable updates use deep merge semantics."
+        },
+        {
+          "info": {
+            "name": "Delete app",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v2/apps/:app",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              }
+            ]
+          },
+          "docs": "Permanently deletes an application and all of its revisions. This operation cannot be undone. All custom domain associations must be removed before an app can be deleted."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Revisions",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create revision",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v2/apps/:app/deploy",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new revision (deployment) for an application by uploading assets and optional configuration. Assets are key-value pairs where keys are file paths relative to /app/src and values describe file content as UTF-8 text, base64-encoded binary, or symlinks. The revision progresses through queued, building, and succeeded (or failed) states. Build progress can be tracked via the revisions progress endpoint."
+        },
+        {
+          "info": {
+            "name": "List revisions for app",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v2/apps/:app/revisions",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque pagination cursor from the previous response Link header"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of revisions to return (1-100)"
+              },
+              {
+                "name": "status",
+                "value": "",
+                "type": "query",
+                "description": "Filter revisions by build status"
+              }
+            ]
+          },
+          "docs": "Returns a cursor-paginated list of all revisions for a specific application, optionally filtered by build status. Results are ordered by creation date descending."
+        },
+        {
+          "info": {
+            "name": "Get revision details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v2/revisions/:revision",
+            "params": [
+              {
+                "name": "revision",
+                "value": "",
+                "type": "path",
+                "description": "Globally unique revision ID"
+              }
+            ]
+          },
+          "docs": "Retrieves complete details for a specific revision by its globally unique revision ID, including build status, failure reason, labels, layers, environment variables, and runtime configuration."
+        },
+        {
+          "info": {
+            "name": "Delete revision",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v2/revisions/:revision",
+            "params": [
+              {
+                "name": "revision",
+                "value": "",
+                "type": "path",
+                "description": "Globally unique revision ID"
+              }
+            ]
+          },
+          "docs": "Permanently deletes a specific revision. Revisions that are currently serving production or preview traffic cannot be deleted until the associated app is updated to use a different revision."
+        },
+        {
+          "info": {
+            "name": "Cancel revision build",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v2/revisions/:revision/cancel",
+            "params": [
+              {
+                "name": "revision",
+                "value": "",
+                "type": "path",
+                "description": "Globally unique revision ID"
+              }
+            ]
+          },
+          "docs": "Requests cancellation of an in-progress revision build. Only revisions in the queued or building state can be cancelled. The revision status transitions to failed upon successful cancellation."
+        },
+        {
+          "info": {
+            "name": "Stream revision build progress",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v2/revisions/:revision/progress",
+            "params": [
+              {
+                "name": "revision",
+                "value": "",
+                "type": "path",
+                "description": "Globally unique revision ID"
+              }
+            ]
+          },
+          "docs": "Streams real-time build progress for a revision as it moves through the preparing, installing, building, and deploying stages. Returns a Server-Sent Events stream or newline-delimited JSON stream depending on the Accept header. The stream emits message events containing RevisionProgress objects, a done event on completion, and an error event on failure."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Logs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get or stream app logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v2/apps/:app/logs",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Start of the log time range as an ISO 8601 datetime"
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time."
+              },
+              {
+                "name": "revision_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs to a specific revision by its ID"
+              },
+              {
+                "name": "level",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs by severity level"
+              },
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "Full-text search query to filter log messages"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor for historical log queries"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of log entries to return (1-1000)"
+              }
+            ]
+          },
+          "docs": "Queries or streams runtime logs for an application. A start datetime is required. When an end datetime is omitted, the endpoint streams logs in real time using Server-Sent Events or newline-delimited JSON depending on the Accept header. Supports filtering by revision ID, log level, and full-text search. Cursor-based pagination applies to historical queries."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

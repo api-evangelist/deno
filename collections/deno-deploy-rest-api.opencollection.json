@@ -1,0 +1,891 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Deno Deploy REST API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Organizations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an organization by its UUID. Organizations are the top-level billing and access-control containers on Deno Deploy."
+        },
+        {
+          "info": {
+            "name": "Get organization analytics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/analytics",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Start of the analytics time range in RFC 3339 format"
+              },
+              {
+                "name": "until",
+                "value": "",
+                "type": "query",
+                "description": "End of the analytics time range in RFC 3339 format"
+              }
+            ]
+          },
+          "docs": "Returns time-series analytics data for an organization in 15-minute intervals. The time range is limited to a maximum of 24 hours and must be specified using RFC 3339 timestamps."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Projects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List projects",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/projects",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Search query to filter results by name or identifier"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field name to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order direction"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all projects belonging to the specified organization. Supports filtering by name and sorting by various fields."
+        },
+        {
+          "info": {
+            "name": "Create project",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/projects",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new project within the specified organization. Projects are containers for deployments on Deno Deploy, and each project can have multiple deployments across its lifecycle."
+        },
+        {
+          "info": {
+            "name": "Get project",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/projects/:projectId",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the project"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a specific project by its UUID, including its name, associated organization, and current configuration."
+        },
+        {
+          "info": {
+            "name": "Update project",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.deno.com/v1/projects/:projectId",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the project"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates mutable fields of an existing project such as its name. Only the fields present in the request body are modified."
+        },
+        {
+          "info": {
+            "name": "Delete project",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/projects/:projectId",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the project"
+              }
+            ]
+          },
+          "docs": "Permanently deletes a project and all of its deployments. This operation cannot be undone."
+        },
+        {
+          "info": {
+            "name": "Get project analytics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/projects/:projectId/analytics",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the project"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Start of the analytics time range in RFC 3339 format"
+              },
+              {
+                "name": "until",
+                "value": "",
+                "type": "query",
+                "description": "End of the analytics time range in RFC 3339 format"
+              }
+            ]
+          },
+          "docs": "Returns time-series analytics data for a specific project in 15-minute intervals. The time range is limited to a maximum of 24 hours and must be specified using RFC 3339 timestamps."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Deployments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List deployments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/projects/:projectId/deployments",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the project"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Search query to filter results by name or identifier"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field name to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order direction"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all deployments for a project. Supports filtering by deployment ID prefix and sorting by creation date."
+        },
+        {
+          "info": {
+            "name": "Create deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/projects/:projectId/deployments",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the project"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new deployment for the specified project. A deployment consists of assets (code and static files), environment variables, compiler options, and optional KV database associations. Assets support UTF-8 text, base64-encoded binary, git SHA-1 references, and symlinks."
+        },
+        {
+          "info": {
+            "name": "Get deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a specific deployment by its ID, including its status, associated project, domains, environment variables, and configuration."
+        },
+        {
+          "info": {
+            "name": "Delete deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ]
+          },
+          "docs": "Permanently deletes a specific deployment. Active deployments serving traffic cannot be deleted until domains are detached."
+        },
+        {
+          "info": {
+            "name": "Redeploy deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/redeploy",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new deployment based on an existing one, optionally overriding environment variables and KV database associations. Environment variables support merge semantics so only specified keys are modified."
+        },
+        {
+          "info": {
+            "name": "Get build logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/build_logs",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ]
+          },
+          "docs": "Retrieves the build logs for a deployment. Logs are returned as either a JSON array or newline-delimited JSON (NDJSON) depending on the Accept header. Build logs capture output from the deployment build process."
+        },
+        {
+          "info": {
+            "name": "Get application logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/app_logs",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Full-text search query to filter log messages"
+              },
+              {
+                "name": "level",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs by severity level"
+              },
+              {
+                "name": "region",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs by the deployment region that emitted them"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Return logs after this RFC 3339 timestamp"
+              },
+              {
+                "name": "until",
+                "value": "",
+                "type": "query",
+                "description": "Return logs before this RFC 3339 timestamp; omit to stream"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of log entries to return"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor from a previous response Link header"
+              }
+            ]
+          },
+          "docs": "Retrieves or streams runtime application logs for a deployment. Supports filtering by log level, region, time range, and full-text search query. Cursor-based pagination is supported for large result sets. When no until parameter is specified, the endpoint streams logs in real time."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Domains",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Attach domain to deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/domains/:domain",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              },
+              {
+                "name": "domain",
+                "value": "",
+                "type": "path",
+                "description": "The custom domain name to attach"
+              }
+            ]
+          },
+          "docs": "Associates a custom domain with a specific deployment, routing all traffic for that domain to the deployment. The domain must already be registered and verified in the organization."
+        },
+        {
+          "info": {
+            "name": "Detach domain from deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/domains/:domain",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              },
+              {
+                "name": "domain",
+                "value": "",
+                "type": "path",
+                "description": "The custom domain name to detach"
+              }
+            ]
+          },
+          "docs": "Removes the association between a custom domain and a deployment. After detachment, the domain no longer routes traffic to this deployment and can be attached to a different deployment."
+        },
+        {
+          "info": {
+            "name": "List domains",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/domains",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Search query to filter results by name or identifier"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field name to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order direction"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all custom domains registered within an organization. Includes verification status and TLS certificate information for each domain."
+        },
+        {
+          "info": {
+            "name": "Create domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/domains",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Registers a new custom domain within the organization. After creation, the domain must be verified via DNS before it can be attached to deployments. TLS certificates can be uploaded or automatically provisioned after verification."
+        },
+        {
+          "info": {
+            "name": "Get domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/domains/:domainId",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a specific custom domain by its UUID, including its verification status, TLS certificate state, and current deployment association."
+        },
+        {
+          "info": {
+            "name": "Delete domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/domains/:domainId",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ]
+          },
+          "docs": "Permanently removes a custom domain from the organization. Any active deployment associations must be detached before the domain can be deleted."
+        },
+        {
+          "info": {
+            "name": "Verify domain ownership",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/domains/:domainId/verify",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ]
+          },
+          "docs": "Triggers DNS-based verification for a custom domain. Deno Deploy checks for the presence of a DNS TXT record to confirm domain ownership before allowing the domain to serve traffic."
+        },
+        {
+          "info": {
+            "name": "Upload TLS certificate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/domains/:domainId/certificates",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Uploads a custom TLS certificate and private key for a domain. The certificate must be valid for the domain and signed by a trusted certificate authority. Alternatively, certificates can be automatically provisioned via Let's Encrypt."
+        },
+        {
+          "info": {
+            "name": "Provision TLS certificate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/domains/:domainId/certificates/provision",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ]
+          },
+          "docs": "Automatically provisions a TLS certificate for a verified domain using Let's Encrypt. The domain must be verified before this endpoint can be called."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "KV Databases",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List KV databases",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/databases",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Search query to filter results by name or identifier"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field name to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order direction"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all Deno KV databases belonging to the organization. Each database can be associated with one or more deployments and supports optional S3 backup configuration."
+        },
+        {
+          "info": {
+            "name": "Create KV database",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/databases",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Deno KV database within the organization. The database can be given a descriptive name and subsequently associated with deployments to provide persistent, globally distributed key-value storage."
+        },
+        {
+          "info": {
+            "name": "Update KV database",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.deno.com/v1/databases/:databaseId",
+            "params": [
+              {
+                "name": "databaseId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the name or description of an existing Deno KV database. Only the fields present in the request body are modified."
+        },
+        {
+          "info": {
+            "name": "List KV database backups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/databases/:databaseId/database_backups",
+            "params": [
+              {
+                "name": "databaseId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database"
+              }
+            ]
+          },
+          "docs": "Returns a list of all backup configurations for a Deno KV database. Each backup entry includes the S3 destination, schedule, and current status of the backup job."
+        },
+        {
+          "info": {
+            "name": "Enable KV database backup",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/databases/:databaseId/database_backups",
+            "params": [
+              {
+                "name": "databaseId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Enables automatic backups for a Deno KV database to an S3-compatible storage bucket. Backups are taken on a configurable schedule and stored in the specified S3 bucket using the provided credentials."
+        },
+        {
+          "info": {
+            "name": "Get KV database backup",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/database_backups/:databaseBackupId",
+            "params": [
+              {
+                "name": "databaseBackupId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database backup configuration"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a specific KV database backup configuration by its UUID, including current status and S3 destination."
+        },
+        {
+          "info": {
+            "name": "Disable KV database backup",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/database_backups/:databaseBackupId",
+            "params": [
+              {
+                "name": "databaseBackupId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database backup configuration"
+              }
+            ]
+          },
+          "docs": "Disables automatic backups for a specific KV database backup configuration. Existing backup files in S3 are not removed."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,562 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Deno Subhosting API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Organizations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the subhosting organization"
+              }
+            ]
+          },
+          "docs": "Retrieves organization details for the subhosting implementation. The organization is the top-level container for all tenant projects, deployments, and analytics data."
+        },
+        {
+          "info": {
+            "name": "Get organization analytics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/analytics",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the subhosting organization"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Start of the time range in RFC 3339 format"
+              },
+              {
+                "name": "until",
+                "value": "",
+                "type": "query",
+                "description": "End of the time range in RFC 3339 format"
+              }
+            ]
+          },
+          "docs": "Returns aggregated time-series analytics for the entire subhosting organization in 15-minute intervals. Covers request counts and bandwidth across all tenant projects over the specified time range (maximum 24 hours)."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Projects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List projects",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/projects",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the subhosting organization"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Search query to filter results"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all tenant projects within the subhosting organization. In subhosting, each project typically represents an isolated tenant environment."
+        },
+        {
+          "info": {
+            "name": "Create project",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/projects",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the subhosting organization"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Provisions a new isolated project for a tenant. Projects in subhosting are free to create and each can host multiple deployments. Typically one project is provisioned per end user or tenant account."
+        },
+        {
+          "info": {
+            "name": "Get project",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/projects/:projectId",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the tenant project"
+              }
+            ]
+          },
+          "docs": "Retrieves details for a specific tenant project by UUID."
+        },
+        {
+          "info": {
+            "name": "Update project",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.deno.com/v1/projects/:projectId",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the tenant project"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates mutable fields of an existing tenant project."
+        },
+        {
+          "info": {
+            "name": "Delete project",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/projects/:projectId",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the tenant project"
+              }
+            ]
+          },
+          "docs": "Permanently deletes a tenant project and all its deployments. This should be called when an end user account is deprovisioned."
+        },
+        {
+          "info": {
+            "name": "Get project analytics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/projects/:projectId/analytics",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the tenant project"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Start of the time range in RFC 3339 format"
+              },
+              {
+                "name": "until",
+                "value": "",
+                "type": "query",
+                "description": "End of the time range in RFC 3339 format"
+              }
+            ]
+          },
+          "docs": "Returns time-series analytics for a specific tenant project in 15-minute intervals, covering request counts and bandwidth for that tenant's deployments."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Deployments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List deployments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/projects/:projectId/deployments",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the tenant project"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Search query to filter results"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all deployments for a tenant project. Deployments are immutable units of code, assets, and configuration that run on Deno Deploy isolates."
+        },
+        {
+          "info": {
+            "name": "Create deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/projects/:projectId/deployments",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the tenant project"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new deployment within a tenant project. Deployments consist of assets (code and static files), environment variables, compiler options, and optional KV database associations. Assets support UTF-8 text, base64-encoded binary, git SHA-1 references, and symlinks. Note that Deno Cron and Queues are not available for subhosting deployments."
+        },
+        {
+          "info": {
+            "name": "Get deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a specific tenant deployment, including its status, domains, environment variables, and configuration."
+        },
+        {
+          "info": {
+            "name": "Delete deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ]
+          },
+          "docs": "Permanently deletes a tenant deployment."
+        },
+        {
+          "info": {
+            "name": "Get build logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/build_logs",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ]
+          },
+          "docs": "Retrieves build logs for a tenant deployment. Returns output from the deployment build process as a JSON array or NDJSON stream."
+        },
+        {
+          "info": {
+            "name": "Get application logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/app_logs",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              },
+              {
+                "name": "level",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs by severity level"
+              },
+              {
+                "name": "region",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs by the region that emitted them"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Return logs after this RFC 3339 timestamp"
+              },
+              {
+                "name": "until",
+                "value": "",
+                "type": "query",
+                "description": "Return logs before this RFC 3339 timestamp; omit to stream"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of log entries to return"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor from a previous response"
+              }
+            ]
+          },
+          "docs": "Retrieves or streams runtime logs for a tenant deployment. Supports filtering by log level, region, and time range. When no until parameter is specified, the endpoint streams logs in real time."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "Domains",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List domains",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/domains",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the subhosting organization"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all custom domains registered in the subhosting organization. Domains can be dynamically mapped to tenant deployments."
+        },
+        {
+          "info": {
+            "name": "Create domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/domains",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the subhosting organization"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Registers a new custom domain for use with tenant deployments. The domain must be verified via DNS and have TLS certificates configured before it can route traffic."
+        }
+      ]
+    },
+    {
+      "info": {
+        "name": "KV Databases",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List KV databases",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/databases",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the subhosting organization"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of Deno KV databases in the subhosting organization. KV databases can be attached to tenant deployments for persistent storage."
+        },
+        {
+          "info": {
+            "name": "Create KV database",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/databases",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the subhosting organization"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Deno KV database that can be associated with tenant deployments for persistent, globally distributed key-value storage."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
