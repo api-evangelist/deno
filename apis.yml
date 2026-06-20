@@ -6,7 +6,7 @@ description: >-
   built-in key-value store, and a standard library of audited modules, all designed to run TypeScript natively without
   additional tooling.
 type: Index
-image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
 tags:
   - Deployment
   - Edge
@@ -29,7 +29,7 @@ apis:
       - Runtime
       - TypeScript
       - WebAssembly
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://api.example.com
     humanURL: https://docs.deno.com/api/deno/
     properties:
@@ -50,7 +50,7 @@ apis:
       - Edge
       - Key-Value
       - Storage
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://api.deno.com
     humanURL: https://docs.deno.com/deploy/kv/
     properties:
@@ -72,7 +72,7 @@ apis:
       - Edge
       - Management
       - Serverless
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://api.deno.com/v1
     humanURL: https://docs.deno.com/deploy/api/rest/
     properties:
@@ -95,7 +95,7 @@ apis:
       - Edge
       - Management
       - Serverless
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://api.deno.com/v2
     humanURL: https://api.deno.com/v2/docs
     properties:
@@ -115,7 +115,7 @@ apis:
       - Multi-Tenant
       - Serverless
       - Subhosting
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://api.deno.com/v1
     humanURL: https://docs.deno.com/subhosting/api/
     properties:
@@ -138,7 +138,7 @@ apis:
       - Standard Library
       - TypeScript
       - Utilities
-    image: https://kinlane-productions2.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
     baseURL: https://api.example.com
     humanURL: https://docs.deno.com/runtime/fundamentals/standard_library/
     properties:
