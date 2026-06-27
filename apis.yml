@@ -180,7 +180,7 @@ common:
     url: rules/deno-rules.yml
   - type: Integrations
     url: https://deno.com/integrations
-  - type: LLMsTxt
+  - type: LlmsText
     url: https://docs.deno.com/llms.txt
 integrations:
   - name: Search powered by Orama
