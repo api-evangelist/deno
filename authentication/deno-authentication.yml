@@ -1,0 +1,16 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/deno-deploy-rest-api-openapi.yml, openapi/deno-deploy-v2-api-openapi.yml, openapi/deno-subhosting-api-openapi.yml
+summary:
+  types:
+  - http
+schemes:
+- name: bearerAuth
+  type: http
+  scheme: bearer
+  description: Bearer token authentication. Generate tokens from the Deno Deploy dashboard under
+    Settings > Access Tokens.
+  sources:
+  - openapi/deno-deploy-rest-api-openapi.yml
+  - openapi/deno-deploy-v2-api-openapi.yml
+  - openapi/deno-subhosting-api-openapi.yml

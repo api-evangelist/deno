@@ -152,6 +152,12 @@ apis:
       manipulation, assertions, CSV and JSON parsing, hashing, encoding, streams, date formatting, and more. All modules
       are guaranteed to work with the current stable Deno release and do not rely on third-party dependencies.
 common:
+  - type: VulnerabilityDisclosure
+    url: security/deno-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/deno-domain-security.yml
+  - type: Authentication
+    url: authentication/deno-authentication.yml
   - type: LinkedIn
     url: https://www.linkedin.com/company/deno
   - type: Website
