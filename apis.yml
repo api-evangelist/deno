@@ -152,6 +152,8 @@ apis:
       manipulation, assertions, CSV and JSON parsing, hashing, encoding, streams, date formatting, and more. All modules
       are guaranteed to work with the current stable Deno release and do not rely on third-party dependencies.
 common:
+  - type: AgenticAccess
+    url: agentic-access/deno-agentic-access.yml
   - type: VulnerabilityDisclosure
     url: security/deno-vulnerability-disclosure.yml
   - type: DomainSecurity
