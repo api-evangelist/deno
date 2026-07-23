@@ -1,0 +1,401 @@
+openapi: 3.1.0
+info:
+  title: Deno Deploy REST Apps KV Databases API
+  description: The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.
+  version: '1.0'
+  contact:
+    name: Deno Deploy Support
+    url: https://deno.com/deploy
+  termsOfService: https://deno.com/deploy/terms
+servers:
+- url: https://api.deno.com/v1
+  description: Deno Deploy Production API
+security:
+- bearerAuth: []
+tags:
+- name: KV Databases
+  description: Create and manage Deno KV databases and backups
+paths:
+  /organizations/{organizationId}/databases:
+    get:
+      operationId: listKvDatabases
+      summary: List KV databases
+      description: Returns a paginated list of all Deno KV databases belonging to the organization. Each database can be associated with one or more deployments and supports optional S3 backup configuration.
+      tags:
+      - KV Databases
+      parameters:
+      - $ref: '#/components/parameters/organizationId'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/q'
+      - $ref: '#/components/parameters/sort'
+      - $ref: '#/components/parameters/order'
+      responses:
+        '200':
+          description: KV databases listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KvDatabase'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: createKvDatabase
+      summary: Create KV database
+      description: Creates a new Deno KV database within the organization. The database can be given a descriptive name and subsequently associated with deployments to provide persistent, globally distributed key-value storage.
+      tags:
+      - KV Databases
+      parameters:
+      - $ref: '#/components/parameters/organizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateKvDatabaseRequest'
+      responses:
+        '200':
+          description: KV database created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KvDatabase'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /databases/{databaseId}:
+    patch:
+      operationId: updateKvDatabase
+      summary: Update KV database
+      description: Updates the name or description of an existing Deno KV database. Only the fields present in the request body are modified.
+      tags:
+      - KV Databases
+      parameters:
+      - $ref: '#/components/parameters/databaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateKvDatabaseRequest'
+      responses:
+        '200':
+          description: KV database updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KvDatabase'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /databases/{databaseId}/database_backups:
+    get:
+      operationId: listKvBackups
+      summary: List KV database backups
+      description: Returns a list of all backup configurations for a Deno KV database. Each backup entry includes the S3 destination, schedule, and current status of the backup job.
+      tags:
+      - KV Databases
+      parameters:
+      - $ref: '#/components/parameters/databaseId'
+      responses:
+        '200':
+          description: KV database backups listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/KvDatabaseBackup'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: enableKvBackup
+      summary: Enable KV database backup
+      description: Enables automatic backups for a Deno KV database to an S3-compatible storage bucket. Backups are taken on a configurable schedule and stored in the specified S3 bucket using the provided credentials.
+      tags:
+      - KV Databases
+      parameters:
+      - $ref: '#/components/parameters/databaseId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnableKvBackupRequest'
+      responses:
+        '200':
+          description: KV database backup enabled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnableKvBackupResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /database_backups/{databaseBackupId}:
+    get:
+      operationId: getKvBackup
+      summary: Get KV database backup
+      description: Retrieves the details of a specific KV database backup configuration by its UUID, including current status and S3 destination.
+      tags:
+      - KV Databases
+      parameters:
+      - $ref: '#/components/parameters/databaseBackupId'
+      responses:
+        '200':
+          description: KV database backup retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KvDatabaseBackup'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: disableKvBackup
+      summary: Disable KV database backup
+      description: Disables automatic backups for a specific KV database backup configuration. Existing backup files in S3 are not removed.
+      tags:
+      - KV Databases
+      parameters:
+      - $ref: '#/components/parameters/databaseBackupId'
+      responses:
+        '200':
+          description: KV database backup disabled successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DisableKvBackupResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+    databaseId:
+      name: databaseId
+      in: path
+      required: true
+      description: UUID of the KV database
+      schema:
+        type: string
+        format: uuid
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
+    databaseBackupId:
+      name: databaseBackupId
+      in: path
+      required: true
+      description: UUID of the KV database backup configuration
+      schema:
+        type: string
+        format: uuid
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+  schemas:
+    Error:
+      type: object
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong
+    KvDatabase:
+      type: object
+      description: A Deno KV database managed by Deno Deploy. KV databases provide globally distributed key-value storage accessible from deployments via the Deno.openKv() API. Databases can be associated with one or more deployments.
+      required:
+      - databaseId
+      properties:
+        databaseId:
+          type: string
+          format: uuid
+          description: Unique identifier for the KV database
+        description:
+          type: string
+          description: Human-readable description of the database
+        kvConnect:
+          type: string
+          format: uri
+          description: 'KV Connect URL used to open the database from a Deno program: https://api.deno.com/databases/{database-id}/connect'
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the database was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the database was last modified
+    UpdateKvDatabaseRequest:
+      type: object
+      description: Request body for updating an existing Deno KV database
+      properties:
+        description:
+          type: string
+          description: New description for the database
+    CreateKvDatabaseRequest:
+      type: object
+      description: Request body for creating a new Deno KV database
+      properties:
+        description:
+          type: string
+          description: Optional human-readable description for the new database
+    EnableKvBackupRequest:
+      type: object
+      description: Request body for enabling S3 backup for a Deno KV database
+      required:
+      - bucketName
+      - bucketRegion
+      - accessKeyId
+      - secretAccessKey
+      properties:
+        bucketName:
+          type: string
+          description: Name of the S3 bucket to store backups in
+        bucketRegion:
+          type: string
+          description: AWS region of the S3 bucket (e.g., us-east-1)
+        accessKeyId:
+          type: string
+          description: AWS access key ID for S3 write access
+        secretAccessKey:
+          type: string
+          description: AWS secret access key for S3 write access
+    DisableKvBackupResponse:
+      type: object
+      description: Response returned when KV backup is successfully disabled
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID of the disabled backup configuration
+    KvDatabaseBackup:
+      type: object
+      description: A backup configuration for a Deno KV database, specifying an S3 storage destination and schedule for automatic backups.
+      required:
+      - id
+      - databaseId
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the backup configuration
+        databaseId:
+          type: string
+          format: uuid
+          description: UUID of the KV database being backed up
+        bucketName:
+          type: string
+          description: Name of the S3 bucket where backups are stored
+        bucketRegion:
+          type: string
+          description: AWS region of the S3 bucket
+        status:
+          type: string
+          description: Current status of the backup job
+          enum:
+          - pending
+          - active
+          - failed
+          - disabled
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the backup was configured
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the backup configuration was last modified
+    EnableKvBackupResponse:
+      type: object
+      description: Response returned when KV backup is successfully enabled
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID of the newly created backup configuration
+  responses:
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication. Generate tokens from the Deno Deploy dashboard under Settings > Access Tokens.
+externalDocs:
+  description: Deno Deploy REST API Documentation
+  url: https://docs.deno.com/deploy/api/rest/

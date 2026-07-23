@@ -1,0 +1,500 @@
+openapi: 3.1.0
+info:
+  title: Deno Deploy REST Apps API
+  description: The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.
+  version: '1.0'
+  contact:
+    name: Deno Deploy Support
+    url: https://deno.com/deploy
+  termsOfService: https://deno.com/deploy/terms
+servers:
+- url: https://api.deno.com/v1
+  description: Deno Deploy Production API
+security:
+- bearerAuth: []
+tags:
+- name: Apps
+  description: Create, list, retrieve, update, and delete applications. Apps are the top-level containers for deployable code on Deno Deploy v2.
+paths:
+  /apps:
+    get:
+      operationId: listApps
+      summary: List apps
+      description: Returns a cursor-paginated list of all applications accessible to the authenticated token. Supports filtering by labels and by associated layer. Results are ordered by creation date descending by default.
+      tags:
+      - Apps
+      parameters:
+      - name: cursor
+        in: query
+        description: Opaque pagination cursor from the previous response Link header
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of apps to return (1-100)
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 30
+      - name: labels
+        in: query
+        description: Filter apps by label key-value pairs (deepObject style)
+        style: deepObject
+        explode: true
+        schema:
+          type: object
+          additionalProperties:
+            type: string
+      - name: layer
+        in: query
+        description: Filter apps by layer ID or slug
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Apps listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppListItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createApp
+      summary: Create app
+      description: Creates a new application. An app slug must be unique within the organization and follows DNS-compatible naming rules. Labels, layers, environment variables, and build/runtime configuration can optionally be set at creation time.
+      tags:
+      - Apps
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAppRequest'
+      responses:
+        '200':
+          description: App created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /apps/{app}:
+    get:
+      operationId: getApp
+      summary: Get app details
+      description: Retrieves complete details for a specific application identified by its UUID or human-readable slug, including its labels, attached layers, environment variables, and configuration.
+      tags:
+      - Apps
+      parameters:
+      - $ref: '#/components/parameters/app'
+      responses:
+        '200':
+          description: App retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateApp
+      summary: Update app
+      description: Updates one or more mutable properties of an existing application. The slug, labels, layers, environment variables, and configuration can each be modified independently. Label updates replace all existing labels. Layer updates replace all layer references. Environment variable updates use deep merge semantics.
+      tags:
+      - Apps
+      parameters:
+      - $ref: '#/components/parameters/app'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAppRequest'
+      responses:
+        '200':
+          description: App updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteApp
+      summary: Delete app
+      description: Permanently deletes an application and all of its revisions. This operation cannot be undone. All custom domain associations must be removed before an app can be deleted.
+      tags:
+      - Apps
+      parameters:
+      - $ref: '#/components/parameters/app'
+      responses:
+        '204':
+          description: App deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  parameters:
+    app:
+      name: app
+      in: path
+      required: true
+      description: App UUID or human-readable slug
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Conflict:
+      description: Conflict - a resource with this identifier already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    LayerRefInput:
+      type: object
+      description: Input for specifying a layer reference when creating or updating an app
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: UUID or slug of the layer to reference
+    LayerRef:
+      type: object
+      description: A reference to a configuration layer attached to an app or revision
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: UUID or slug of the referenced layer
+        slug:
+          type: string
+          description: Human-readable slug of the layer
+    AppListItem:
+      type: object
+      description: Summary representation of an app returned in list responses
+      required:
+      - id
+      - slug
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the app
+        slug:
+          type: string
+          description: Human-readable URL-safe identifier for the app
+        labels:
+          type: object
+          description: User-defined key-value labels for organizing apps
+          additionalProperties:
+            type: string
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the app was created
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the app was last modified
+    CronJob:
+      type: object
+      description: A scheduled cron job definition for periodic task execution
+      required:
+      - name
+      - schedule
+      - handler
+      properties:
+        name:
+          type: string
+          description: Human-readable name for the cron job
+        schedule:
+          type: string
+          description: Cron expression defining the execution schedule
+        handler:
+          type: string
+          description: Function or module path to invoke on each scheduled execution
+    Runtime:
+      type: object
+      description: Runtime configuration for the deployed application
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: Runtime execution type
+          enum:
+          - dynamic
+          - static
+        entrypoint:
+          type: string
+          description: Entry point file path for dynamic runtimes, relative to /app/src
+        args:
+          type: array
+          description: Additional arguments passed to the runtime entry point
+          items:
+            type: string
+        cwd:
+          type: string
+          description: Working directory for the runtime process
+        spa:
+          type: boolean
+          description: Whether to enable single-page application fallback routing for static runtimes (serves index.html for unmatched paths)
+    EnvVarUpdate:
+      type: object
+      description: Input for updating an environment variable using deep merge semantics. Specify id to update an existing variable, or key to create a new one. Set value to null to delete a variable.
+      properties:
+        id:
+          type: string
+          description: ID of an existing environment variable to update
+        key:
+          type: string
+          description: Key of the environment variable (used when creating new variables)
+          pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+          maxLength: 128
+        value:
+          type:
+          - string
+          - 'null'
+          description: New value for the variable, or null to delete it
+          maxLength: 4096
+        secret:
+          type: boolean
+          description: Whether to treat this variable as a secret
+        contexts:
+          description: Contexts for this variable
+          oneOf:
+          - type: string
+            enum:
+            - all
+          - type: array
+            items:
+              type: string
+    UpdateAppRequest:
+      type: object
+      description: Request body for updating an existing application. All fields are optional; only provided fields are modified.
+      properties:
+        slug:
+          type: string
+          description: New slug for the app
+          pattern: ^[a-z][a-z0-9-]{2,62}$
+        labels:
+          type: object
+          description: Replacement labels; replaces all existing labels
+          additionalProperties:
+            type: string
+        layers:
+          type: array
+          description: Replacement layer references; replaces all existing layer refs
+          items:
+            $ref: '#/components/schemas/LayerRefInput'
+        env_vars:
+          type: array
+          description: Environment variable updates using deep merge semantics
+          items:
+            $ref: '#/components/schemas/EnvVarUpdate'
+        config:
+          $ref: '#/components/schemas/Config'
+    Config:
+      type: object
+      description: Build and runtime configuration for an app or revision. Supports framework-specific presets (Next.js, Astro, Fresh) or custom dynamic/static runtime configurations.
+      properties:
+        framework:
+          type: string
+          description: Framework preset to use for build and runtime configuration. Supported values include nextjs, astro, fresh, and others.
+        install:
+          type: string
+          description: Custom install command to run before building
+        build:
+          type: string
+          description: Custom build command
+        predeploy:
+          type: string
+          description: Command to run after build and before deployment
+        runtime:
+          $ref: '#/components/schemas/Runtime'
+        crons:
+          type: array
+          description: Cron job definitions for scheduled task execution
+          items:
+            $ref: '#/components/schemas/CronJob'
+    App:
+      type: object
+      description: A Deno Deploy v2 application. Apps are top-level containers for deployable code, replacing the Project concept from v1. Each app has a unique slug, optional labels for organization, references to configuration layers, app-scoped environment variables, and a build/runtime configuration.
+      required:
+      - id
+      - slug
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the app
+        slug:
+          type: string
+          description: Human-readable URL-safe identifier, unique within the organization
+          pattern: ^[a-z][a-z0-9-]{2,62}$
+        labels:
+          type: object
+          description: Up to 5 user-defined key-value labels for organizing apps
+          additionalProperties:
+            type: string
+        layers:
+          type: array
+          description: Ordered list of layer references providing shared configuration
+          items:
+            $ref: '#/components/schemas/LayerRef'
+        env_vars:
+          type: array
+          description: App-scoped environment variables
+          items:
+            $ref: '#/components/schemas/EnvVar'
+        config:
+          $ref: '#/components/schemas/Config'
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the app was created
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the app was last modified
+    CreateAppRequest:
+      type: object
+      description: Request body for creating a new application
+      properties:
+        slug:
+          type: string
+          description: Optional human-readable URL-safe identifier. If omitted, one is generated automatically. Must be unique within the organization.
+          pattern: ^[a-z][a-z0-9-]{2,62}$
+        labels:
+          type: object
+          description: User-defined key-value labels (maximum 5)
+          additionalProperties:
+            type: string
+        layers:
+          type: array
+          description: Layer references to associate with the app
+          items:
+            $ref: '#/components/schemas/LayerRefInput'
+        env_vars:
+          type: array
+          description: Initial environment variables for the app
+          items:
+            $ref: '#/components/schemas/EnvVarInput'
+        config:
+          $ref: '#/components/schemas/Config'
+    Error:
+      type: object
+      description: Standard error response returned on all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+    EnvVar:
+      type: object
+      description: An environment variable associated with an app or revision
+      required:
+      - id
+      - key
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the environment variable entry
+        key:
+          type: string
+          description: Environment variable name (alphanumeric and underscores, max 128 chars)
+          pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+          maxLength: 128
+        value:
+          type: string
+          description: Environment variable value. Omitted for secret variables to prevent accidental exposure.
+          maxLength: 4096
+        secret:
+          type: boolean
+          description: Whether the variable is treated as a secret (value is redacted)
+        contexts:
+          description: Deployment contexts in which this variable is active. Use "all" for all contexts or an array of specific context names.
+          oneOf:
+          - type: string
+            enum:
+            - all
+          - type: array
+            items:
+              type: string
+    EnvVarInput:
+      type: object
+      description: Input for creating a new environment variable
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Environment variable name
+          pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+          maxLength: 128
+        value:
+          type: string
+          description: Environment variable value
+          maxLength: 4096
+        secret:
+          type: boolean
+          description: Whether to treat this variable as a secret
+          default: false
+        contexts:
+          description: Contexts in which this variable is active
+          oneOf:
+          - type: string
+            enum:
+            - all
+          - type: array
+            items:
+              type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication. Generate tokens from the Deno Deploy dashboard under Settings > Access Tokens.
+externalDocs:
+  description: Deno Deploy REST API Documentation
+  url: https://docs.deno.com/deploy/api/rest/

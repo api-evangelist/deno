@@ -1,0 +1,408 @@
+openapi: 3.1.0
+info:
+  title: Deno Deploy REST Apps Domains API
+  description: The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.
+  version: '1.0'
+  contact:
+    name: Deno Deploy Support
+    url: https://deno.com/deploy
+  termsOfService: https://deno.com/deploy/terms
+servers:
+- url: https://api.deno.com/v1
+  description: Deno Deploy Production API
+security:
+- bearerAuth: []
+tags:
+- name: Domains
+  description: Register and manage custom domains with TLS certificate support
+paths:
+  /deployments/{deploymentId}/domains/{domain}:
+    put:
+      operationId: attachDomainToDeployment
+      summary: Attach domain to deployment
+      description: Associates a custom domain with a specific deployment, routing all traffic for that domain to the deployment. The domain must already be registered and verified in the organization.
+      tags:
+      - Domains
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - name: domain
+        in: path
+        required: true
+        description: The custom domain name to attach
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Domain attached successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttachDomainResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: detachDomainFromDeployment
+      summary: Detach domain from deployment
+      description: Removes the association between a custom domain and a deployment. After detachment, the domain no longer routes traffic to this deployment and can be attached to a different deployment.
+      tags:
+      - Domains
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - name: domain
+        in: path
+        required: true
+        description: The custom domain name to detach
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Domain detached successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /organizations/{organizationId}/domains:
+    get:
+      operationId: listDomains
+      summary: List domains
+      description: Returns a paginated list of all custom domains registered within an organization. Includes verification status and TLS certificate information for each domain.
+      tags:
+      - Domains
+      parameters:
+      - $ref: '#/components/parameters/organizationId'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/q'
+      - $ref: '#/components/parameters/sort'
+      - $ref: '#/components/parameters/order'
+      responses:
+        '200':
+          description: Domains listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Domain'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: createDomain
+      summary: Create domain
+      description: Registers a new custom domain within the organization. After creation, the domain must be verified via DNS before it can be attached to deployments. TLS certificates can be uploaded or automatically provisioned after verification.
+      tags:
+      - Domains
+      parameters:
+      - $ref: '#/components/parameters/organizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDomainRequest'
+      responses:
+        '200':
+          description: Domain created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /domains/{domainId}:
+    get:
+      operationId: getDomain
+      summary: Get domain
+      description: Retrieves the details of a specific custom domain by its UUID, including its verification status, TLS certificate state, and current deployment association.
+      tags:
+      - Domains
+      parameters:
+      - $ref: '#/components/parameters/domainId'
+      responses:
+        '200':
+          description: Domain retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Domain'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteDomain
+      summary: Delete domain
+      description: Permanently removes a custom domain from the organization. Any active deployment associations must be detached before the domain can be deleted.
+      tags:
+      - Domains
+      parameters:
+      - $ref: '#/components/parameters/domainId'
+      responses:
+        '200':
+          description: Domain deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /domains/{domainId}/verify:
+    post:
+      operationId: verifyDomain
+      summary: Verify domain ownership
+      description: Triggers DNS-based verification for a custom domain. Deno Deploy checks for the presence of a DNS TXT record to confirm domain ownership before allowing the domain to serve traffic.
+      tags:
+      - Domains
+      parameters:
+      - $ref: '#/components/parameters/domainId'
+      responses:
+        '200':
+          description: Domain verification initiated successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /domains/{domainId}/certificates:
+    post:
+      operationId: addDomainCertificate
+      summary: Upload TLS certificate
+      description: Uploads a custom TLS certificate and private key for a domain. The certificate must be valid for the domain and signed by a trusted certificate authority. Alternatively, certificates can be automatically provisioned via Let's Encrypt.
+      tags:
+      - Domains
+      parameters:
+      - $ref: '#/components/parameters/domainId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddDomainCertificateRequest'
+      responses:
+        '200':
+          description: Certificate uploaded successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /domains/{domainId}/certificates/provision:
+    post:
+      operationId: provisionDomainCertificates
+      summary: Provision TLS certificate
+      description: Automatically provisions a TLS certificate for a verified domain using Let's Encrypt. The domain must be verified before this endpoint can be called.
+      tags:
+      - Domains
+      parameters:
+      - $ref: '#/components/parameters/domainId'
+      responses:
+        '200':
+          description: Certificate provisioning initiated successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    AttachDomainResponse:
+      type: object
+      description: Response returned when a domain is successfully attached to a deployment
+      properties:
+        domainId:
+          type: string
+          format: uuid
+          description: UUID of the domain that was attached
+        deploymentId:
+          type: string
+          description: Identifier of the deployment the domain was attached to
+    CreateDomainRequest:
+      type: object
+      description: Request body for registering a new custom domain
+      required:
+      - domain
+      properties:
+        domain:
+          type: string
+          description: The fully qualified domain name to register (e.g., example.com)
+    ProvisioningStatus:
+      type: object
+      description: Current status of automatic TLS certificate provisioning
+      properties:
+        code:
+          type: string
+          description: Status code indicating the provisioning state
+          enum:
+          - success
+          - failed
+          - pending
+          - manual
+    Domain:
+      type: object
+      description: A custom domain registered within a Deno Deploy organization. Domains must be verified via DNS before they can serve traffic, and TLS certificates must be uploaded or provisioned before HTTPS is enabled.
+      required:
+      - id
+      - domain
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the domain registration
+        domain:
+          type: string
+          description: The custom domain name (e.g., example.com)
+        token:
+          type: string
+          description: DNS TXT record value to add for domain ownership verification
+        isValidated:
+          type: boolean
+          description: Whether domain ownership has been successfully verified
+        certificates:
+          type: array
+          description: TLS certificates associated with this domain
+          items:
+            $ref: '#/components/schemas/DomainCertificate'
+        provisioningStatus:
+          $ref: '#/components/schemas/ProvisioningStatus'
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the domain was registered
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the domain was last modified
+    DomainCertificate:
+      type: object
+      description: A TLS certificate associated with a custom domain
+      properties:
+        cipher:
+          type: string
+          description: Cipher suite used by the certificate (e.g., RSA, EC)
+        expiresAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the certificate expires
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the certificate was added
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the certificate was last updated
+    Error:
+      type: object
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong
+    AddDomainCertificateRequest:
+      type: object
+      description: Request body for uploading a custom TLS certificate for a domain
+      required:
+      - certificatePem
+      - privateKeyPem
+      properties:
+        certificatePem:
+          type: string
+          description: PEM-encoded TLS certificate chain
+        privateKeyPem:
+          type: string
+          description: PEM-encoded private key corresponding to the certificate
+  parameters:
+    deploymentId:
+      name: deploymentId
+      in: path
+      required: true
+      description: Identifier of the deployment
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    domainId:
+      name: domainId
+      in: path
+      required: true
+      description: UUID of the custom domain
+      schema:
+        type: string
+        format: uuid
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication. Generate tokens from the Deno Deploy dashboard under Settings > Access Tokens.
+externalDocs:
+  description: Deno Deploy REST API Documentation
+  url: https://docs.deno.com/deploy/api/rest/

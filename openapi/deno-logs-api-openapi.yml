@@ -1,0 +1,180 @@
+openapi: 3.1.0
+info:
+  title: Deno Deploy REST Apps Logs API
+  description: The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.
+  version: '1.0'
+  contact:
+    name: Deno Deploy Support
+    url: https://deno.com/deploy
+  termsOfService: https://deno.com/deploy/terms
+servers:
+- url: https://api.deno.com/v1
+  description: Deno Deploy Production API
+security:
+- bearerAuth: []
+tags:
+- name: Logs
+  description: Query or stream runtime application logs for apps
+paths:
+  /apps/{app}/logs:
+    get:
+      operationId: getAppLogs
+      summary: Get or stream app logs
+      description: Queries or streams runtime logs for an application. A start datetime is required. When an end datetime is omitted, the endpoint streams logs in real time using Server-Sent Events or newline-delimited JSON depending on the Accept header. Supports filtering by revision ID, log level, and full-text search. Cursor-based pagination applies to historical queries.
+      tags:
+      - Logs
+      parameters:
+      - $ref: '#/components/parameters/app'
+      - name: start
+        in: query
+        required: true
+        description: Start of the log time range as an ISO 8601 datetime
+        schema:
+          type: string
+          format: date-time
+      - name: end
+        in: query
+        description: End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time.
+        schema:
+          type: string
+          format: date-time
+      - name: revision_id
+        in: query
+        description: Filter logs to a specific revision by its ID
+        schema:
+          type: string
+      - name: level
+        in: query
+        description: Filter logs by severity level
+        schema:
+          type: string
+          enum:
+          - debug
+          - info
+          - warn
+          - error
+      - name: query
+        in: query
+        description: Full-text search query to filter log messages
+        schema:
+          type: string
+      - name: cursor
+        in: query
+        description: Pagination cursor for historical log queries
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: Maximum number of log entries to return (1-1000)
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 1000
+          default: 100
+      responses:
+        '200':
+          description: Logs returned or streaming initiated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuntimeLogsResponse'
+            application/x-ndjson:
+              schema:
+                type: string
+                description: Newline-delimited JSON stream of log entries
+            text/event-stream:
+              schema:
+                type: string
+                description: Server-Sent Events stream of log entries
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    RuntimeLogEntry:
+      type: object
+      description: A single runtime log entry from a running application
+      properties:
+        level:
+          type: string
+          description: Log severity level
+          enum:
+          - debug
+          - info
+          - warn
+          - error
+        message:
+          type: string
+          description: Log message content
+        revision_id:
+          type: string
+          description: ID of the revision that produced this log entry
+        region:
+          type: string
+          description: Deno Deploy region where the log was emitted
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the log entry was produced
+    RuntimeLogsResponse:
+      type: object
+      description: Response containing runtime log entries for historical log queries
+      properties:
+        logs:
+          type: array
+          description: Array of log entries matching the query
+          items:
+            $ref: '#/components/schemas/RuntimeLogEntry'
+        cursor:
+          type: string
+          description: Pagination cursor for retrieving the next page of results
+    Error:
+      type: object
+      description: Standard error response returned on all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+  parameters:
+    app:
+      name: app
+      in: path
+      required: true
+      description: App UUID or human-readable slug
+      schema:
+        type: string
+  responses:
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication. Generate tokens from the Deno Deploy dashboard under Settings > Access Tokens.
+externalDocs:
+  description: Deno Deploy REST API Documentation
+  url: https://docs.deno.com/deploy/api/rest/

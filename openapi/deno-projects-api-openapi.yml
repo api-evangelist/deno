@@ -1,0 +1,336 @@
+openapi: 3.1.0
+info:
+  title: Deno Deploy REST Apps Projects API
+  description: The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.
+  version: '1.0'
+  contact:
+    name: Deno Deploy Support
+    url: https://deno.com/deploy
+  termsOfService: https://deno.com/deploy/terms
+servers:
+- url: https://api.deno.com/v1
+  description: Deno Deploy Production API
+security:
+- bearerAuth: []
+tags:
+- name: Projects
+  description: Create, list, update, and delete Deploy projects
+paths:
+  /organizations/{organizationId}/projects:
+    get:
+      operationId: listProjects
+      summary: List projects
+      description: Returns a paginated list of all projects belonging to the specified organization. Supports filtering by name and sorting by various fields.
+      tags:
+      - Projects
+      parameters:
+      - $ref: '#/components/parameters/organizationId'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/q'
+      - $ref: '#/components/parameters/sort'
+      - $ref: '#/components/parameters/order'
+      responses:
+        '200':
+          description: Projects listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: createProject
+      summary: Create project
+      description: Creates a new project within the specified organization. Projects are containers for deployments on Deno Deploy, and each project can have multiple deployments across its lifecycle.
+      tags:
+      - Projects
+      parameters:
+      - $ref: '#/components/parameters/organizationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+      responses:
+        '200':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /projects/{projectId}:
+    get:
+      operationId: getProject
+      summary: Get project
+      description: Retrieves the details of a specific project by its UUID, including its name, associated organization, and current configuration.
+      tags:
+      - Projects
+      parameters:
+      - $ref: '#/components/parameters/projectId'
+      responses:
+        '200':
+          description: Project retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      operationId: updateProject
+      summary: Update project
+      description: Updates mutable fields of an existing project such as its name. Only the fields present in the request body are modified.
+      tags:
+      - Projects
+      parameters:
+      - $ref: '#/components/parameters/projectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectRequest'
+      responses:
+        '200':
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteProject
+      summary: Delete project
+      description: Permanently deletes a project and all of its deployments. This operation cannot be undone.
+      tags:
+      - Projects
+      parameters:
+      - $ref: '#/components/parameters/projectId'
+      responses:
+        '200':
+          description: Project deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /projects/{projectId}/analytics:
+    get:
+      operationId: getProjectAnalytics
+      summary: Get project analytics
+      description: Returns time-series analytics data for a specific project in 15-minute intervals. The time range is limited to a maximum of 24 hours and must be specified using RFC 3339 timestamps.
+      tags:
+      - Projects
+      parameters:
+      - $ref: '#/components/parameters/projectId'
+      - name: since
+        in: query
+        required: true
+        description: Start of the analytics time range in RFC 3339 format
+        schema:
+          type: string
+          format: date-time
+      - name: until
+        in: query
+        required: true
+        description: End of the analytics time range in RFC 3339 format
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Analytics data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Analytics'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    UpdateProjectRequest:
+      type: object
+      description: Request body for updating an existing Deno Deploy project
+      properties:
+        name:
+          type: string
+          description: New name for the project
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
+    Project:
+      type: object
+      description: A Deno Deploy project, which is a container for multiple deployments. Each project has a unique name within its organization and can have custom domains and KV databases associated with it.
+      required:
+      - id
+      - name
+      - organizationId
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the project
+        name:
+          type: string
+          description: Human-readable name of the project, unique within the organization
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
+        organizationId:
+          type: string
+          format: uuid
+          description: UUID of the organization that owns this project
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the project was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the project was last modified
+    CreateProjectRequest:
+      type: object
+      description: Request body for creating a new Deno Deploy project
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
+    Analytics:
+      type: object
+      description: Time-series analytics data returned in 15-minute intervals for an organization or project. Covers request counts, bandwidth usage, and error rates over the specified time range.
+      properties:
+        fields:
+          type: array
+          description: Ordered list of field names present in each data row
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the analytics field
+              type:
+                type: string
+                description: Data type of the field values
+        values:
+          type: array
+          description: Array of data rows, each corresponding to a 15-minute interval
+          items:
+            type: array
+            items: {}
+    Error:
+      type: object
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    projectId:
+      name: projectId
+      in: path
+      required: true
+      description: UUID of the project
+      schema:
+        type: string
+        format: uuid
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication. Generate tokens from the Deno Deploy dashboard under Settings > Access Tokens.
+externalDocs:
+  description: Deno Deploy REST API Documentation
+  url: https://docs.deno.com/deploy/api/rest/

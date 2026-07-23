@@ -1,0 +1,509 @@
+openapi: 3.1.0
+info:
+  title: Deno Deploy REST Apps Deployments API
+  description: The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.
+  version: '1.0'
+  contact:
+    name: Deno Deploy Support
+    url: https://deno.com/deploy
+  termsOfService: https://deno.com/deploy/terms
+servers:
+- url: https://api.deno.com/v1
+  description: Deno Deploy Production API
+security:
+- bearerAuth: []
+tags:
+- name: Deployments
+  description: Create, list, retrieve, redeploy, and delete deployments; access build and app logs
+paths:
+  /projects/{projectId}/deployments:
+    get:
+      operationId: listDeployments
+      summary: List deployments
+      description: Returns a paginated list of all deployments for a project. Supports filtering by deployment ID prefix and sorting by creation date.
+      tags:
+      - Deployments
+      parameters:
+      - $ref: '#/components/parameters/projectId'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/limit'
+      - $ref: '#/components/parameters/q'
+      - $ref: '#/components/parameters/sort'
+      - $ref: '#/components/parameters/order'
+      responses:
+        '200':
+          description: Deployments listed successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Deployment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    post:
+      operationId: createDeployment
+      summary: Create deployment
+      description: Creates a new deployment for the specified project. A deployment consists of assets (code and static files), environment variables, compiler options, and optional KV database associations. Assets support UTF-8 text, base64-encoded binary, git SHA-1 references, and symlinks.
+      tags:
+      - Deployments
+      parameters:
+      - $ref: '#/components/parameters/projectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDeploymentRequest'
+      responses:
+        '200':
+          description: Deployment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployment'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /deployments/{deploymentId}:
+    get:
+      operationId: getDeployment
+      summary: Get deployment
+      description: Retrieves the details of a specific deployment by its ID, including its status, associated project, domains, environment variables, and configuration.
+      tags:
+      - Deployments
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      responses:
+        '200':
+          description: Deployment retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deleteDeployment
+      summary: Delete deployment
+      description: Permanently deletes a specific deployment. Active deployments serving traffic cannot be deleted until domains are detached.
+      tags:
+      - Deployments
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      responses:
+        '200':
+          description: Deployment deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /deployments/{deploymentId}/redeploy:
+    post:
+      operationId: redeployDeployment
+      summary: Redeploy deployment
+      description: Creates a new deployment based on an existing one, optionally overriding environment variables and KV database associations. Environment variables support merge semantics so only specified keys are modified.
+      tags:
+      - Deployments
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RedeployRequest'
+      responses:
+        '200':
+          description: Redeployment created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deployment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /deployments/{deploymentId}/build_logs:
+    get:
+      operationId: getBuildLogs
+      summary: Get build logs
+      description: Retrieves the build logs for a deployment. Logs are returned as either a JSON array or newline-delimited JSON (NDJSON) depending on the Accept header. Build logs capture output from the deployment build process.
+      tags:
+      - Deployments
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      responses:
+        '200':
+          description: Build logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BuildLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /deployments/{deploymentId}/app_logs:
+    get:
+      operationId: getAppLogs
+      summary: Get application logs
+      description: Retrieves or streams runtime application logs for a deployment. Supports filtering by log level, region, time range, and full-text search query. Cursor-based pagination is supported for large result sets. When no until parameter is specified, the endpoint streams logs in real time.
+      tags:
+      - Deployments
+      parameters:
+      - $ref: '#/components/parameters/deploymentId'
+      - name: q
+        in: query
+        description: Full-text search query to filter log messages
+        schema:
+          type: string
+      - name: level
+        in: query
+        description: Filter logs by severity level
+        schema:
+          type: string
+          enum:
+          - debug
+          - info
+          - warning
+          - error
+      - name: region
+        in: query
+        description: Filter logs by the deployment region that emitted them
+        schema:
+          type: string
+      - name: since
+        in: query
+        description: Return logs after this RFC 3339 timestamp
+        schema:
+          type: string
+          format: date-time
+      - name: until
+        in: query
+        description: Return logs before this RFC 3339 timestamp; omit to stream
+        schema:
+          type: string
+          format: date-time
+      - name: limit
+        in: query
+        description: Maximum number of log entries to return
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 300
+      - name: sort
+        in: query
+        description: Field to sort results by
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: Sort direction
+        schema:
+          type: string
+          enum:
+          - asc
+          - desc
+      - name: cursor
+        in: query
+        description: Pagination cursor from a previous response Link header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Application logs retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AppLogEntry'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  schemas:
+    RedeployRequest:
+      type: object
+      description: Request body for redeploying an existing deployment with optional modifications to environment variables and KV database associations. Environment variable changes use merge semantics.
+      properties:
+        envVars:
+          type: object
+          description: Environment variables to merge into the redeployment. Only specified keys are modified; unspecified keys retain their original values.
+          additionalProperties:
+            type: string
+        databases:
+          type: object
+          description: KV database associations to apply to the redeployment
+          additionalProperties:
+            type: string
+            format: uuid
+    AppLogEntry:
+      type: object
+      description: A single runtime application log entry from a running deployment
+      properties:
+        level:
+          type: string
+          description: Log severity level
+          enum:
+          - debug
+          - info
+          - warning
+          - error
+        message:
+          type: string
+          description: Log message content
+        region:
+          type: string
+          description: Deno Deploy region where the log was emitted
+        deploymentId:
+          type: string
+          description: Identifier of the deployment that produced this log entry
+        ts:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the log entry was produced
+    CreateDeploymentRequest:
+      type: object
+      description: Request body for creating a new deployment
+      required:
+      - assets
+      - entryPointUrl
+      properties:
+        entryPointUrl:
+          type: string
+          description: Relative path to the entry point file within the assets, used as the main module when the deployment starts
+        assets:
+          type: object
+          description: Map of file paths to asset objects. Keys are paths relative to the project root (e.g., "main.ts"). Values describe the asset content as text, base64-encoded binary, a git SHA-1 hash reference, or a symlink.
+          additionalProperties:
+            $ref: '#/components/schemas/DeploymentAsset'
+        envVars:
+          type: object
+          description: Environment variables to set for this deployment
+          additionalProperties:
+            type: string
+        databases:
+          type: object
+          description: Map of KV database association names to database UUIDs. The name becomes the database identifier accessible in the deployment code.
+          additionalProperties:
+            type: string
+            format: uuid
+        compilerOptions:
+          $ref: '#/components/schemas/CompilerOptions'
+    BuildLogEntry:
+      type: object
+      description: A single entry from a deployment's build log
+      properties:
+        level:
+          type: string
+          description: Log level of the entry
+          enum:
+          - debug
+          - info
+          - warning
+          - error
+        message:
+          type: string
+          description: Log message content
+        ts:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the log entry was produced
+    DeploymentAsset:
+      type: object
+      description: An individual asset included in a deployment. Assets can be UTF-8 text files, base64-encoded binary files, references to git blob objects by SHA-1 hash, or symbolic links.
+      required:
+      - kind
+      properties:
+        kind:
+          type: string
+          description: The type of asset encoding
+          enum:
+          - file
+          - symlink
+        content:
+          type: string
+          description: File content as a UTF-8 string (for text files) or base64-encoded string (for binary files)
+        encoding:
+          type: string
+          description: Encoding format of the content field
+          enum:
+          - utf-8
+          - base64
+        gitSha1:
+          type: string
+          description: SHA-1 hash of a previously uploaded git blob object. When specified, the content and encoding fields are ignored.
+          pattern: ^[0-9a-f]{40}$
+        target:
+          type: string
+          description: Target path for symlink assets
+    CompilerOptions:
+      type: object
+      description: TypeScript compiler options applied during deployment build
+      properties:
+        jsx:
+          type: string
+          description: JSX transform mode
+          enum:
+          - react
+          - react-jsx
+          - react-jsxdev
+          - preserve
+        jsxFactory:
+          type: string
+          description: Function used to create JSX elements (default is React.createElement)
+        jsxFragmentFactory:
+          type: string
+          description: Function used to create JSX fragments (default is React.Fragment)
+        jsxImportSource:
+          type: string
+          description: Module specifier used as the source for JSX automatic runtime imports
+    Error:
+      type: object
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong
+    Deployment:
+      type: object
+      description: An immutable deployment on Deno Deploy representing a specific version of code and configuration. Deployments are created from assets and serve traffic when associated with a custom domain or the project's default subdomain.
+      required:
+      - id
+      - projectId
+      - status
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the deployment
+        projectId:
+          type: string
+          format: uuid
+          description: UUID of the project this deployment belongs to
+        status:
+          type: string
+          description: Current status of the deployment
+          enum:
+          - pending
+          - failed
+          - success
+        domains:
+          type: array
+          description: List of custom domains currently attached to this deployment
+          items:
+            type: string
+        envVars:
+          type: object
+          description: Environment variables set for this deployment (values redacted)
+          additionalProperties:
+            type: string
+        databases:
+          type: object
+          description: KV database associations keyed by the name used in the deployment
+          additionalProperties:
+            type: string
+            format: uuid
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the deployment was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the deployment was last modified
+  parameters:
+    deploymentId:
+      name: deploymentId
+      in: path
+      required: true
+      description: Identifier of the deployment
+      schema:
+        type: string
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    projectId:
+      name: projectId
+      in: path
+      required: true
+      description: UUID of the project
+      schema:
+        type: string
+        format: uuid
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication. Generate tokens from the Deno Deploy dashboard under Settings > Access Tokens.
+externalDocs:
+  description: Deno Deploy REST API Documentation
+  url: https://docs.deno.com/deploy/api/rest/
