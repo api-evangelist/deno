@@ -1,0 +1,28 @@
+{
+  "provider": "deno",
+  "sources": [
+    "deno-apps-api-openapi.yml",
+    "deno-deployments-api-openapi.yml",
+    "deno-domains-api-openapi.yml",
+    "deno-kv-databases-api-openapi.yml",
+    "deno-logs-api-openapi.yml",
+    "deno-organizations-api-openapi.yml",
+    "deno-projects-api-openapi.yml",
+    "deno-revisions-api-openapi.yml"
+  ],
+  "outputs": [
+    "deno-apps-api-openapi.yml",
+    "deno-deployments-api-openapi.yml",
+    "deno-domains-api-openapi.yml",
+    "deno-kv-databases-api-openapi.yml",
+    "deno-logs-api-openapi.yml",
+    "deno-organizations-api-openapi.yml",
+    "deno-projects-api-openapi.yml",
+    "deno-revisions-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
