@@ -295,8 +295,6 @@ common:
     url: json-schema/deno-kv-database-schema.json
   - type: Vocabulary
     url: vocabulary/deno-vocabulary.yml
-  - type: Capabilities
-    url: capabilities/deno-capabilities.yml
   - type: Rules
     url: rules/deno-rules.yml
   - type: Integrations
