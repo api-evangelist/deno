@@ -1,0 +1,85 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Deno Deploy REST Apps Logs API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Logs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get or stream app logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/apps/:app/logs",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              },
+              {
+                "name": "start",
+                "value": "",
+                "type": "query",
+                "description": "Start of the log time range as an ISO 8601 datetime"
+              },
+              {
+                "name": "end",
+                "value": "",
+                "type": "query",
+                "description": "End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time."
+              },
+              {
+                "name": "revision_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs to a specific revision by its ID"
+              },
+              {
+                "name": "level",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs by severity level"
+              },
+              {
+                "name": "query",
+                "value": "",
+                "type": "query",
+                "description": "Full-text search query to filter log messages"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor for historical log queries"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of log entries to return (1-1000)"
+              }
+            ]
+          },
+          "docs": "Queries or streams runtime logs for an application. A start datetime is required. When an end datetime is omitted, the endpoint streams logs in real time using Server-Sent Events or newline-delimited JSON depending on the Accept header. Supports filtering by revision ID, log level, and full-text search. Cursor-based pagination applies to historical queries."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

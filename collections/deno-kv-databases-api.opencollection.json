@@ -1,0 +1,199 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Deno Deploy REST Apps KV Databases API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "KV Databases",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List KV databases",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/databases",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Search query to filter results by name or identifier"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field name to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order direction"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all Deno KV databases belonging to the organization. Each database can be associated with one or more deployments and supports optional S3 backup configuration."
+        },
+        {
+          "info": {
+            "name": "Create KV database",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/databases",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new Deno KV database within the organization. The database can be given a descriptive name and subsequently associated with deployments to provide persistent, globally distributed key-value storage."
+        },
+        {
+          "info": {
+            "name": "Update KV database",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.deno.com/v1/databases/:databaseId",
+            "params": [
+              {
+                "name": "databaseId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates the name or description of an existing Deno KV database. Only the fields present in the request body are modified."
+        },
+        {
+          "info": {
+            "name": "List KV database backups",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/databases/:databaseId/database_backups",
+            "params": [
+              {
+                "name": "databaseId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database"
+              }
+            ]
+          },
+          "docs": "Returns a list of all backup configurations for a Deno KV database. Each backup entry includes the S3 destination, schedule, and current status of the backup job."
+        },
+        {
+          "info": {
+            "name": "Enable KV database backup",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/databases/:databaseId/database_backups",
+            "params": [
+              {
+                "name": "databaseId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Enables automatic backups for a Deno KV database to an S3-compatible storage bucket. Backups are taken on a configurable schedule and stored in the specified S3 bucket using the provided credentials."
+        },
+        {
+          "info": {
+            "name": "Get KV database backup",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/database_backups/:databaseBackupId",
+            "params": [
+              {
+                "name": "databaseBackupId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database backup configuration"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a specific KV database backup configuration by its UUID, including current status and S3 destination."
+        },
+        {
+          "info": {
+            "name": "Disable KV database backup",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/database_backups/:databaseBackupId",
+            "params": [
+              {
+                "name": "databaseBackupId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the KV database backup configuration"
+              }
+            ]
+          },
+          "docs": "Disables automatic backups for a specific KV database backup configuration. Existing backup files in S3 are not removed."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

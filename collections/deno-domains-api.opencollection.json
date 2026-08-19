@@ -1,0 +1,245 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Deno Deploy REST Apps Domains API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Domains",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Attach domain to deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/domains/:domain",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              },
+              {
+                "name": "domain",
+                "value": "",
+                "type": "path",
+                "description": "The custom domain name to attach"
+              }
+            ]
+          },
+          "docs": "Associates a custom domain with a specific deployment, routing all traffic for that domain to the deployment. The domain must already be registered and verified in the organization."
+        },
+        {
+          "info": {
+            "name": "Detach domain from deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/domains/:domain",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              },
+              {
+                "name": "domain",
+                "value": "",
+                "type": "path",
+                "description": "The custom domain name to detach"
+              }
+            ]
+          },
+          "docs": "Removes the association between a custom domain and a deployment. After detachment, the domain no longer routes traffic to this deployment and can be attached to a different deployment."
+        },
+        {
+          "info": {
+            "name": "List domains",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/domains",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Search query to filter results by name or identifier"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field name to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order direction"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all custom domains registered within an organization. Includes verification status and TLS certificate information for each domain."
+        },
+        {
+          "info": {
+            "name": "Create domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/domains",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Registers a new custom domain within the organization. After creation, the domain must be verified via DNS before it can be attached to deployments. TLS certificates can be uploaded or automatically provisioned after verification."
+        },
+        {
+          "info": {
+            "name": "Get domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/domains/:domainId",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a specific custom domain by its UUID, including its verification status, TLS certificate state, and current deployment association."
+        },
+        {
+          "info": {
+            "name": "Delete domain",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/domains/:domainId",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ]
+          },
+          "docs": "Permanently removes a custom domain from the organization. Any active deployment associations must be detached before the domain can be deleted."
+        },
+        {
+          "info": {
+            "name": "Verify domain ownership",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/domains/:domainId/verify",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ]
+          },
+          "docs": "Triggers DNS-based verification for a custom domain. Deno Deploy checks for the presence of a DNS TXT record to confirm domain ownership before allowing the domain to serve traffic."
+        },
+        {
+          "info": {
+            "name": "Upload TLS certificate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/domains/:domainId/certificates",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Uploads a custom TLS certificate and private key for a domain. The certificate must be valid for the domain and signed by a trusted certificate authority. Alternatively, certificates can be automatically provisioned via Let's Encrypt."
+        },
+        {
+          "info": {
+            "name": "Provision TLS certificate",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/domains/:domainId/certificates/provision",
+            "params": [
+              {
+                "name": "domainId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the custom domain"
+              }
+            ]
+          },
+          "docs": "Automatically provisions a TLS certificate for a verified domain using Let's Encrypt. The domain must be verified before this endpoint can be called."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

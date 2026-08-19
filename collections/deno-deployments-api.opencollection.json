@@ -1,0 +1,249 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Deno Deploy REST Apps Deployments API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Deployments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List deployments",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/projects/:projectId/deployments",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the project"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "Page number for paginated results (1-based)"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of items to return per page"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Search query to filter results by name or identifier"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field name to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order direction"
+              }
+            ]
+          },
+          "docs": "Returns a paginated list of all deployments for a project. Supports filtering by deployment ID prefix and sorting by creation date."
+        },
+        {
+          "info": {
+            "name": "Create deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/projects/:projectId/deployments",
+            "params": [
+              {
+                "name": "projectId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the project"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new deployment for the specified project. A deployment consists of assets (code and static files), environment variables, compiler options, and optional KV database associations. Assets support UTF-8 text, base64-encoded binary, git SHA-1 references, and symlinks."
+        },
+        {
+          "info": {
+            "name": "Get deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of a specific deployment by its ID, including its status, associated project, domains, environment variables, and configuration."
+        },
+        {
+          "info": {
+            "name": "Delete deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ]
+          },
+          "docs": "Permanently deletes a specific deployment. Active deployments serving traffic cannot be deleted until domains are detached."
+        },
+        {
+          "info": {
+            "name": "Redeploy deployment",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/redeploy",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new deployment based on an existing one, optionally overriding environment variables and KV database associations. Environment variables support merge semantics so only specified keys are modified."
+        },
+        {
+          "info": {
+            "name": "Get build logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/build_logs",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              }
+            ]
+          },
+          "docs": "Retrieves the build logs for a deployment. Logs are returned as either a JSON array or newline-delimited JSON (NDJSON) depending on the Accept header. Build logs capture output from the deployment build process."
+        },
+        {
+          "info": {
+            "name": "Get application logs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/deployments/:deploymentId/app_logs",
+            "params": [
+              {
+                "name": "deploymentId",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the deployment"
+              },
+              {
+                "name": "q",
+                "value": "",
+                "type": "query",
+                "description": "Full-text search query to filter log messages"
+              },
+              {
+                "name": "level",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs by severity level"
+              },
+              {
+                "name": "region",
+                "value": "",
+                "type": "query",
+                "description": "Filter logs by the deployment region that emitted them"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Return logs after this RFC 3339 timestamp"
+              },
+              {
+                "name": "until",
+                "value": "",
+                "type": "query",
+                "description": "Return logs before this RFC 3339 timestamp; omit to stream"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of log entries to return"
+              },
+              {
+                "name": "sort",
+                "value": "",
+                "type": "query",
+                "description": "Field to sort results by"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort direction"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Pagination cursor from a previous response Link header"
+              }
+            ]
+          },
+          "docs": "Retrieves or streams runtime application logs for a deployment. Supports filtering by log level, region, time range, and full-text search query. Cursor-based pagination is supported for large result sets. When no until parameter is specified, the endpoint streams logs in real time."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

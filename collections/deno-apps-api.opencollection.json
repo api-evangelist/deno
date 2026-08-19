@@ -1,0 +1,137 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Deno Deploy REST Apps API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Apps",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List apps",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/apps",
+            "params": [
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query",
+                "description": "Opaque pagination cursor from the previous response Link header"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of apps to return (1-100)"
+              },
+              {
+                "name": "labels",
+                "value": "",
+                "type": "query",
+                "description": "Filter apps by label key-value pairs (deepObject style)"
+              },
+              {
+                "name": "layer",
+                "value": "",
+                "type": "query",
+                "description": "Filter apps by layer ID or slug"
+              }
+            ]
+          },
+          "docs": "Returns a cursor-paginated list of all applications accessible to the authenticated token. Supports filtering by labels and by associated layer. Results are ordered by creation date descending by default."
+        },
+        {
+          "info": {
+            "name": "Create app",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.deno.com/v1/apps",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a new application. An app slug must be unique within the organization and follows DNS-compatible naming rules. Labels, layers, environment variables, and build/runtime configuration can optionally be set at creation time."
+        },
+        {
+          "info": {
+            "name": "Get app details",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/apps/:app",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              }
+            ]
+          },
+          "docs": "Retrieves complete details for a specific application identified by its UUID or human-readable slug, including its labels, attached layers, environment variables, and configuration."
+        },
+        {
+          "info": {
+            "name": "Update app",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.deno.com/v1/apps/:app",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates one or more mutable properties of an existing application. The slug, labels, layers, environment variables, and configuration can each be modified independently. Label updates replace all existing labels. Layer updates replace all layer references. Environment variable updates use deep merge semantics."
+        },
+        {
+          "info": {
+            "name": "Delete app",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.deno.com/v1/apps/:app",
+            "params": [
+              {
+                "name": "app",
+                "value": "",
+                "type": "path",
+                "description": "App UUID or human-readable slug"
+              }
+            ]
+          },
+          "docs": "Permanently deletes an application and all of its revisions. This operation cannot be undone. All custom domain associations must be removed before an app can be deleted."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

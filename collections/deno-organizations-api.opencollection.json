@@ -1,0 +1,74 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Deno Deploy REST Apps Organizations API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Organizations",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get organization",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              }
+            ]
+          },
+          "docs": "Retrieves the details of an organization by its UUID. Organizations are the top-level billing and access-control containers on Deno Deploy."
+        },
+        {
+          "info": {
+            "name": "Get organization analytics",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.deno.com/v1/organizations/:organizationId/analytics",
+            "params": [
+              {
+                "name": "organizationId",
+                "value": "",
+                "type": "path",
+                "description": "UUID of the organization"
+              },
+              {
+                "name": "since",
+                "value": "",
+                "type": "query",
+                "description": "Start of the analytics time range in RFC 3339 format"
+              },
+              {
+                "name": "until",
+                "value": "",
+                "type": "query",
+                "description": "End of the analytics time range in RFC 3339 format"
+              }
+            ]
+          },
+          "docs": "Returns time-series analytics data for an organization in 15-minute intervals. The time range is limited to a maximum of 24 hours and must be specified using RFC 3339 timestamps."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
