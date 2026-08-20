@@ -108,6 +108,8 @@ apis:
   humanURL: https://docs.deno.com/api/deno/
   baseURL: https://api.example.com
   tags:
+  - Application
+  tags_raw:
   - Apps
   properties:
   - type: OpenAPI
@@ -128,6 +130,8 @@ apis:
   humanURL: https://docs.deno.com/api/deno/
   baseURL: https://api.example.com
   tags:
+  - Deployment
+  tags_raw:
   - Deployments
   properties:
   - type: OpenAPI
@@ -208,6 +212,8 @@ apis:
   humanURL: https://docs.deno.com/api/deno/
   baseURL: https://api.example.com
   tags:
+  - Organization
+  tags_raw:
   - Organizations
   properties:
   - type: OpenAPI
@@ -228,6 +234,8 @@ apis:
   humanURL: https://docs.deno.com/api/deno/
   baseURL: https://api.example.com
   tags:
+  - Project
+  tags_raw:
   - Projects
   properties:
   - type: OpenAPI
