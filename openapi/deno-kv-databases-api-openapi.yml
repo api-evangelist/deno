@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Deno Deploy REST Apps KV Databases API
+  title: Deno Deploy REST KV Databases API
   description: The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.
   version: '1.0'
   contact:
@@ -185,80 +185,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    order:
-      name: order
-      in: query
-      description: Sort order direction
-      schema:
-        type: string
-        enum:
-        - asc
-        - desc
-        default: asc
-    databaseId:
-      name: databaseId
-      in: path
-      required: true
-      description: UUID of the KV database
-      schema:
-        type: string
-        format: uuid
-    organizationId:
-      name: organizationId
-      in: path
-      required: true
-      description: UUID of the organization
-      schema:
-        type: string
-        format: uuid
-    databaseBackupId:
-      name: databaseBackupId
-      in: path
-      required: true
-      description: UUID of the KV database backup configuration
-      schema:
-        type: string
-        format: uuid
-    page:
-      name: page
-      in: query
-      description: Page number for paginated results (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-    limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return per page
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
-      schema:
-        type: string
-    sort:
-      name: sort
-      in: query
-      description: Field name to sort results by
-      schema:
-        type: string
   schemas:
-    Error:
-      type: object
-      description: Standard error response returned by all API error conditions
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: Human-readable error message describing what went wrong
     KvDatabase:
       type: object
       description: A Deno KV database managed by Deno Deploy. KV databases provide globally distributed key-value storage accessible from deployments via the Deno.openKv() API. Databases can be associated with one or more deployments.
@@ -291,13 +218,6 @@ components:
         description:
           type: string
           description: New description for the database
-    CreateKvDatabaseRequest:
-      type: object
-      description: Request body for creating a new Deno KV database
-      properties:
-        description:
-          type: string
-          description: Optional human-readable description for the new database
     EnableKvBackupRequest:
       type: object
       description: Request body for enabling S3 backup for a Deno KV database
@@ -327,6 +247,14 @@ components:
           type: string
           format: uuid
           description: UUID of the disabled backup configuration
+    EnableKvBackupResponse:
+      type: object
+      description: Response returned when KV backup is successfully enabled
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID of the newly created backup configuration
     KvDatabaseBackup:
       type: object
       description: A backup configuration for a Deno KV database, specifying an S3 storage destination and schedule for automatic backups.
@@ -364,17 +292,89 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the backup configuration was last modified
-    EnableKvBackupResponse:
+    CreateKvDatabaseRequest:
       type: object
-      description: Response returned when KV backup is successfully enabled
+      description: Request body for creating a new Deno KV database
       properties:
-        id:
+        description:
           type: string
-          format: uuid
-          description: UUID of the newly created backup configuration
+          description: Optional human-readable description for the new database
+    Error:
+      type: object
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong
+  parameters:
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    databaseId:
+      name: databaseId
+      in: path
+      required: true
+      description: UUID of the KV database
+      schema:
+        type: string
+        format: uuid
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+    databaseBackupId:
+      name: databaseBackupId
+      in: path
+      required: true
+      description: UUID of the KV database backup configuration
+      schema:
+        type: string
+        format: uuid
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
   responses:
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
+    BadRequest:
+      description: Bad request - invalid parameters or request body
       content:
         application/json:
           schema:
@@ -385,8 +385,8 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters or request body
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
       content:
         application/json:
           schema:

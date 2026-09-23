@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.2.0
 info:
-  title: Deno Deploy REST Apps Projects API
+  title: Deno Deploy REST Projects API
   description: The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.
   version: '1.0'
   contact:
@@ -167,17 +167,82 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  parameters:
+    projectId:
+      name: projectId
+      in: path
+      required: true
+      description: UUID of the project
+      schema:
+        type: string
+        format: uuid
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+  responses:
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    UpdateProjectRequest:
-      type: object
-      description: Request body for updating an existing Deno Deploy project
-      properties:
-        name:
-          type: string
-          description: New name for the project
-          minLength: 3
-          maxLength: 26
-          pattern: ^[a-z][a-z0-9-]*$
     Project:
       type: object
       description: A Deno Deploy project, which is a container for multiple deployments. Each project has a unique name within its organization and can have custom domains and KV databases associated with it.
@@ -208,18 +273,6 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the project was last modified
-    CreateProjectRequest:
-      type: object
-      description: Request body for creating a new Deno Deploy project
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
-          minLength: 3
-          maxLength: 26
-          pattern: ^[a-z][a-z0-9-]*$
     Analytics:
       type: object
       description: Time-series analytics data returned in 15-minute intervals for an organization or project. Covers request counts, bandwidth usage, and error rates over the specified time range.
@@ -251,81 +304,28 @@ components:
         error:
           type: string
           description: Human-readable error message describing what went wrong
-  responses:
-    BadRequest:
-      description: Bad request - invalid parameters or request body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    page:
-      name: page
-      in: query
-      description: Page number for paginated results (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-    projectId:
-      name: projectId
-      in: path
-      required: true
-      description: UUID of the project
-      schema:
-        type: string
-        format: uuid
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
-      schema:
-        type: string
-    order:
-      name: order
-      in: query
-      description: Sort order direction
-      schema:
-        type: string
-        enum:
-        - asc
-        - desc
-        default: asc
-    organizationId:
-      name: organizationId
-      in: path
-      required: true
-      description: UUID of the organization
-      schema:
-        type: string
-        format: uuid
-    limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return per page
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-    sort:
-      name: sort
-      in: query
-      description: Field name to sort results by
-      schema:
-        type: string
+    UpdateProjectRequest:
+      type: object
+      description: Request body for updating an existing Deno Deploy project
+      properties:
+        name:
+          type: string
+          description: New name for the project
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
+    CreateProjectRequest:
+      type: object
+      description: Request body for creating a new Deno Deploy project
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
   securitySchemes:
     bearerAuth:
       type: http
