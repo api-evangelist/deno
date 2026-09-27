@@ -94,8 +94,8 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   responses:
-    BadRequest:
-      description: Bad request - invalid parameters or request body
+    NotFound:
+      description: Not found - the requested resource does not exist
       content:
         application/json:
           schema:
@@ -106,13 +106,33 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found - the requested resource does not exist
+    BadRequest:
+      description: Bad request - invalid parameters or request body
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+  parameters:
+    app:
+      name: app
+      in: path
+      required: true
+      description: App UUID or human-readable slug
+      schema:
+        type: string
   schemas:
+    Error:
+      type: object
+      description: Standard error response returned on all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
     RuntimeLogsResponse:
       type: object
       description: Response containing runtime log entries for historical log queries
@@ -150,26 +170,6 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the log entry was produced
-    Error:
-      type: object
-      description: Standard error response returned on all API error conditions
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-        code:
-          type: string
-          description: Machine-readable error code
-  parameters:
-    app:
-      name: app
-      in: path
-      required: true
-      description: App UUID or human-readable slug
-      schema:
-        type: string
   securitySchemes:
     bearerAuth:
       type: http

@@ -185,39 +185,97 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  parameters:
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    databaseId:
+      name: databaseId
+      in: path
+      required: true
+      description: UUID of the KV database
+      schema:
+        type: string
+        format: uuid
+    databaseBackupId:
+      name: databaseBackupId
+      in: path
+      required: true
+      description: UUID of the KV database backup configuration
+      schema:
+        type: string
+        format: uuid
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+  responses:
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    KvDatabase:
+    CreateKvDatabaseRequest:
       type: object
-      description: A Deno KV database managed by Deno Deploy. KV databases provide globally distributed key-value storage accessible from deployments via the Deno.openKv() API. Databases can be associated with one or more deployments.
-      required:
-      - databaseId
-      properties:
-        databaseId:
-          type: string
-          format: uuid
-          description: Unique identifier for the KV database
-        description:
-          type: string
-          description: Human-readable description of the database
-        kvConnect:
-          type: string
-          format: uri
-          description: 'KV Connect URL used to open the database from a Deno program: https://api.deno.com/databases/{database-id}/connect'
-        createdAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the database was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the database was last modified
-    UpdateKvDatabaseRequest:
-      type: object
-      description: Request body for updating an existing Deno KV database
+      description: Request body for creating a new Deno KV database
       properties:
         description:
           type: string
-          description: New description for the database
+          description: Optional human-readable description for the new database
     EnableKvBackupRequest:
       type: object
       description: Request body for enabling S3 backup for a Deno KV database
@@ -239,22 +297,15 @@ components:
         secretAccessKey:
           type: string
           description: AWS secret access key for S3 write access
-    DisableKvBackupResponse:
+    Error:
       type: object
-      description: Response returned when KV backup is successfully disabled
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
       properties:
-        id:
+        error:
           type: string
-          format: uuid
-          description: UUID of the disabled backup configuration
-    EnableKvBackupResponse:
-      type: object
-      description: Response returned when KV backup is successfully enabled
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: UUID of the newly created backup configuration
+          description: Human-readable error message describing what went wrong
     KvDatabaseBackup:
       type: object
       description: A backup configuration for a Deno KV database, specifying an S3 storage destination and schedule for automatic backups.
@@ -292,105 +343,54 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the backup configuration was last modified
-    CreateKvDatabaseRequest:
+    KvDatabase:
       type: object
-      description: Request body for creating a new Deno KV database
+      description: A Deno KV database managed by Deno Deploy. KV databases provide globally distributed key-value storage accessible from deployments via the Deno.openKv() API. Databases can be associated with one or more deployments.
+      required:
+      - databaseId
+      properties:
+        databaseId:
+          type: string
+          format: uuid
+          description: Unique identifier for the KV database
+        description:
+          type: string
+          description: Human-readable description of the database
+        kvConnect:
+          type: string
+          format: uri
+          description: 'KV Connect URL used to open the database from a Deno program: https://api.deno.com/databases/{database-id}/connect'
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the database was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the database was last modified
+    UpdateKvDatabaseRequest:
+      type: object
+      description: Request body for updating an existing Deno KV database
       properties:
         description:
           type: string
-          description: Optional human-readable description for the new database
-    Error:
+          description: New description for the database
+    DisableKvBackupResponse:
       type: object
-      description: Standard error response returned by all API error conditions
-      required:
-      - error
+      description: Response returned when KV backup is successfully disabled
       properties:
-        error:
+        id:
           type: string
-          description: Human-readable error message describing what went wrong
-  parameters:
-    organizationId:
-      name: organizationId
-      in: path
-      required: true
-      description: UUID of the organization
-      schema:
-        type: string
-        format: uuid
-    page:
-      name: page
-      in: query
-      description: Page number for paginated results (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-    limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return per page
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-    databaseId:
-      name: databaseId
-      in: path
-      required: true
-      description: UUID of the KV database
-      schema:
-        type: string
-        format: uuid
-    sort:
-      name: sort
-      in: query
-      description: Field name to sort results by
-      schema:
-        type: string
-    databaseBackupId:
-      name: databaseBackupId
-      in: path
-      required: true
-      description: UUID of the KV database backup configuration
-      schema:
-        type: string
-        format: uuid
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
-      schema:
-        type: string
-    order:
-      name: order
-      in: query
-      description: Sort order direction
-      schema:
-        type: string
-        enum:
-        - asc
-        - desc
-        default: asc
-  responses:
-    BadRequest:
-      description: Bad request - invalid parameters or request body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+          format: uuid
+          description: UUID of the disabled backup configuration
+    EnableKvBackupResponse:
+      type: object
+      description: Response returned when KV backup is successfully enabled
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID of the newly created backup configuration
   securitySchemes:
     bearerAuth:
       type: http

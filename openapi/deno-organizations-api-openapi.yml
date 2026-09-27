@@ -73,7 +73,22 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  parameters:
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
   responses:
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     BadRequest:
       description: Bad request - invalid parameters or request body
       content:
@@ -86,33 +101,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Organization:
-      type: object
-      description: An organization on Deno Deploy. Organizations are the top-level billing and access-control containers that own projects, KV databases, and custom domains.
-      required:
-      - id
-      - name
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the organization
-        name:
-          type: string
-          description: Human-readable name of the organization
-        pro:
-          type: boolean
-          description: Whether the organization has an active Pro subscription
-        features:
-          type: object
-          description: Feature flags enabled for this organization
     Analytics:
       type: object
       description: Time-series analytics data returned in 15-minute intervals for an organization or project. Covers request counts, bandwidth usage, and error rates over the specified time range.
@@ -135,6 +124,26 @@ components:
           items:
             type: array
             items: {}
+    Organization:
+      type: object
+      description: An organization on Deno Deploy. Organizations are the top-level billing and access-control containers that own projects, KV databases, and custom domains.
+      required:
+      - id
+      - name
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the organization
+        name:
+          type: string
+          description: Human-readable name of the organization
+        pro:
+          type: boolean
+          description: Whether the organization has an active Pro subscription
+        features:
+          type: object
+          description: Feature flags enabled for this organization
     Error:
       type: object
       description: Standard error response returned by all API error conditions
@@ -144,15 +153,6 @@ components:
         error:
           type: string
           description: Human-readable error message describing what went wrong
-  parameters:
-    organizationId:
-      name: organizationId
-      in: path
-      required: true
-      description: UUID of the organization
-      schema:
-        type: string
-        format: uuid
   securitySchemes:
     bearerAuth:
       type: http

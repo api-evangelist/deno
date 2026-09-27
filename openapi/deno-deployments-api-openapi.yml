@@ -234,6 +234,12 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   parameters:
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
     projectId:
       name: projectId
       in: path
@@ -247,21 +253,6 @@ components:
       in: path
       required: true
       description: Identifier of the deployment
-      schema:
-        type: string
-    limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return per page
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
       schema:
         type: string
     sort:
@@ -288,35 +279,35 @@ components:
         - asc
         - desc
         default: asc
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+  responses:
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   schemas:
-    CreateDeploymentRequest:
-      type: object
-      description: Request body for creating a new deployment
-      required:
-      - assets
-      - entryPointUrl
-      properties:
-        entryPointUrl:
-          type: string
-          description: Relative path to the entry point file within the assets, used as the main module when the deployment starts
-        assets:
-          type: object
-          description: Map of file paths to asset objects. Keys are paths relative to the project root (e.g., "main.ts"). Values describe the asset content as text, base64-encoded binary, a git SHA-1 hash reference, or a symlink.
-          additionalProperties:
-            $ref: '#/components/schemas/DeploymentAsset'
-        envVars:
-          type: object
-          description: Environment variables to set for this deployment
-          additionalProperties:
-            type: string
-        databases:
-          type: object
-          description: Map of KV database association names to database UUIDs. The name becomes the database identifier accessible in the deployment code.
-          additionalProperties:
-            type: string
-            format: uuid
-        compilerOptions:
-          $ref: '#/components/schemas/CompilerOptions'
     CompilerOptions:
       type: object
       description: TypeScript compiler options applied during deployment build
@@ -338,34 +329,6 @@ components:
         jsxImportSource:
           type: string
           description: Module specifier used as the source for JSX automatic runtime imports
-    DeploymentAsset:
-      type: object
-      description: An individual asset included in a deployment. Assets can be UTF-8 text files, base64-encoded binary files, references to git blob objects by SHA-1 hash, or symbolic links.
-      required:
-      - kind
-      properties:
-        kind:
-          type: string
-          description: The type of asset encoding
-          enum:
-          - file
-          - symlink
-        content:
-          type: string
-          description: File content as a UTF-8 string (for text files) or base64-encoded string (for binary files)
-        encoding:
-          type: string
-          description: Encoding format of the content field
-          enum:
-          - utf-8
-          - base64
-        gitSha1:
-          type: string
-          description: SHA-1 hash of a previously uploaded git blob object. When specified, the content and encoding fields are ignored.
-          pattern: ^[0-9a-f]{40}$
-        target:
-          type: string
-          description: Target path for symlink assets
     BuildLogEntry:
       type: object
       description: A single entry from a deployment's build log
@@ -381,46 +344,6 @@ components:
         message:
           type: string
           description: Log message content
-        ts:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the log entry was produced
-    RedeployRequest:
-      type: object
-      description: Request body for redeploying an existing deployment with optional modifications to environment variables and KV database associations. Environment variable changes use merge semantics.
-      properties:
-        envVars:
-          type: object
-          description: Environment variables to merge into the redeployment. Only specified keys are modified; unspecified keys retain their original values.
-          additionalProperties:
-            type: string
-        databases:
-          type: object
-          description: KV database associations to apply to the redeployment
-          additionalProperties:
-            type: string
-            format: uuid
-    AppLogEntry:
-      type: object
-      description: A single runtime application log entry from a running deployment
-      properties:
-        level:
-          type: string
-          description: Log severity level
-          enum:
-          - debug
-          - info
-          - warning
-          - error
-        message:
-          type: string
-          description: Log message content
-        region:
-          type: string
-          description: Deno Deploy region where the log was emitted
-        deploymentId:
-          type: string
-          description: Identifier of the deployment that produced this log entry
         ts:
           type: string
           format: date-time
@@ -471,6 +394,34 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the deployment was last modified
+    DeploymentAsset:
+      type: object
+      description: An individual asset included in a deployment. Assets can be UTF-8 text files, base64-encoded binary files, references to git blob objects by SHA-1 hash, or symbolic links.
+      required:
+      - kind
+      properties:
+        kind:
+          type: string
+          description: The type of asset encoding
+          enum:
+          - file
+          - symlink
+        content:
+          type: string
+          description: File content as a UTF-8 string (for text files) or base64-encoded string (for binary files)
+        encoding:
+          type: string
+          description: Encoding format of the content field
+          enum:
+          - utf-8
+          - base64
+        gitSha1:
+          type: string
+          description: SHA-1 hash of a previously uploaded git blob object. When specified, the content and encoding fields are ignored.
+          pattern: ^[0-9a-f]{40}$
+        target:
+          type: string
+          description: Target path for symlink assets
     Error:
       type: object
       description: Standard error response returned by all API error conditions
@@ -480,25 +431,74 @@ components:
         error:
           type: string
           description: Human-readable error message describing what went wrong
-  responses:
-    BadRequest:
-      description: Bad request - invalid parameters or request body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
+    RedeployRequest:
+      type: object
+      description: Request body for redeploying an existing deployment with optional modifications to environment variables and KV database associations. Environment variable changes use merge semantics.
+      properties:
+        envVars:
+          type: object
+          description: Environment variables to merge into the redeployment. Only specified keys are modified; unspecified keys retain their original values.
+          additionalProperties:
+            type: string
+        databases:
+          type: object
+          description: KV database associations to apply to the redeployment
+          additionalProperties:
+            type: string
+            format: uuid
+    CreateDeploymentRequest:
+      type: object
+      description: Request body for creating a new deployment
+      required:
+      - assets
+      - entryPointUrl
+      properties:
+        entryPointUrl:
+          type: string
+          description: Relative path to the entry point file within the assets, used as the main module when the deployment starts
+        assets:
+          type: object
+          description: Map of file paths to asset objects. Keys are paths relative to the project root (e.g., "main.ts"). Values describe the asset content as text, base64-encoded binary, a git SHA-1 hash reference, or a symlink.
+          additionalProperties:
+            $ref: '#/components/schemas/DeploymentAsset'
+        envVars:
+          type: object
+          description: Environment variables to set for this deployment
+          additionalProperties:
+            type: string
+        databases:
+          type: object
+          description: Map of KV database association names to database UUIDs. The name becomes the database identifier accessible in the deployment code.
+          additionalProperties:
+            type: string
+            format: uuid
+        compilerOptions:
+          $ref: '#/components/schemas/CompilerOptions'
+    AppLogEntry:
+      type: object
+      description: A single runtime application log entry from a running deployment
+      properties:
+        level:
+          type: string
+          description: Log severity level
+          enum:
+          - debug
+          - info
+          - warning
+          - error
+        message:
+          type: string
+          description: Log message content
+        region:
+          type: string
+          description: Deno Deploy region where the log was emitted
+        deploymentId:
+          type: string
+          description: Identifier of the deployment that produced this log entry
+        ts:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the log entry was produced
   securitySchemes:
     bearerAuth:
       type: http

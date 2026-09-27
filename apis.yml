@@ -74,6 +74,11 @@ apis:
   tags:
   - Database
   - Edge
+  - Key-Value Store
+  - Storage
+  tags_raw:
+  - Database
+  - Edge
   - Key-Value
   - Storage
   image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg

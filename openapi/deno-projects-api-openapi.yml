@@ -168,6 +168,12 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   parameters:
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
     projectId:
       name: projectId
       in: path
@@ -176,29 +182,6 @@ components:
       schema:
         type: string
         format: uuid
-    limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return per page
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-    organizationId:
-      name: organizationId
-      in: path
-      required: true
-      description: UUID of the organization
-      schema:
-        type: string
-        format: uuid
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
-      schema:
-        type: string
     sort:
       name: sort
       in: query
@@ -213,6 +196,14 @@ components:
         type: integer
         minimum: 1
         default: 1
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
     order:
       name: order
       in: query
@@ -223,7 +214,22 @@ components:
         - asc
         - desc
         default: asc
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
   responses:
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     BadRequest:
       description: Bad request - invalid parameters or request body
       content:
@@ -236,43 +242,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Project:
-      type: object
-      description: A Deno Deploy project, which is a container for multiple deployments. Each project has a unique name within its organization and can have custom domains and KV databases associated with it.
-      required:
-      - id
-      - name
-      - organizationId
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: Unique identifier for the project
-        name:
-          type: string
-          description: Human-readable name of the project, unique within the organization
-          minLength: 3
-          maxLength: 26
-          pattern: ^[a-z][a-z0-9-]*$
-        organizationId:
-          type: string
-          format: uuid
-          description: UUID of the organization that owns this project
-        createdAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the project was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the project was last modified
     Analytics:
       type: object
       description: Time-series analytics data returned in 15-minute intervals for an organization or project. Covers request counts, bandwidth usage, and error rates over the specified time range.
@@ -304,16 +274,36 @@ components:
         error:
           type: string
           description: Human-readable error message describing what went wrong
-    UpdateProjectRequest:
+    Project:
       type: object
-      description: Request body for updating an existing Deno Deploy project
+      description: A Deno Deploy project, which is a container for multiple deployments. Each project has a unique name within its organization and can have custom domains and KV databases associated with it.
+      required:
+      - id
+      - name
+      - organizationId
       properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique identifier for the project
         name:
           type: string
-          description: New name for the project
+          description: Human-readable name of the project, unique within the organization
           minLength: 3
           maxLength: 26
           pattern: ^[a-z][a-z0-9-]*$
+        organizationId:
+          type: string
+          format: uuid
+          description: UUID of the organization that owns this project
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the project was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the project was last modified
     CreateProjectRequest:
       type: object
       description: Request body for creating a new Deno Deploy project
@@ -323,6 +313,16 @@ components:
         name:
           type: string
           description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
+    UpdateProjectRequest:
+      type: object
+      description: Request body for updating an existing Deno Deploy project
+      properties:
+        name:
+          type: string
+          description: New name for the project
           minLength: 3
           maxLength: 26
           pattern: ^[a-z][a-z0-9-]*$
