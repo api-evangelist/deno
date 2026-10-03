@@ -94,14 +94,14 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   responses:
-    NotFound:
-      description: Not found - the requested resource does not exist
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
+    NotFound:
+      description: Not found - the requested resource does not exist
       content:
         application/json:
           schema:
@@ -112,39 +112,7 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-  parameters:
-    app:
-      name: app
-      in: path
-      required: true
-      description: App UUID or human-readable slug
-      schema:
-        type: string
   schemas:
-    Error:
-      type: object
-      description: Standard error response returned on all API error conditions
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-        code:
-          type: string
-          description: Machine-readable error code
-    RuntimeLogsResponse:
-      type: object
-      description: Response containing runtime log entries for historical log queries
-      properties:
-        logs:
-          type: array
-          description: Array of log entries matching the query
-          items:
-            $ref: '#/components/schemas/RuntimeLogEntry'
-        cursor:
-          type: string
-          description: Pagination cursor for retrieving the next page of results
     RuntimeLogEntry:
       type: object
       description: A single runtime log entry from a running application
@@ -170,6 +138,38 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the log entry was produced
+    RuntimeLogsResponse:
+      type: object
+      description: Response containing runtime log entries for historical log queries
+      properties:
+        logs:
+          type: array
+          description: Array of log entries matching the query
+          items:
+            $ref: '#/components/schemas/RuntimeLogEntry'
+        cursor:
+          type: string
+          description: Pagination cursor for retrieving the next page of results
+    Error:
+      type: object
+      description: Standard error response returned on all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+  parameters:
+    app:
+      name: app
+      in: path
+      required: true
+      description: App UUID or human-readable slug
+      schema:
+        type: string
   securitySchemes:
     bearerAuth:
       type: http

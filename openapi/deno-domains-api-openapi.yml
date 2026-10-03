@@ -208,12 +208,14 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   parameters:
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
+    domainId:
+      name: domainId
+      in: path
+      required: true
+      description: UUID of the custom domain
       schema:
         type: string
+        format: uuid
     organizationId:
       name: organizationId
       in: path
@@ -222,6 +224,28 @@ components:
       schema:
         type: string
         format: uuid
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
     page:
       name: page
       in: query
@@ -237,30 +261,6 @@ components:
       description: Identifier of the deployment
       schema:
         type: string
-    sort:
-      name: sort
-      in: query
-      description: Field name to sort results by
-      schema:
-        type: string
-    domainId:
-      name: domainId
-      in: path
-      required: true
-      description: UUID of the custom domain
-      schema:
-        type: string
-        format: uuid
-    order:
-      name: order
-      in: query
-      description: Sort order direction
-      schema:
-        type: string
-        enum:
-        - asc
-        - desc
-        default: asc
     limit:
       name: limit
       in: query
@@ -270,26 +270,35 @@ components:
         minimum: 1
         maximum: 100
         default: 20
-  responses:
-    BadRequest:
-      description: Bad request - invalid parameters or request body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    DomainCertificate:
+      type: object
+      description: A TLS certificate associated with a custom domain
+      properties:
+        cipher:
+          type: string
+          description: Cipher suite used by the certificate (e.g., RSA, EC)
+        expiresAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the certificate expires
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the certificate was added
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the certificate was last updated
+    CreateDomainRequest:
+      type: object
+      description: Request body for registering a new custom domain
+      required:
+      - domain
+      properties:
+        domain:
+          type: string
+          description: The fully qualified domain name to register (e.g., example.com)
     AddDomainCertificateRequest:
       type: object
       description: Request body for uploading a custom TLS certificate for a domain
@@ -303,15 +312,29 @@ components:
         privateKeyPem:
           type: string
           description: PEM-encoded private key corresponding to the certificate
-    CreateDomainRequest:
+    ProvisioningStatus:
       type: object
-      description: Request body for registering a new custom domain
-      required:
-      - domain
+      description: Current status of automatic TLS certificate provisioning
       properties:
-        domain:
+        code:
           type: string
-          description: The fully qualified domain name to register (e.g., example.com)
+          description: Status code indicating the provisioning state
+          enum:
+          - success
+          - failed
+          - pending
+          - manual
+    AttachDomainResponse:
+      type: object
+      description: Response returned when a domain is successfully attached to a deployment
+      properties:
+        domainId:
+          type: string
+          format: uuid
+          description: UUID of the domain that was attached
+        deploymentId:
+          type: string
+          description: Identifier of the deployment the domain was attached to
     Domain:
       type: object
       description: A custom domain registered within a Deno Deploy organization. Domains must be verified via DNS before they can serve traffic, and TLS certificates must be uploaded or provisioned before HTTPS is enabled.
@@ -356,48 +379,25 @@ components:
         error:
           type: string
           description: Human-readable error message describing what went wrong
-    AttachDomainResponse:
-      type: object
-      description: Response returned when a domain is successfully attached to a deployment
-      properties:
-        domainId:
-          type: string
-          format: uuid
-          description: UUID of the domain that was attached
-        deploymentId:
-          type: string
-          description: Identifier of the deployment the domain was attached to
-    DomainCertificate:
-      type: object
-      description: A TLS certificate associated with a custom domain
-      properties:
-        cipher:
-          type: string
-          description: Cipher suite used by the certificate (e.g., RSA, EC)
-        expiresAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the certificate expires
-        createdAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the certificate was added
-        updatedAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the certificate was last updated
-    ProvisioningStatus:
-      type: object
-      description: Current status of automatic TLS certificate provisioning
-      properties:
-        code:
-          type: string
-          description: Status code indicating the provisioning state
-          enum:
-          - success
-          - failed
-          - pending
-          - manual
+  responses:
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http

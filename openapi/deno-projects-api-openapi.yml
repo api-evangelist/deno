@@ -167,7 +167,34 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
+  responses:
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
     q:
       name: q
       in: query
@@ -182,6 +209,16 @@ components:
       schema:
         type: string
         format: uuid
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
     sort:
       name: sort
       in: query
@@ -196,24 +233,6 @@ components:
         type: integer
         minimum: 1
         default: 1
-    organizationId:
-      name: organizationId
-      in: path
-      required: true
-      description: UUID of the organization
-      schema:
-        type: string
-        format: uuid
-    order:
-      name: order
-      in: query
-      description: Sort order direction
-      schema:
-        type: string
-        enum:
-        - asc
-        - desc
-        default: asc
     limit:
       name: limit
       in: query
@@ -223,25 +242,6 @@ components:
         minimum: 1
         maximum: 100
         default: 20
-  responses:
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters or request body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
     Analytics:
       type: object
@@ -265,15 +265,28 @@ components:
           items:
             type: array
             items: {}
-    Error:
+    UpdateProjectRequest:
       type: object
-      description: Standard error response returned by all API error conditions
-      required:
-      - error
+      description: Request body for updating an existing Deno Deploy project
       properties:
-        error:
+        name:
           type: string
-          description: Human-readable error message describing what went wrong
+          description: New name for the project
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
+    CreateProjectRequest:
+      type: object
+      description: Request body for creating a new Deno Deploy project
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
     Project:
       type: object
       description: A Deno Deploy project, which is a container for multiple deployments. Each project has a unique name within its organization and can have custom domains and KV databases associated with it.
@@ -304,28 +317,15 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the project was last modified
-    CreateProjectRequest:
+    Error:
       type: object
-      description: Request body for creating a new Deno Deploy project
+      description: Standard error response returned by all API error conditions
       required:
-      - name
+      - error
       properties:
-        name:
+        error:
           type: string
-          description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
-          minLength: 3
-          maxLength: 26
-          pattern: ^[a-z][a-z0-9-]*$
-    UpdateProjectRequest:
-      type: object
-      description: Request body for updating an existing Deno Deploy project
-      properties:
-        name:
-          type: string
-          description: New name for the project
-          minLength: 3
-          maxLength: 26
-          pattern: ^[a-z][a-z0-9-]*$
+          description: Human-readable error message describing what went wrong
   securitySchemes:
     bearerAuth:
       type: http

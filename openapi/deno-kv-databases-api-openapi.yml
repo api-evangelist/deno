@@ -185,71 +185,13 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
-      schema:
-        type: string
-    databaseId:
-      name: databaseId
-      in: path
-      required: true
-      description: UUID of the KV database
-      schema:
-        type: string
-        format: uuid
-    databaseBackupId:
-      name: databaseBackupId
-      in: path
-      required: true
-      description: UUID of the KV database backup configuration
-      schema:
-        type: string
-        format: uuid
-    page:
-      name: page
-      in: query
-      description: Page number for paginated results (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-    organizationId:
-      name: organizationId
-      in: path
-      required: true
-      description: UUID of the organization
-      schema:
-        type: string
-        format: uuid
-    sort:
-      name: sort
-      in: query
-      description: Field name to sort results by
-      schema:
-        type: string
-    order:
-      name: order
-      in: query
-      description: Sort order direction
-      schema:
-        type: string
-        enum:
-        - asc
-        - desc
-        default: asc
-    limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return per page
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
   responses:
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     NotFound:
       description: Not found - the requested resource does not exist
       content:
@@ -262,20 +204,30 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    CreateKvDatabaseRequest:
+    UpdateKvDatabaseRequest:
       type: object
-      description: Request body for creating a new Deno KV database
+      description: Request body for updating an existing Deno KV database
       properties:
         description:
           type: string
-          description: Optional human-readable description for the new database
+          description: New description for the database
+    DisableKvBackupResponse:
+      type: object
+      description: Response returned when KV backup is successfully disabled
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID of the disabled backup configuration
+    EnableKvBackupResponse:
+      type: object
+      description: Response returned when KV backup is successfully enabled
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: UUID of the newly created backup configuration
     EnableKvBackupRequest:
       type: object
       description: Request body for enabling S3 backup for a Deno KV database
@@ -297,15 +249,6 @@ components:
         secretAccessKey:
           type: string
           description: AWS secret access key for S3 write access
-    Error:
-      type: object
-      description: Standard error response returned by all API error conditions
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: Human-readable error message describing what went wrong
     KvDatabaseBackup:
       type: object
       description: A backup configuration for a Deno KV database, specifying an S3 storage destination and schedule for automatic backups.
@@ -368,29 +311,86 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the database was last modified
-    UpdateKvDatabaseRequest:
+    Error:
       type: object
-      description: Request body for updating an existing Deno KV database
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong
+    CreateKvDatabaseRequest:
+      type: object
+      description: Request body for creating a new Deno KV database
       properties:
         description:
           type: string
-          description: New description for the database
-    DisableKvBackupResponse:
-      type: object
-      description: Response returned when KV backup is successfully disabled
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: UUID of the disabled backup configuration
-    EnableKvBackupResponse:
-      type: object
-      description: Response returned when KV backup is successfully enabled
-      properties:
-        id:
-          type: string
-          format: uuid
-          description: UUID of the newly created backup configuration
+          description: Optional human-readable description for the new database
+  parameters:
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+    databaseId:
+      name: databaseId
+      in: path
+      required: true
+      description: UUID of the KV database
+      schema:
+        type: string
+        format: uuid
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
+    databaseBackupId:
+      name: databaseBackupId
+      in: path
+      required: true
+      description: UUID of the KV database backup configuration
+      schema:
+        type: string
+        format: uuid
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
   securitySchemes:
     bearerAuth:
       type: http

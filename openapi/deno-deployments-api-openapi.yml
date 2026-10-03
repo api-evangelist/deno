@@ -233,62 +233,13 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  parameters:
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
-      schema:
-        type: string
-    projectId:
-      name: projectId
-      in: path
-      required: true
-      description: UUID of the project
-      schema:
-        type: string
-        format: uuid
-    deploymentId:
-      name: deploymentId
-      in: path
-      required: true
-      description: Identifier of the deployment
-      schema:
-        type: string
-    sort:
-      name: sort
-      in: query
-      description: Field name to sort results by
-      schema:
-        type: string
-    page:
-      name: page
-      in: query
-      description: Page number for paginated results (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-    order:
-      name: order
-      in: query
-      description: Sort order direction
-      schema:
-        type: string
-        enum:
-        - asc
-        - desc
-        default: asc
-    limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return per page
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
   responses:
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
     NotFound:
       description: Not found - the requested resource does not exist
       content:
@@ -301,13 +252,26 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    BuildLogEntry:
+      type: object
+      description: A single entry from a deployment's build log
+      properties:
+        level:
+          type: string
+          description: Log level of the entry
+          enum:
+          - debug
+          - info
+          - warning
+          - error
+        message:
+          type: string
+          description: Log message content
+        ts:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the log entry was produced
     CompilerOptions:
       type: object
       description: TypeScript compiler options applied during deployment build
@@ -329,71 +293,21 @@ components:
         jsxImportSource:
           type: string
           description: Module specifier used as the source for JSX automatic runtime imports
-    BuildLogEntry:
+    RedeployRequest:
       type: object
-      description: A single entry from a deployment's build log
+      description: Request body for redeploying an existing deployment with optional modifications to environment variables and KV database associations. Environment variable changes use merge semantics.
       properties:
-        level:
-          type: string
-          description: Log level of the entry
-          enum:
-          - debug
-          - info
-          - warning
-          - error
-        message:
-          type: string
-          description: Log message content
-        ts:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the log entry was produced
-    Deployment:
-      type: object
-      description: An immutable deployment on Deno Deploy representing a specific version of code and configuration. Deployments are created from assets and serve traffic when associated with a custom domain or the project's default subdomain.
-      required:
-      - id
-      - projectId
-      - status
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the deployment
-        projectId:
-          type: string
-          format: uuid
-          description: UUID of the project this deployment belongs to
-        status:
-          type: string
-          description: Current status of the deployment
-          enum:
-          - pending
-          - failed
-          - success
-        domains:
-          type: array
-          description: List of custom domains currently attached to this deployment
-          items:
-            type: string
         envVars:
           type: object
-          description: Environment variables set for this deployment (values redacted)
+          description: Environment variables to merge into the redeployment. Only specified keys are modified; unspecified keys retain their original values.
           additionalProperties:
             type: string
         databases:
           type: object
-          description: KV database associations keyed by the name used in the deployment
+          description: KV database associations to apply to the redeployment
           additionalProperties:
             type: string
             format: uuid
-        createdAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the deployment was created
-        updatedAt:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the deployment was last modified
     DeploymentAsset:
       type: object
       description: An individual asset included in a deployment. Assets can be UTF-8 text files, base64-encoded binary files, references to git blob objects by SHA-1 hash, or symbolic links.
@@ -422,30 +336,6 @@ components:
         target:
           type: string
           description: Target path for symlink assets
-    Error:
-      type: object
-      description: Standard error response returned by all API error conditions
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: Human-readable error message describing what went wrong
-    RedeployRequest:
-      type: object
-      description: Request body for redeploying an existing deployment with optional modifications to environment variables and KV database associations. Environment variable changes use merge semantics.
-      properties:
-        envVars:
-          type: object
-          description: Environment variables to merge into the redeployment. Only specified keys are modified; unspecified keys retain their original values.
-          additionalProperties:
-            type: string
-        databases:
-          type: object
-          description: KV database associations to apply to the redeployment
-          additionalProperties:
-            type: string
-            format: uuid
     CreateDeploymentRequest:
       type: object
       description: Request body for creating a new deployment
@@ -499,6 +389,116 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the log entry was produced
+    Deployment:
+      type: object
+      description: An immutable deployment on Deno Deploy representing a specific version of code and configuration. Deployments are created from assets and serve traffic when associated with a custom domain or the project's default subdomain.
+      required:
+      - id
+      - projectId
+      - status
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the deployment
+        projectId:
+          type: string
+          format: uuid
+          description: UUID of the project this deployment belongs to
+        status:
+          type: string
+          description: Current status of the deployment
+          enum:
+          - pending
+          - failed
+          - success
+        domains:
+          type: array
+          description: List of custom domains currently attached to this deployment
+          items:
+            type: string
+        envVars:
+          type: object
+          description: Environment variables set for this deployment (values redacted)
+          additionalProperties:
+            type: string
+        databases:
+          type: object
+          description: KV database associations keyed by the name used in the deployment
+          additionalProperties:
+            type: string
+            format: uuid
+        createdAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the deployment was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the deployment was last modified
+    Error:
+      type: object
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong
+  parameters:
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    projectId:
+      name: projectId
+      in: path
+      required: true
+      description: UUID of the project
+      schema:
+        type: string
+        format: uuid
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    deploymentId:
+      name: deploymentId
+      in: path
+      required: true
+      description: Identifier of the deployment
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
   securitySchemes:
     bearerAuth:
       type: http
