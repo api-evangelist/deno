@@ -168,12 +168,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   responses:
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
     NotFound:
       description: Not found - the requested resource does not exist
       content:
@@ -186,7 +180,27 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
     organizationId:
       name: organizationId
       in: path
@@ -195,12 +209,6 @@ components:
       schema:
         type: string
         format: uuid
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
-      schema:
-        type: string
     projectId:
       name: projectId
       in: path
@@ -219,20 +227,6 @@ components:
         - asc
         - desc
         default: asc
-    sort:
-      name: sort
-      in: query
-      description: Field name to sort results by
-      schema:
-        type: string
-    page:
-      name: page
-      in: query
-      description: Page number for paginated results (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
     limit:
       name: limit
       in: query
@@ -242,7 +236,22 @@ components:
         minimum: 1
         maximum: 100
         default: 20
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
   schemas:
+    Error:
+      type: object
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong
     Analytics:
       type: object
       description: Time-series analytics data returned in 15-minute intervals for an organization or project. Covers request counts, bandwidth usage, and error rates over the specified time range.
@@ -265,28 +274,6 @@ components:
           items:
             type: array
             items: {}
-    UpdateProjectRequest:
-      type: object
-      description: Request body for updating an existing Deno Deploy project
-      properties:
-        name:
-          type: string
-          description: New name for the project
-          minLength: 3
-          maxLength: 26
-          pattern: ^[a-z][a-z0-9-]*$
-    CreateProjectRequest:
-      type: object
-      description: Request body for creating a new Deno Deploy project
-      required:
-      - name
-      properties:
-        name:
-          type: string
-          description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
-          minLength: 3
-          maxLength: 26
-          pattern: ^[a-z][a-z0-9-]*$
     Project:
       type: object
       description: A Deno Deploy project, which is a container for multiple deployments. Each project has a unique name within its organization and can have custom domains and KV databases associated with it.
@@ -317,15 +304,28 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the project was last modified
-    Error:
+    CreateProjectRequest:
       type: object
-      description: Standard error response returned by all API error conditions
+      description: Request body for creating a new Deno Deploy project
       required:
-      - error
+      - name
       properties:
-        error:
+        name:
           type: string
-          description: Human-readable error message describing what went wrong
+          description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
+    UpdateProjectRequest:
+      type: object
+      description: Request body for updating an existing Deno Deploy project
+      properties:
+        name:
+          type: string
+          description: New name for the project
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
   securitySchemes:
     bearerAuth:
       type: http
