@@ -197,13 +197,10 @@ apis:
 unitEconomics:
   - name: Cost per 1M Requests
     metric: billed_cost / (requests / 1000000)
-    target: '$2 above included; $0 within plan quota'
   - name: Cost per GB Egress
     metric: bandwidth_cost / bandwidth_gb
-    target: '$0.50 above included'
   - name: Cost per Active Deployment
     metric: billed_cost / active_deployments
-    target: TBD
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
