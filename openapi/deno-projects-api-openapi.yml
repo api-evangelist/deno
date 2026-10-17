@@ -167,81 +167,6 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters or request body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-  parameters:
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
-      schema:
-        type: string
-    page:
-      name: page
-      in: query
-      description: Page number for paginated results (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-    organizationId:
-      name: organizationId
-      in: path
-      required: true
-      description: UUID of the organization
-      schema:
-        type: string
-        format: uuid
-    projectId:
-      name: projectId
-      in: path
-      required: true
-      description: UUID of the project
-      schema:
-        type: string
-        format: uuid
-    order:
-      name: order
-      in: query
-      description: Sort order direction
-      schema:
-        type: string
-        enum:
-        - asc
-        - desc
-        default: asc
-    limit:
-      name: limit
-      in: query
-      description: Maximum number of items to return per page
-      schema:
-        type: integer
-        minimum: 1
-        maximum: 100
-        default: 20
-    sort:
-      name: sort
-      in: query
-      description: Field name to sort results by
-      schema:
-        type: string
   schemas:
     Error:
       type: object
@@ -252,28 +177,18 @@ components:
         error:
           type: string
           description: Human-readable error message describing what went wrong
-    Analytics:
+    CreateProjectRequest:
       type: object
-      description: Time-series analytics data returned in 15-minute intervals for an organization or project. Covers request counts, bandwidth usage, and error rates over the specified time range.
+      description: Request body for creating a new Deno Deploy project
+      required:
+      - name
       properties:
-        fields:
-          type: array
-          description: Ordered list of field names present in each data row
-          items:
-            type: object
-            properties:
-              name:
-                type: string
-                description: Name of the analytics field
-              type:
-                type: string
-                description: Data type of the field values
-        values:
-          type: array
-          description: Array of data rows, each corresponding to a 15-minute interval
-          items:
-            type: array
-            items: {}
+        name:
+          type: string
+          description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
+          minLength: 3
+          maxLength: 26
+          pattern: ^[a-z][a-z0-9-]*$
     Project:
       type: object
       description: A Deno Deploy project, which is a container for multiple deployments. Each project has a unique name within its organization and can have custom domains and KV databases associated with it.
@@ -304,18 +219,28 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the project was last modified
-    CreateProjectRequest:
+    Analytics:
       type: object
-      description: Request body for creating a new Deno Deploy project
-      required:
-      - name
+      description: Time-series analytics data returned in 15-minute intervals for an organization or project. Covers request counts, bandwidth usage, and error rates over the specified time range.
       properties:
-        name:
-          type: string
-          description: Unique name for the project within the organization. Must be 3-26 characters, lowercase alphanumeric and hyphens only, and must start with a letter.
-          minLength: 3
-          maxLength: 26
-          pattern: ^[a-z][a-z0-9-]*$
+        fields:
+          type: array
+          description: Ordered list of field names present in each data row
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                description: Name of the analytics field
+              type:
+                type: string
+                description: Data type of the field values
+        values:
+          type: array
+          description: Array of data rows, each corresponding to a 15-minute interval
+          items:
+            type: array
+            items: {}
     UpdateProjectRequest:
       type: object
       description: Request body for updating an existing Deno Deploy project
@@ -326,6 +251,81 @@ components:
           minLength: 3
           maxLength: 26
           pattern: ^[a-z][a-z0-9-]*$
+  parameters:
+    order:
+      name: order
+      in: query
+      description: Sort order direction
+      schema:
+        type: string
+        enum:
+        - asc
+        - desc
+        default: asc
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
+    limit:
+      name: limit
+      in: query
+      description: Maximum number of items to return per page
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+    page:
+      name: page
+      in: query
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    projectId:
+      name: projectId
+      in: path
+      required: true
+      description: UUID of the project
+      schema:
+        type: string
+        format: uuid
+  responses:
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   securitySchemes:
     bearerAuth:
       type: http

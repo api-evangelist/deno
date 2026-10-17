@@ -73,35 +73,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters or request body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
-    Error:
-      type: object
-      description: Standard error response returned by all API error conditions
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: Human-readable error message describing what went wrong
     Organization:
       type: object
       description: An organization on Deno Deploy. Organizations are the top-level billing and access-control containers that own projects, KV databases, and custom domains.
@@ -122,6 +94,15 @@ components:
         features:
           type: object
           description: Feature flags enabled for this organization
+    Error:
+      type: object
+      description: Standard error response returned by all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message describing what went wrong
     Analytics:
       type: object
       description: Time-series analytics data returned in 15-minute intervals for an organization or project. Covers request counts, bandwidth usage, and error rates over the specified time range.
@@ -144,6 +125,25 @@ components:
           items:
             type: array
             items: {}
+  responses:
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
     organizationId:
       name: organizationId

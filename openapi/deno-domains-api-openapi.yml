@@ -208,19 +208,6 @@ paths:
           $ref: '#/components/responses/NotFound'
 components:
   schemas:
-    AddDomainCertificateRequest:
-      type: object
-      description: Request body for uploading a custom TLS certificate for a domain
-      required:
-      - certificatePem
-      - privateKeyPem
-      properties:
-        certificatePem:
-          type: string
-          description: PEM-encoded TLS certificate chain
-        privateKeyPem:
-          type: string
-          description: PEM-encoded private key corresponding to the certificate
     Error:
       type: object
       description: Standard error response returned by all API error conditions
@@ -230,26 +217,6 @@ components:
         error:
           type: string
           description: Human-readable error message describing what went wrong
-    AttachDomainResponse:
-      type: object
-      description: Response returned when a domain is successfully attached to a deployment
-      properties:
-        domainId:
-          type: string
-          format: uuid
-          description: UUID of the domain that was attached
-        deploymentId:
-          type: string
-          description: Identifier of the deployment the domain was attached to
-    CreateDomainRequest:
-      type: object
-      description: Request body for registering a new custom domain
-      required:
-      - domain
-      properties:
-        domain:
-          type: string
-          description: The fully qualified domain name to register (e.g., example.com)
     Domain:
       type: object
       description: A custom domain registered within a Deno Deploy organization. Domains must be verified via DNS before they can serve traffic, and TLS certificates must be uploaded or provisioned before HTTPS is enabled.
@@ -285,6 +252,19 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the domain was last modified
+    AddDomainCertificateRequest:
+      type: object
+      description: Request body for uploading a custom TLS certificate for a domain
+      required:
+      - certificatePem
+      - privateKeyPem
+      properties:
+        certificatePem:
+          type: string
+          description: PEM-encoded TLS certificate chain
+        privateKeyPem:
+          type: string
+          description: PEM-encoded private key corresponding to the certificate
     DomainCertificate:
       type: object
       description: A TLS certificate associated with a custom domain
@@ -304,6 +284,17 @@ components:
           type: string
           format: date-time
           description: ISO 8601 timestamp when the certificate was last updated
+    AttachDomainResponse:
+      type: object
+      description: Response returned when a domain is successfully attached to a deployment
+      properties:
+        domainId:
+          type: string
+          format: uuid
+          description: UUID of the domain that was attached
+        deploymentId:
+          type: string
+          description: Identifier of the deployment the domain was attached to
     ProvisioningStatus:
       type: object
       description: Current status of automatic TLS certificate provisioning
@@ -316,7 +307,22 @@ components:
           - failed
           - pending
           - manual
+    CreateDomainRequest:
+      type: object
+      description: Request body for registering a new custom domain
+      required:
+      - domain
+      properties:
+        domain:
+          type: string
+          description: The fully qualified domain name to register (e.g., example.com)
   parameters:
+    q:
+      name: q
+      in: query
+      description: Search query to filter results by name or identifier
+      schema:
+        type: string
     domainId:
       name: domainId
       in: path
@@ -325,35 +331,6 @@ components:
       schema:
         type: string
         format: uuid
-    q:
-      name: q
-      in: query
-      description: Search query to filter results by name or identifier
-      schema:
-        type: string
-    page:
-      name: page
-      in: query
-      description: Page number for paginated results (1-based)
-      schema:
-        type: integer
-        minimum: 1
-        default: 1
-    organizationId:
-      name: organizationId
-      in: path
-      required: true
-      description: UUID of the organization
-      schema:
-        type: string
-        format: uuid
-    deploymentId:
-      name: deploymentId
-      in: path
-      required: true
-      description: Identifier of the deployment
-      schema:
-        type: string
     order:
       name: order
       in: query
@@ -364,6 +341,20 @@ components:
         - asc
         - desc
         default: asc
+    organizationId:
+      name: organizationId
+      in: path
+      required: true
+      description: UUID of the organization
+      schema:
+        type: string
+        format: uuid
+    sort:
+      name: sort
+      in: query
+      description: Field name to sort results by
+      schema:
+        type: string
     limit:
       name: limit
       in: query
@@ -373,10 +364,19 @@ components:
         minimum: 1
         maximum: 100
         default: 20
-    sort:
-      name: sort
+    page:
+      name: page
       in: query
-      description: Field name to sort results by
+      description: Page number for paginated results (1-based)
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+    deploymentId:
+      name: deploymentId
+      in: path
+      required: true
+      description: Identifier of the deployment
       schema:
         type: string
   responses:
@@ -386,14 +386,14 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters or request body
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
       content:
         application/json:
           schema:
             $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
+    BadRequest:
+      description: Bad request - invalid parameters or request body
       content:
         application/json:
           schema:

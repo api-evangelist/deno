@@ -171,26 +171,232 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 components:
-  responses:
-    NotFound:
-      description: Not found - the requested resource does not exist
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    Unauthorized:
-      description: Unauthorized - missing or invalid Bearer token
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-    BadRequest:
-      description: Bad request - invalid parameters or request body
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
   schemas:
+    Error:
+      type: object
+      description: Standard error response returned on all API error conditions
+      required:
+      - error
+      properties:
+        error:
+          type: string
+          description: Human-readable error message
+        code:
+          type: string
+          description: Machine-readable error code
+    EnvVarInputForDeploy:
+      type: object
+      description: Environment variable input specific to revision deployment
+      required:
+      - key
+      - value
+      properties:
+        key:
+          type: string
+          description: Environment variable name
+          pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+          maxLength: 128
+        value:
+          type: string
+          description: Environment variable value
+          maxLength: 4096
+        secret:
+          type: boolean
+          description: Whether to treat this variable as a secret
+          default: false
+        contexts:
+          description: Contexts in which this variable is active
+          oneOf:
+          - type: string
+            enum:
+            - all
+          - type: array
+            items:
+              type: string
+    Config:
+      type: object
+      description: Build and runtime configuration for an app or revision. Supports framework-specific presets (Next.js, Astro, Fresh) or custom dynamic/static runtime configurations.
+      properties:
+        framework:
+          type: string
+          description: Framework preset to use for build and runtime configuration. Supported values include nextjs, astro, fresh, and others.
+        install:
+          type: string
+          description: Custom install command to run before building
+        build:
+          type: string
+          description: Custom build command
+        predeploy:
+          type: string
+          description: Command to run after build and before deployment
+        runtime:
+          $ref: '#/components/schemas/Runtime'
+        crons:
+          type: array
+          description: Cron job definitions for scheduled task execution
+          items:
+            $ref: '#/components/schemas/CronJob'
+    CronJob:
+      type: object
+      description: A scheduled cron job definition for periodic task execution
+      required:
+      - name
+      - schedule
+      - handler
+      properties:
+        name:
+          type: string
+          description: Human-readable name for the cron job
+        schedule:
+          type: string
+          description: Cron expression defining the execution schedule
+        handler:
+          type: string
+          description: Function or module path to invoke on each scheduled execution
+    DeployRequest:
+      type: object
+      description: Request body for creating a new revision (deployment)
+      required:
+      - assets
+      properties:
+        assets:
+          type: object
+          description: Map of file paths to asset objects. Keys are paths relative to /app/src (e.g., "main.ts"). Values describe content as UTF-8 text, base64-encoded binary, or symlinks.
+          additionalProperties:
+            $ref: '#/components/schemas/Asset'
+        config:
+          $ref: '#/components/schemas/Config'
+        layers:
+          type: array
+          description: Layer references for this revision; overrides app-level layers
+          items:
+            $ref: '#/components/schemas/LayerRefInput'
+        env_vars:
+          type: array
+          description: Revision-scoped environment variables
+          items:
+            $ref: '#/components/schemas/EnvVarInputForDeploy'
+        labels:
+          type: object
+          description: Labels to assign to this revision
+          additionalProperties:
+            type: string
+        production:
+          type: boolean
+          description: Whether to deploy this revision to the production slot
+          default: true
+        preview:
+          type: boolean
+          description: Whether to deploy this revision to the preview slot
+          default: false
+    LayerRefInput:
+      type: object
+      description: Input for specifying a layer reference when creating or updating an app
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: UUID or slug of the layer to reference
+    LayerRef:
+      type: object
+      description: A reference to a configuration layer attached to an app or revision
+      required:
+      - id
+      properties:
+        id:
+          type: string
+          description: UUID or slug of the referenced layer
+        slug:
+          type: string
+          description: Human-readable slug of the layer
+    EnvVar:
+      type: object
+      description: An environment variable associated with an app or revision
+      required:
+      - id
+      - key
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the environment variable entry
+        key:
+          type: string
+          description: Environment variable name (alphanumeric and underscores, max 128 chars)
+          pattern: ^[A-Za-z_][A-Za-z0-9_]*$
+          maxLength: 128
+        value:
+          type: string
+          description: Environment variable value. Omitted for secret variables to prevent accidental exposure.
+          maxLength: 4096
+        secret:
+          type: boolean
+          description: Whether the variable is treated as a secret (value is redacted)
+        contexts:
+          description: Deployment contexts in which this variable is active. Use "all" for all contexts or an array of specific context names.
+          oneOf:
+          - type: string
+            enum:
+            - all
+          - type: array
+            items:
+              type: string
+    Runtime:
+      type: object
+      description: Runtime configuration for the deployed application
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          description: Runtime execution type
+          enum:
+          - dynamic
+          - static
+        entrypoint:
+          type: string
+          description: Entry point file path for dynamic runtimes, relative to /app/src
+        args:
+          type: array
+          description: Additional arguments passed to the runtime entry point
+          items:
+            type: string
+        cwd:
+          type: string
+          description: Working directory for the runtime process
+        spa:
+          type: boolean
+          description: Whether to enable single-page application fallback routing for static runtimes (serves index.html for unmatched paths)
+    RevisionListItem:
+      type: object
+      description: Summary representation of a revision returned in list responses
+      required:
+      - id
+      - status
+      properties:
+        id:
+          type: string
+          description: Globally unique identifier for the revision
+        status:
+          type: string
+          description: Current build status of the revision
+          enum:
+          - skipped
+          - queued
+          - building
+          - succeeded
+          - failed
+        failure_reason:
+          type: string
+          description: Human-readable reason for failure, present only when status is failed
+        created_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the revision was created
+        updated_at:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp when the revision was last modified
     Revision:
       type: object
       description: 'An immutable snapshot of deployed code on Deno Deploy v2. Revisions replace the Deployment concept from v1. Once created, a revision cannot be modified; a new revision must be deployed to make changes. Revisions progress through: queued -> building -> succeeded (or failed/skipped).'
@@ -262,244 +468,38 @@ components:
         target:
           type: string
           description: Target path for symlink assets
-    RevisionListItem:
-      type: object
-      description: Summary representation of a revision returned in list responses
-      required:
-      - id
-      - status
-      properties:
-        id:
-          type: string
-          description: Globally unique identifier for the revision
-        status:
-          type: string
-          description: Current build status of the revision
-          enum:
-          - skipped
-          - queued
-          - building
-          - succeeded
-          - failed
-        failure_reason:
-          type: string
-          description: Human-readable reason for failure, present only when status is failed
-        created_at:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the revision was created
-        updated_at:
-          type: string
-          format: date-time
-          description: ISO 8601 timestamp when the revision was last modified
-    LayerRef:
-      type: object
-      description: A reference to a configuration layer attached to an app or revision
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: UUID or slug of the referenced layer
-        slug:
-          type: string
-          description: Human-readable slug of the layer
-    EnvVarInputForDeploy:
-      type: object
-      description: Environment variable input specific to revision deployment
-      required:
-      - key
-      - value
-      properties:
-        key:
-          type: string
-          description: Environment variable name
-          pattern: ^[A-Za-z_][A-Za-z0-9_]*$
-          maxLength: 128
-        value:
-          type: string
-          description: Environment variable value
-          maxLength: 4096
-        secret:
-          type: boolean
-          description: Whether to treat this variable as a secret
-          default: false
-        contexts:
-          description: Contexts in which this variable is active
-          oneOf:
-          - type: string
-            enum:
-            - all
-          - type: array
-            items:
-              type: string
-    Error:
-      type: object
-      description: Standard error response returned on all API error conditions
-      required:
-      - error
-      properties:
-        error:
-          type: string
-          description: Human-readable error message
-        code:
-          type: string
-          description: Machine-readable error code
-    EnvVar:
-      type: object
-      description: An environment variable associated with an app or revision
-      required:
-      - id
-      - key
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the environment variable entry
-        key:
-          type: string
-          description: Environment variable name (alphanumeric and underscores, max 128 chars)
-          pattern: ^[A-Za-z_][A-Za-z0-9_]*$
-          maxLength: 128
-        value:
-          type: string
-          description: Environment variable value. Omitted for secret variables to prevent accidental exposure.
-          maxLength: 4096
-        secret:
-          type: boolean
-          description: Whether the variable is treated as a secret (value is redacted)
-        contexts:
-          description: Deployment contexts in which this variable is active. Use "all" for all contexts or an array of specific context names.
-          oneOf:
-          - type: string
-            enum:
-            - all
-          - type: array
-            items:
-              type: string
-    DeployRequest:
-      type: object
-      description: Request body for creating a new revision (deployment)
-      required:
-      - assets
-      properties:
-        assets:
-          type: object
-          description: Map of file paths to asset objects. Keys are paths relative to /app/src (e.g., "main.ts"). Values describe content as UTF-8 text, base64-encoded binary, or symlinks.
-          additionalProperties:
-            $ref: '#/components/schemas/Asset'
-        config:
-          $ref: '#/components/schemas/Config'
-        layers:
-          type: array
-          description: Layer references for this revision; overrides app-level layers
-          items:
-            $ref: '#/components/schemas/LayerRefInput'
-        env_vars:
-          type: array
-          description: Revision-scoped environment variables
-          items:
-            $ref: '#/components/schemas/EnvVarInputForDeploy'
-        labels:
-          type: object
-          description: Labels to assign to this revision
-          additionalProperties:
-            type: string
-        production:
-          type: boolean
-          description: Whether to deploy this revision to the production slot
-          default: true
-        preview:
-          type: boolean
-          description: Whether to deploy this revision to the preview slot
-          default: false
-    CronJob:
-      type: object
-      description: A scheduled cron job definition for periodic task execution
-      required:
-      - name
-      - schedule
-      - handler
-      properties:
-        name:
-          type: string
-          description: Human-readable name for the cron job
-        schedule:
-          type: string
-          description: Cron expression defining the execution schedule
-        handler:
-          type: string
-          description: Function or module path to invoke on each scheduled execution
-    LayerRefInput:
-      type: object
-      description: Input for specifying a layer reference when creating or updating an app
-      required:
-      - id
-      properties:
-        id:
-          type: string
-          description: UUID or slug of the layer to reference
-    Config:
-      type: object
-      description: Build and runtime configuration for an app or revision. Supports framework-specific presets (Next.js, Astro, Fresh) or custom dynamic/static runtime configurations.
-      properties:
-        framework:
-          type: string
-          description: Framework preset to use for build and runtime configuration. Supported values include nextjs, astro, fresh, and others.
-        install:
-          type: string
-          description: Custom install command to run before building
-        build:
-          type: string
-          description: Custom build command
-        predeploy:
-          type: string
-          description: Command to run after build and before deployment
-        runtime:
-          $ref: '#/components/schemas/Runtime'
-        crons:
-          type: array
-          description: Cron job definitions for scheduled task execution
-          items:
-            $ref: '#/components/schemas/CronJob'
-    Runtime:
-      type: object
-      description: Runtime configuration for the deployed application
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          description: Runtime execution type
-          enum:
-          - dynamic
-          - static
-        entrypoint:
-          type: string
-          description: Entry point file path for dynamic runtimes, relative to /app/src
-        args:
-          type: array
-          description: Additional arguments passed to the runtime entry point
-          items:
-            type: string
-        cwd:
-          type: string
-          description: Working directory for the runtime process
-        spa:
-          type: boolean
-          description: Whether to enable single-page application fallback routing for static runtimes (serves index.html for unmatched paths)
+  responses:
+    NotFound:
+      description: Not found - the requested resource does not exist
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized - missing or invalid Bearer token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    BadRequest:
+      description: Bad request - invalid parameters or request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
   parameters:
-    revision:
-      name: revision
-      in: path
-      required: true
-      description: Globally unique revision ID
-      schema:
-        type: string
     app:
       name: app
       in: path
       required: true
       description: App UUID or human-readable slug
+      schema:
+        type: string
+    revision:
+      name: revision
+      in: path
+      required: true
+      description: Globally unique revision ID
       schema:
         type: string
   securitySchemes:
