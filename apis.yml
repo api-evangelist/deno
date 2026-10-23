@@ -291,6 +291,8 @@ apis:
   - type: Documentation
     url: https://docs.deno.com/subhosting/manual/
 common:
+  - type: PostmanWorkspace
+    url: https://www.postman.com/kinlaneapi/deno/overview
   - type: Plans
     url: plans/deno-plans-pricing.yml
   - type: RateLimits
