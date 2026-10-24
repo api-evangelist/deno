@@ -1,439 +1,463 @@
 {
+  "info": {
+    "_postman_id": "e38e66d2-5eb6-47c1-b524-2e4a752fe000",
+    "name": "Deno Deploy API v2 Logs API",
+    "description": "The Deno Deploy REST API v2 enables programmatic management of applications, revisions, layers, and configuration on the Deno Deploy serverless edge platform.\n\nContact Support:\n Name: Deno Deploy Support",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-10-21T20:28:32.000Z",
+    "updatedAt": "2026-10-21T20:28:32.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-e38e66d2-5eb6-47c1-b524-2e4a752fe000"
+  },
   "item": [
     {
-      "id": "3ab6cd19-5d50-4fd5-ae1a-bdc0ee8da729",
-      "name": "Logs",
-      "description": {
-        "content": "Query or stream runtime application logs for apps",
-        "type": "text/plain"
-      },
+      "name": "apps",
       "item": [
         {
-          "id": "0a3da872-a1bf-4565-8b89-60b7670e7c58",
-          "name": "Get or stream app logs",
-          "request": {
-            "name": "Get or stream app logs",
-            "description": {
-              "content": "Queries or streams runtime logs for an application. A start datetime is required. When an end datetime is omitted, the endpoint streams logs in real time using Server-Sent Events or newline-delimited JSON depending on the Accept header. Supports filtering by revision ID, log level, and full-text search. Cursor-based pagination applies to historical queries.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "apps",
-                ":app",
-                "logs"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [
-                {
-                  "disabled": false,
-                  "key": "start",
-                  "value": "<dateTime>",
-                  "description": "(Required) Start of the log time range as an ISO 8601 datetime"
-                },
-                {
-                  "disabled": false,
-                  "key": "end",
-                  "value": "<dateTime>",
-                  "description": "End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time."
-                },
-                {
-                  "disabled": false,
-                  "key": "revision_id",
-                  "value": "<string>",
-                  "description": "Filter logs to a specific revision by its ID"
-                },
-                {
-                  "disabled": false,
-                  "key": "level",
-                  "value": "<string>",
-                  "description": "Filter logs by severity level"
-                },
-                {
-                  "disabled": false,
-                  "key": "query",
-                  "value": "<string>",
-                  "description": "Full-text search query to filter log messages"
-                },
-                {
-                  "disabled": false,
-                  "key": "cursor",
-                  "value": "<string>",
-                  "description": "Pagination cursor for historical log queries"
-                },
-                {
-                  "disabled": false,
-                  "key": "limit",
-                  "value": "100",
-                  "description": "Maximum number of log entries to return (1-1000)"
-                }
-              ],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "app",
-                  "description": "(Required) App UUID or human-readable slug"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "auth": null
-          },
-          "response": [
+          "name": "{app}",
+          "item": [
             {
-              "id": "7d6b6106-cb51-4ceb-a1e0-80ff7235b944",
-              "name": "Logs returned or streaming initiated",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app",
-                    "logs"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "start",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "end",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "revision_id",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "level",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "query",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "cursor",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "100"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
+              "name": "logs",
+              "item": [
                 {
-                  "key": "Content-Type",
-                  "value": "application/json"
+                  "name": "Get or stream app logs",
+                  "id": "9f77a3a4-9be1-4350-850c-48bb7fd80012",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app/logs?start=<dateTime>&end=<dateTime>&revision_id=<string>&level=info&query=<string>&cursor=<string>&limit=100",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app",
+                        "logs"
+                      ],
+                      "query": [
+                        {
+                          "description": "(Required) Start of the log time range as an ISO 8601 datetime",
+                          "key": "start",
+                          "value": "<dateTime>"
+                        },
+                        {
+                          "description": "End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time.",
+                          "key": "end",
+                          "value": "<dateTime>"
+                        },
+                        {
+                          "description": "Filter logs to a specific revision by its ID",
+                          "key": "revision_id",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Filter logs by severity level",
+                          "key": "level",
+                          "value": "info"
+                        },
+                        {
+                          "description": "Full-text search query to filter log messages",
+                          "key": "query",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Pagination cursor for historical log queries",
+                          "key": "cursor",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Maximum number of log entries to return (1-1000)",
+                          "key": "limit",
+                          "value": "100"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "id": "ed735791-6960-440d-aeb1-0b4ab9899633",
+                          "key": "app",
+                          "value": "<string>",
+                          "description": "(Required) App UUID or human-readable slug"
+                        }
+                      ]
+                    },
+                    "description": "Queries or streams runtime logs for an application. A start datetime is required. When an end datetime is omitted, the endpoint streams logs in real time using Server-Sent Events or newline-delimited JSON depending on the Accept header. Supports filtering by revision ID, log level, and full-text search. Cursor-based pagination applies to historical queries."
+                  },
+                  "response": [
+                    {
+                      "id": "87dd3c1d-96a4-42c6-aa7b-f9f0855f9fc7",
+                      "name": "Logs returned or streaming initiated",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/apps/:app/logs?start=<dateTime>&end=<dateTime>&revision_id=<string>&level=info&query=<string>&cursor=<string>&limit=100",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "apps",
+                            ":app",
+                            "logs"
+                          ],
+                          "query": [
+                            {
+                              "description": "(Required) Start of the log time range as an ISO 8601 datetime",
+                              "key": "start",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time.",
+                              "key": "end",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Filter logs to a specific revision by its ID",
+                              "key": "revision_id",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Filter logs by severity level",
+                              "key": "level",
+                              "value": "info"
+                            },
+                            {
+                              "description": "Full-text search query to filter log messages",
+                              "key": "query",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Pagination cursor for historical log queries",
+                              "key": "cursor",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Maximum number of log entries to return (1-1000)",
+                              "key": "limit",
+                              "value": "100"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "app"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"logs\": [\n    {\n      \"level\": \"warn\",\n      \"message\": \"<string>\",\n      \"revision_id\": \"<string>\",\n      \"region\": \"<string>\",\n      \"timestamp\": \"<dateTime>\"\n    },\n    {\n      \"level\": \"warn\",\n      \"message\": \"<string>\",\n      \"revision_id\": \"<string>\",\n      \"region\": \"<string>\",\n      \"timestamp\": \"<dateTime>\"\n    }\n  ],\n  \"cursor\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:32.000Z",
+                      "updatedAt": "2026-10-21T20:28:32.000Z",
+                      "uid": "35240-87dd3c1d-96a4-42c6-aa7b-f9f0855f9fc7"
+                    },
+                    {
+                      "id": "720a1f34-2822-4491-b7b0-f4da49bb7603",
+                      "name": "Bad request - invalid parameters or request body",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/apps/:app/logs?start=<dateTime>&end=<dateTime>&revision_id=<string>&level=info&query=<string>&cursor=<string>&limit=100",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "apps",
+                            ":app",
+                            "logs"
+                          ],
+                          "query": [
+                            {
+                              "description": "(Required) Start of the log time range as an ISO 8601 datetime",
+                              "key": "start",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time.",
+                              "key": "end",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Filter logs to a specific revision by its ID",
+                              "key": "revision_id",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Filter logs by severity level",
+                              "key": "level",
+                              "value": "info"
+                            },
+                            {
+                              "description": "Full-text search query to filter log messages",
+                              "key": "query",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Pagination cursor for historical log queries",
+                              "key": "cursor",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Maximum number of log entries to return (1-1000)",
+                              "key": "limit",
+                              "value": "100"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "app"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Bad Request",
+                      "code": 400,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:32.000Z",
+                      "updatedAt": "2026-10-21T20:28:32.000Z",
+                      "uid": "35240-720a1f34-2822-4491-b7b0-f4da49bb7603"
+                    },
+                    {
+                      "id": "89d8ee93-20db-41f2-ae95-68bfdb7e4287",
+                      "name": "Unauthorized - missing or invalid Bearer token",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/apps/:app/logs?start=<dateTime>&end=<dateTime>&revision_id=<string>&level=info&query=<string>&cursor=<string>&limit=100",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "apps",
+                            ":app",
+                            "logs"
+                          ],
+                          "query": [
+                            {
+                              "description": "(Required) Start of the log time range as an ISO 8601 datetime",
+                              "key": "start",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time.",
+                              "key": "end",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Filter logs to a specific revision by its ID",
+                              "key": "revision_id",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Filter logs by severity level",
+                              "key": "level",
+                              "value": "info"
+                            },
+                            {
+                              "description": "Full-text search query to filter log messages",
+                              "key": "query",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Pagination cursor for historical log queries",
+                              "key": "cursor",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Maximum number of log entries to return (1-1000)",
+                              "key": "limit",
+                              "value": "100"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "app"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Unauthorized",
+                      "code": 401,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:32.000Z",
+                      "updatedAt": "2026-10-21T20:28:32.000Z",
+                      "uid": "35240-89d8ee93-20db-41f2-ae95-68bfdb7e4287"
+                    },
+                    {
+                      "id": "7a2d29a5-cebe-43b7-b6a7-39a992a7ecb9",
+                      "name": "Not found - the requested resource does not exist",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/apps/:app/logs?start=<dateTime>&end=<dateTime>&revision_id=<string>&level=info&query=<string>&cursor=<string>&limit=100",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "apps",
+                            ":app",
+                            "logs"
+                          ],
+                          "query": [
+                            {
+                              "description": "(Required) Start of the log time range as an ISO 8601 datetime",
+                              "key": "start",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "End of the log time range as an ISO 8601 datetime. Omit to stream logs in real time.",
+                              "key": "end",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "Filter logs to a specific revision by its ID",
+                              "key": "revision_id",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Filter logs by severity level",
+                              "key": "level",
+                              "value": "info"
+                            },
+                            {
+                              "description": "Full-text search query to filter log messages",
+                              "key": "query",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Pagination cursor for historical log queries",
+                              "key": "cursor",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Maximum number of log entries to return (1-1000)",
+                              "key": "limit",
+                              "value": "100"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "app"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Not Found",
+                      "code": 404,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:32.000Z",
+                      "updatedAt": "2026-10-21T20:28:32.000Z",
+                      "uid": "35240-7a2d29a5-cebe-43b7-b6a7-39a992a7ecb9"
+                    }
+                  ],
+                  "createdAt": "2026-10-21T20:28:32.000Z",
+                  "updatedAt": "2026-10-21T20:28:32.000Z",
+                  "uid": "35240-9f77a3a4-9be1-4350-850c-48bb7fd80012"
                 }
               ],
-              "body": "{\n  \"logs\": [\n    {\n      \"level\": \"debug\",\n      \"message\": \"string\",\n      \"revision_id\": \"string\",\n      \"region\": \"string\",\n      \"timestamp\": \"2022-01-01T03:22:21.266Z\"\n    },\n    {\n      \"level\": \"warn\",\n      \"message\": \"string\",\n      \"revision_id\": \"string\",\n      \"region\": \"string\",\n      \"timestamp\": \"1998-04-20T02:18:59.891Z\"\n    }\n  ],\n  \"cursor\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "e0d0436c-5b6b-490d-9a2e-326b326b0116",
-              "name": "Bad request - invalid parameters or request body",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app",
-                    "logs"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "start",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "end",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "revision_id",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "level",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "query",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "cursor",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "100"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "83738847-3fb7-4c2a-98bf-a4f6c0d29a90",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app",
-                    "logs"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "start",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "end",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "revision_id",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "level",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "query",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "cursor",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "100"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "ffdad7c4-c3a7-45c8-8dcb-ee9791ab9063",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app",
-                    "logs"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "start",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "end",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "revision_id",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "level",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "query",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "cursor",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "100"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
+              "id": "e75d53ce-7835-41b2-bec1-5391e169b75a",
+              "createdAt": "2026-10-21T20:28:32.000Z",
+              "updatedAt": "2026-10-21T20:28:32.000Z",
+              "uid": "35240-e75d53ce-7835-41b2-bec1-5391e169b75a"
             }
           ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
+          "id": "6447c949-cf1e-48f8-bbf6-417fb4105d85",
+          "createdAt": "2026-10-21T20:28:32.000Z",
+          "updatedAt": "2026-10-21T20:28:32.000Z",
+          "uid": "35240-6447c949-cf1e-48f8-bbf6-417fb4105d85"
         }
       ],
-      "event": []
-    }
-  ],
-  "event": [],
-  "variable": [
-    {
-      "type": "string",
-      "value": "https://api.deno.com/v1",
-      "key": "baseUrl"
+      "id": "7aa1f123-b5e0-469c-b258-4791c21e5d62",
+      "createdAt": "2026-10-21T20:28:32.000Z",
+      "updatedAt": "2026-10-21T20:28:32.000Z",
+      "uid": "35240-7aa1f123-b5e0-469c-b258-4791c21e5d62"
     }
   ],
   "auth": {
@@ -441,17 +465,15 @@
     "bearer": [
       {
         "key": "token",
-        "value": "{{bearerToken}}"
+        "value": "{{bearerToken}}",
+        "type": "string"
       }
     ]
   },
-  "info": {
-    "_postman_id": "0deb817a-2325-49f6-9660-f2f8044e3db0",
-    "name": "Deno Deploy REST Apps Logs API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": {
-      "content": "The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.\n\nContact Support:\n Name: Deno Deploy Support",
-      "type": "text/plain"
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.deno.com/v2"
     }
-  }
+  ]
 }

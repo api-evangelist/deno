@@ -1,529 +1,522 @@
 {
+  "info": {
+    "_postman_id": "9e148ca9-3bd9-4315-990b-318ab102a457",
+    "name": "Deno Deploy REST Organizations API",
+    "description": "The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.\n\nContact Support:\n Name: Deno Deploy Support",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-10-21T20:28:37.000Z",
+    "updatedAt": "2026-10-21T20:28:37.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-9e148ca9-3bd9-4315-990b-318ab102a457"
+  },
   "item": [
     {
-      "id": "4e4d58a1-6f07-4162-969d-2e12c09d0308",
-      "name": "Organizations",
-      "description": {
-        "content": "Retrieve organization details and analytics",
-        "type": "text/plain"
-      },
+      "name": "organizations",
       "item": [
         {
-          "id": "89eea5b4-766c-40ef-a7e9-a0c73941d1cd",
-          "name": "Get organization",
-          "request": {
-            "name": "Get organization",
-            "description": {
-              "content": "Retrieves the details of an organization by its UUID. Organizations are the top-level billing and access-control containers on Deno Deploy.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "organizations",
-                ":organizationId"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<uuid>",
-                  "key": "organizationId",
-                  "description": "(Required) UUID of the organization"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "auth": null
-          },
-          "response": [
+          "name": "{organizationId}",
+          "item": [
             {
-              "id": "ad2f9d85-72ba-41fc-a558-87fbe4ac2d99",
-              "name": "Organization retrieved successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
+              "name": "analytics",
+              "item": [
+                {
+                  "name": "Get organization analytics",
+                  "id": "4c97869f-a803-44bc-adcf-c7a56e8ce7ab",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
                   },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/organizations/:organizationId/analytics?since=<dateTime>&until=<dateTime>",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "organizations",
+                        ":organizationId",
+                        "analytics"
+                      ],
+                      "query": [
+                        {
+                          "description": "(Required) Start of the analytics time range in RFC 3339 format",
+                          "key": "since",
+                          "value": "<dateTime>"
+                        },
+                        {
+                          "description": "(Required) End of the analytics time range in RFC 3339 format",
+                          "key": "until",
+                          "value": "<dateTime>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "id": "0d0c513a-bbd8-4591-8720-9fc58a648edf",
+                          "key": "organizationId",
+                          "value": "<uuid>",
+                          "description": "(Required) UUID of the organization"
+                        }
+                      ]
+                    },
+                    "description": "Returns time-series analytics data for an organization in 15-minute intervals. The time range is limited to a maximum of 24 hours and must be specified using RFC 3339 timestamps."
+                  },
+                  "response": [
+                    {
+                      "id": "44453c12-b02b-4874-975a-2ff236c4f9c5",
+                      "name": "Analytics data retrieved successfully",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/analytics?since=<dateTime>&until=<dateTime>",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "analytics"
+                          ],
+                          "query": [
+                            {
+                              "description": "(Required) Start of the analytics time range in RFC 3339 format",
+                              "key": "since",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "(Required) End of the analytics time range in RFC 3339 format",
+                              "key": "until",
+                              "value": "<dateTime>"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"fields\": [\n    {\n      \"name\": \"<string>\",\n      \"type\": \"<string>\"\n    },\n    {\n      \"name\": \"<string>\",\n      \"type\": \"<string>\"\n    }\n  ],\n  \"values\": [\n    [],\n    []\n  ]\n}",
+                      "createdAt": "2026-10-21T20:28:38.000Z",
+                      "updatedAt": "2026-10-21T20:28:38.000Z",
+                      "uid": "35240-44453c12-b02b-4874-975a-2ff236c4f9c5"
+                    },
+                    {
+                      "id": "435799c5-beab-4b1e-8aaa-36ef2ee086c6",
+                      "name": "Bad request - invalid parameters or request body",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/analytics?since=<dateTime>&until=<dateTime>",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "analytics"
+                          ],
+                          "query": [
+                            {
+                              "description": "(Required) Start of the analytics time range in RFC 3339 format",
+                              "key": "since",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "(Required) End of the analytics time range in RFC 3339 format",
+                              "key": "until",
+                              "value": "<dateTime>"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Bad Request",
+                      "code": 400,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:38.000Z",
+                      "updatedAt": "2026-10-21T20:28:38.000Z",
+                      "uid": "35240-435799c5-beab-4b1e-8aaa-36ef2ee086c6"
+                    },
+                    {
+                      "id": "3fad34f2-831d-4dc5-a65e-e9b1e031642d",
+                      "name": "Unauthorized - missing or invalid Bearer token",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/analytics?since=<dateTime>&until=<dateTime>",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "analytics"
+                          ],
+                          "query": [
+                            {
+                              "description": "(Required) Start of the analytics time range in RFC 3339 format",
+                              "key": "since",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "(Required) End of the analytics time range in RFC 3339 format",
+                              "key": "until",
+                              "value": "<dateTime>"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Unauthorized",
+                      "code": 401,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:38.000Z",
+                      "updatedAt": "2026-10-21T20:28:38.000Z",
+                      "uid": "35240-3fad34f2-831d-4dc5-a65e-e9b1e031642d"
+                    },
+                    {
+                      "id": "fdec7630-6727-4769-bc2b-f5f3570f06de",
+                      "name": "Not found - the requested resource does not exist",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/analytics?since=<dateTime>&until=<dateTime>",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "analytics"
+                          ],
+                          "query": [
+                            {
+                              "description": "(Required) Start of the analytics time range in RFC 3339 format",
+                              "key": "since",
+                              "value": "<dateTime>"
+                            },
+                            {
+                              "description": "(Required) End of the analytics time range in RFC 3339 format",
+                              "key": "until",
+                              "value": "<dateTime>"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Not Found",
+                      "code": 404,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:38.000Z",
+                      "updatedAt": "2026-10-21T20:28:38.000Z",
+                      "uid": "35240-fdec7630-6727-4769-bc2b-f5f3570f06de"
+                    }
+                  ],
+                  "createdAt": "2026-10-21T20:28:38.000Z",
+                  "updatedAt": "2026-10-21T20:28:38.000Z",
+                  "uid": "35240-4c97869f-a803-44bc-adcf-c7a56e8ce7ab"
+                }
+              ],
+              "id": "1eaab2d8-f95e-4dce-9ec7-839f33c966b6",
+              "createdAt": "2026-10-21T20:28:38.000Z",
+              "updatedAt": "2026-10-21T20:28:38.000Z",
+              "uid": "35240-1eaab2d8-f95e-4dce-9ec7-839f33c966b6"
+            },
+            {
+              "name": "Get organization",
+              "id": "2378e439-3f71-45cc-9e94-c45f90ff47cd",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
                   {
                     "key": "Accept",
                     "value": "application/json"
                   }
                 ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"id\": \"e00e70ce-21fa-ad62-3eee-654136998519\",\n  \"name\": \"string\",\n  \"pro\": false,\n  \"features\": {}\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "333688ed-edb6-4dda-902d-e5847877721f",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
                 "url": {
+                  "raw": "{{baseUrl}}/organizations/:organizationId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
                   "path": [
                     "organizations",
                     ":organizationId"
                   ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
                   "variable": [
                     {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
+                      "id": "9dda57c4-2880-4fa2-838d-66224071cdf9",
                       "key": "organizationId",
+                      "value": "<uuid>",
                       "description": "(Required) UUID of the organization"
                     }
                   ]
                 },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
+                "description": "Retrieves the details of an organization by its UUID. Organizations are the top-level billing and access-control containers on Deno Deploy."
               },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
+              "response": [
                 {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "4a307128-7d82-4d3c-90ca-37ad13f15b50",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
+                  "id": "39d5a051-6799-4426-ac02-53f8a23465d2",
+                  "name": "Organization retrieved successfully",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/organizations/:organizationId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "organizations",
+                        ":organizationId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "organizationId"
+                        }
+                      ]
                     }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
                   },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"id\": \"<uuid>\",\n  \"name\": \"<string>\",\n  \"pro\": \"<boolean>\",\n  \"features\": {}\n}",
+                  "createdAt": "2026-10-21T20:28:38.000Z",
+                  "updatedAt": "2026-10-21T20:28:38.000Z",
+                  "uid": "35240-39d5a051-6799-4426-ac02-53f8a23465d2"
+                },
                 {
-                  "key": "Content-Type",
-                  "value": "application/json"
+                  "id": "21eed945-d938-461c-8301-c5fe99ae6dee",
+                  "name": "Unauthorized - missing or invalid Bearer token",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/organizations/:organizationId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "organizations",
+                        ":organizationId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "organizationId"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:38.000Z",
+                  "updatedAt": "2026-10-21T20:28:38.000Z",
+                  "uid": "35240-21eed945-d938-461c-8301-c5fe99ae6dee"
+                },
+                {
+                  "id": "257f2ec2-f753-4d75-98a4-d900b1d3d82b",
+                  "name": "Not found - the requested resource does not exist",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/organizations/:organizationId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "organizations",
+                        ":organizationId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "organizationId"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:38.000Z",
+                  "updatedAt": "2026-10-21T20:28:38.000Z",
+                  "uid": "35240-257f2ec2-f753-4d75-98a4-d900b1d3d82b"
                 }
               ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
+              "createdAt": "2026-10-21T20:28:38.000Z",
+              "updatedAt": "2026-10-21T20:28:38.000Z",
+              "uid": "35240-2378e439-3f71-45cc-9e94-c45f90ff47cd"
             }
           ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "a6b7ecaa-600f-4ecd-ad24-ae761142be6b",
-          "name": "Get organization analytics",
-          "request": {
-            "name": "Get organization analytics",
-            "description": {
-              "content": "Returns time-series analytics data for an organization in 15-minute intervals. The time range is limited to a maximum of 24 hours and must be specified using RFC 3339 timestamps.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "organizations",
-                ":organizationId",
-                "analytics"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [
-                {
-                  "disabled": false,
-                  "key": "since",
-                  "value": "<dateTime>",
-                  "description": "(Required) Start of the analytics time range in RFC 3339 format"
-                },
-                {
-                  "disabled": false,
-                  "key": "until",
-                  "value": "<dateTime>",
-                  "description": "(Required) End of the analytics time range in RFC 3339 format"
-                }
-              ],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<uuid>",
-                  "key": "organizationId",
-                  "description": "(Required) UUID of the organization"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "0aec5e6b-9ebc-4a38-b58f-db9e789578a9",
-              "name": "Analytics data retrieved successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "analytics"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "since",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "until",
-                      "value": "<dateTime>"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"fields\": [\n    {\n      \"name\": \"string\",\n      \"type\": \"string\"\n    },\n    {\n      \"name\": \"string\",\n      \"type\": \"string\"\n    }\n  ],\n  \"values\": [\n    [],\n    []\n  ]\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "74a0bf9e-52c8-4f31-8a1f-0706952645a6",
-              "name": "Bad request - invalid parameters or request body",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "analytics"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "since",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "until",
-                      "value": "<dateTime>"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "9ee42962-28f6-49ee-a0d5-da70576b7d82",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "analytics"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "since",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "until",
-                      "value": "<dateTime>"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "a3976785-2498-4cc8-905a-d032e1a54bef",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "analytics"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "since",
-                      "value": "<dateTime>"
-                    },
-                    {
-                      "key": "until",
-                      "value": "<dateTime>"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
+          "id": "2d6c6f8f-533e-478d-8b08-9a1fbd397fcc",
+          "createdAt": "2026-10-21T20:28:38.000Z",
+          "updatedAt": "2026-10-21T20:28:38.000Z",
+          "uid": "35240-2d6c6f8f-533e-478d-8b08-9a1fbd397fcc"
         }
       ],
-      "event": []
-    }
-  ],
-  "event": [],
-  "variable": [
-    {
-      "type": "string",
-      "value": "https://api.deno.com/v1",
-      "key": "baseUrl"
+      "id": "075c3589-b254-44f8-b18d-3bd7857ea7c2",
+      "createdAt": "2026-10-21T20:28:38.000Z",
+      "updatedAt": "2026-10-21T20:28:38.000Z",
+      "uid": "35240-075c3589-b254-44f8-b18d-3bd7857ea7c2"
     }
   ],
   "auth": {
@@ -531,17 +524,15 @@
     "bearer": [
       {
         "key": "token",
-        "value": "{{bearerToken}}"
+        "value": "{{bearerToken}}",
+        "type": "string"
       }
     ]
   },
-  "info": {
-    "_postman_id": "0037fc91-6260-4fc1-9982-b6bffcba172d",
-    "name": "Deno Deploy REST Apps Organizations API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": {
-      "content": "The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.\n\nContact Support:\n Name: Deno Deploy Support",
-      "type": "text/plain"
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.deno.com/v1"
     }
-  }
+  ]
 }

@@ -1,254 +1,892 @@
 {
+  "info": {
+    "_postman_id": "ecd7c4e5-a6ee-4458-9e32-06477a4f3aba",
+    "name": "Deno Deploy API v2 Apps API",
+    "description": "The Deno Deploy REST API v2 enables programmatic management of applications, revisions, layers, and configuration on the Deno Deploy serverless edge platform.\n\nContact Support:\n Name: Deno Deploy Support",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-10-21T20:28:08.000Z",
+    "updatedAt": "2026-10-21T20:28:08.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-ecd7c4e5-a6ee-4458-9e32-06477a4f3aba"
+  },
   "item": [
     {
-      "id": "e486c6b9-b943-4e90-9434-108159cd7930",
-      "name": "Apps",
-      "description": {
-        "content": "Create, list, retrieve, update, and delete applications. Apps are the top-level containers for deployable code on Deno Deploy v2.",
-        "type": "text/plain"
-      },
+      "name": "apps",
       "item": [
         {
-          "id": "b46e3c28-a90a-4a75-8593-9d92b6cbd7e7",
-          "name": "List apps",
-          "request": {
-            "name": "List apps",
-            "description": {
-              "content": "Returns a cursor-paginated list of all applications accessible to the authenticated token. Supports filtering by labels and by associated layer. Results are ordered by creation date descending by default.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "apps"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [
+          "name": "{app}",
+          "item": [
+            {
+              "name": "Get app details",
+              "id": "10a0c088-d44c-4316-8759-489322fb31f9",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/apps/:app",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "apps",
+                    ":app"
+                  ],
+                  "variable": [
+                    {
+                      "id": "b23ac649-8c1f-4d19-a202-af5e1096bdc2",
+                      "key": "app",
+                      "value": "<string>",
+                      "description": "(Required) App UUID or human-readable slug"
+                    }
+                  ]
+                },
+                "description": "Retrieves complete details for a specific application identified by its UUID or human-readable slug, including its labels, attached layers, environment variables, and configuration."
+              },
+              "response": [
                 {
-                  "disabled": false,
-                  "key": "cursor",
-                  "value": "<string>",
-                  "description": "Opaque pagination cursor from the previous response Link header"
+                  "id": "d858b712-88ff-4109-9f64-ee07db424228",
+                  "name": "App retrieved successfully",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"id\": \"<uuid>\",\n  \"slug\": \"xajw0nrzj\",\n  \"labels\": {\n    \"eub\": \"<string>\",\n    \"reprehenderite3\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\",\n      \"slug\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"slug\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"<string>\",\n      \"key\": \"D6\",\n      \"value\": \"<string>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"key\": \"n7YAa\",\n      \"value\": \"<string>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  },\n  \"created_at\": \"<dateTime>\",\n  \"updated_at\": \"<dateTime>\"\n}",
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-d858b712-88ff-4109-9f64-ee07db424228"
                 },
                 {
-                  "disabled": false,
-                  "key": "limit",
-                  "value": "30",
-                  "description": "Maximum number of apps to return (1-100)"
+                  "id": "1fd65167-2e7d-41eb-bc10-57e0d32fcf60",
+                  "name": "Unauthorized - missing or invalid Bearer token",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-1fd65167-2e7d-41eb-bc10-57e0d32fcf60"
                 },
                 {
-                  "disabled": false,
-                  "key": "labels[key_0]",
-                  "value": "<string>",
-                  "description": "Filter apps by label key-value pairs (deepObject style)"
-                },
-                {
-                  "disabled": false,
-                  "key": "labels[key_1]",
-                  "value": "<string>",
-                  "description": "Filter apps by label key-value pairs (deepObject style)"
-                },
-                {
-                  "disabled": false,
-                  "key": "labels[key_2]",
-                  "value": "<string>",
-                  "description": "Filter apps by label key-value pairs (deepObject style)"
-                },
-                {
-                  "disabled": false,
-                  "key": "labels[key_3]",
-                  "value": "<string>",
-                  "description": "Filter apps by label key-value pairs (deepObject style)"
-                },
-                {
-                  "disabled": false,
-                  "key": "layer",
-                  "value": "<string>",
-                  "description": "Filter apps by layer ID or slug"
+                  "id": "2527e802-cb76-4226-8380-64337960cd42",
+                  "name": "Not found - the requested resource does not exist",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-2527e802-cb76-4226-8380-64337960cd42"
                 }
               ],
-              "variable": []
+              "createdAt": "2026-10-21T20:28:08.000Z",
+              "updatedAt": "2026-10-21T20:28:08.000Z",
+              "uid": "35240-10a0c088-d44c-4316-8759-489322fb31f9"
             },
+            {
+              "name": "Update app",
+              "id": "b403799e-d869-4aaf-a5aa-aaf8b6ac5d90",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "PATCH",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"slug\": \"emooohb14ptmee\",\n  \"labels\": {\n    \"id_03\": \"<string>\",\n    \"ipsum7\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"<string>\",\n      \"key\": \"M0GO\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"key\": \"Y\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/apps/:app",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "apps",
+                    ":app"
+                  ],
+                  "variable": [
+                    {
+                      "id": "88131343-029a-4c34-b5f5-fc1b2832f098",
+                      "key": "app",
+                      "value": "<string>",
+                      "description": "(Required) App UUID or human-readable slug"
+                    }
+                  ]
+                },
+                "description": "Updates one or more mutable properties of an existing application. The slug, labels, layers, environment variables, and configuration can each be modified independently. Label updates replace all existing labels. Layer updates replace all layer references. Environment variable updates use deep merge semantics."
+              },
+              "response": [
+                {
+                  "id": "47467cb1-bc99-4328-905b-2ea7024ee0d7",
+                  "name": "App updated successfully",
+                  "originalRequest": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"slug\": \"emooohb14ptmee\",\n  \"labels\": {\n    \"id_03\": \"<string>\",\n    \"ipsum7\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"<string>\",\n      \"key\": \"M0GO\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"key\": \"Y\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"id\": \"<uuid>\",\n  \"slug\": \"xajw0nrzj\",\n  \"labels\": {\n    \"eub\": \"<string>\",\n    \"reprehenderite3\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\",\n      \"slug\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"slug\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"<string>\",\n      \"key\": \"D6\",\n      \"value\": \"<string>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"key\": \"n7YAa\",\n      \"value\": \"<string>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  },\n  \"created_at\": \"<dateTime>\",\n  \"updated_at\": \"<dateTime>\"\n}",
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-47467cb1-bc99-4328-905b-2ea7024ee0d7"
+                },
+                {
+                  "id": "1d6df65d-af5c-4886-afdc-2c4c1a1e13b4",
+                  "name": "Bad request - invalid parameters or request body",
+                  "originalRequest": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"slug\": \"emooohb14ptmee\",\n  \"labels\": {\n    \"id_03\": \"<string>\",\n    \"ipsum7\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"<string>\",\n      \"key\": \"M0GO\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"key\": \"Y\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-1d6df65d-af5c-4886-afdc-2c4c1a1e13b4"
+                },
+                {
+                  "id": "798b0468-3bc3-4875-b20d-4f05e45a4fa9",
+                  "name": "Unauthorized - missing or invalid Bearer token",
+                  "originalRequest": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"slug\": \"emooohb14ptmee\",\n  \"labels\": {\n    \"id_03\": \"<string>\",\n    \"ipsum7\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"<string>\",\n      \"key\": \"M0GO\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"key\": \"Y\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-798b0468-3bc3-4875-b20d-4f05e45a4fa9"
+                },
+                {
+                  "id": "7532bbe6-889a-4ded-945a-0fdee65e54ee",
+                  "name": "Not found - the requested resource does not exist",
+                  "originalRequest": {
+                    "method": "PATCH",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"slug\": \"emooohb14ptmee\",\n  \"labels\": {\n    \"id_03\": \"<string>\",\n    \"ipsum7\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"<string>\",\n      \"key\": \"M0GO\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"key\": \"Y\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-7532bbe6-889a-4ded-945a-0fdee65e54ee"
+                }
+              ],
+              "createdAt": "2026-10-21T20:28:08.000Z",
+              "updatedAt": "2026-10-21T20:28:08.000Z",
+              "uid": "35240-b403799e-d869-4aaf-a5aa-aaf8b6ac5d90"
+            },
+            {
+              "name": "Delete app",
+              "id": "f649ecc6-5270-41aa-b2ad-c74c7cf15ca9",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/apps/:app",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "apps",
+                    ":app"
+                  ],
+                  "variable": [
+                    {
+                      "id": "6d3fdb9a-c84a-432d-b705-b023c5cd2f20",
+                      "key": "app",
+                      "value": "<string>",
+                      "description": "(Required) App UUID or human-readable slug"
+                    }
+                  ]
+                },
+                "description": "Permanently deletes an application and all of its revisions. This operation cannot be undone. All custom domain associations must be removed before an app can be deleted."
+              },
+              "response": [
+                {
+                  "id": "fc530fa1-264c-4a31-9a51-11a604bf77d3",
+                  "name": "App deleted successfully",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "No Content",
+                  "code": 204,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-fc530fa1-264c-4a31-9a51-11a604bf77d3"
+                },
+                {
+                  "id": "5150bcea-359e-4bc0-88a0-e728e9928840",
+                  "name": "Unauthorized - missing or invalid Bearer token",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-5150bcea-359e-4bc0-88a0-e728e9928840"
+                },
+                {
+                  "id": "5d666a35-b251-4bc4-8d7d-c5e444053662",
+                  "name": "Not found - the requested resource does not exist",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/apps/:app",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "apps",
+                        ":app"
+                      ],
+                      "variable": [
+                        {
+                          "key": "app"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:08.000Z",
+                  "updatedAt": "2026-10-21T20:28:08.000Z",
+                  "uid": "35240-5d666a35-b251-4bc4-8d7d-c5e444053662"
+                }
+              ],
+              "createdAt": "2026-10-21T20:28:08.000Z",
+              "updatedAt": "2026-10-21T20:28:08.000Z",
+              "uid": "35240-f649ecc6-5270-41aa-b2ad-c74c7cf15ca9"
+            }
+          ],
+          "id": "a3b58e50-14b0-400f-b61e-6dc469d7338e",
+          "createdAt": "2026-10-21T20:28:08.000Z",
+          "updatedAt": "2026-10-21T20:28:08.000Z",
+          "uid": "35240-a3b58e50-14b0-400f-b61e-6dc469d7338e"
+        },
+        {
+          "name": "List apps",
+          "id": "8ab91f4e-5982-4ed0-8319-df0917a64b3d",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
             "header": [
               {
                 "key": "Accept",
                 "value": "application/json"
               }
             ],
-            "method": "GET",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "aa639f91-3c7b-4e65-a27d-76d64dc2b3b1",
-              "name": "Apps listed successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "cursor",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "30"
-                    },
-                    {
-                      "key": "labels[key_0]",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "labels[key_1]",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "labels[key_2]",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "labels[key_3]",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "layer",
-                      "value": "<string>"
-                    }
-                  ],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "[\n  {\n    \"id\": \"bb6b1dbb-3524-22f5-840c-5b4f8c687845\",\n    \"slug\": \"string\",\n    \"labels\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\",\n      \"key_2\": \"string\"\n    },\n    \"created_at\": \"2013-08-22T15:48:55.838Z\",\n    \"updated_at\": \"1980-04-07T14:41:01.770Z\"\n  },\n  {\n    \"id\": \"96055de5-b1fb-2d03-cf7f-4024d30ba2ff\",\n    \"slug\": \"string\",\n    \"labels\": {\n      \"key_0\": \"string\"\n    },\n    \"created_at\": \"1950-12-18T00:31:24.057Z\",\n    \"updated_at\": \"1991-07-13T14:22:46.033Z\"\n  }\n]",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "d4aed7bc-0f92-4ac4-a134-47f905f5d8b1",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "cursor",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "30"
-                    },
-                    {
-                      "key": "labels[key_0]",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "labels[key_1]",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "labels[key_2]",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "labels[key_3]",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "layer",
-                      "value": "<string>"
-                    }
-                  ],
-                  "variable": []
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "43b6bf2f-4066-4d93-8ecb-dae6bf98ae33",
-          "name": "Create app",
-          "request": {
-            "name": "Create app",
-            "description": {
-              "content": "Creates a new application. An app slug must be unique within the organization and follows DNS-compatible naming rules. Labels, layers, environment variables, and build/runtime configuration can optionally be set at creation time.",
-              "type": "text/plain"
-            },
             "url": {
-              "path": [
-                "apps"
-              ],
+              "raw": "{{baseUrl}}/apps?cursor=<string>&limit=30&labels[dolor_a3]=<string>&labels[ut_32]=<string>&layer=<string>",
               "host": [
                 "{{baseUrl}}"
               ],
-              "query": [],
-              "variable": []
+              "path": [
+                "apps"
+              ],
+              "query": [
+                {
+                  "description": "Opaque pagination cursor from the previous response Link header",
+                  "key": "cursor",
+                  "value": "<string>"
+                },
+                {
+                  "description": "Maximum number of apps to return (1-100)",
+                  "key": "limit",
+                  "value": "30"
+                },
+                {
+                  "description": "Filter apps by label key-value pairs (deepObject style)",
+                  "key": "labels[dolor_a3]",
+                  "value": "<string>"
+                },
+                {
+                  "description": "Filter apps by label key-value pairs (deepObject style)",
+                  "key": "labels[ut_32]",
+                  "value": "<string>"
+                },
+                {
+                  "description": "Filter apps by layer ID or slug",
+                  "key": "layer",
+                  "value": "<string>"
+                }
+              ]
             },
+            "description": "Returns a cursor-paginated list of all applications accessible to the authenticated token. Supports filtering by labels and by associated layer. Results are ordered by creation date descending by default."
+          },
+          "response": [
+            {
+              "id": "93ebd22c-1232-4992-be4d-7b67b9974b13",
+              "name": "Apps listed successfully",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/apps?cursor=<string>&limit=30&labels[dolor_a3]=<string>&labels[ut_32]=<string>&layer=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "apps"
+                  ],
+                  "query": [
+                    {
+                      "description": "Opaque pagination cursor from the previous response Link header",
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Maximum number of apps to return (1-100)",
+                      "key": "limit",
+                      "value": "30"
+                    },
+                    {
+                      "description": "Filter apps by label key-value pairs (deepObject style)",
+                      "key": "labels[dolor_a3]",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Filter apps by label key-value pairs (deepObject style)",
+                      "key": "labels[ut_32]",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Filter apps by layer ID or slug",
+                      "key": "layer",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "[\n  {\n    \"id\": \"<uuid>\",\n    \"slug\": \"<string>\",\n    \"labels\": {\n      \"aute_5\": \"<string>\",\n      \"esse__\": \"<string>\",\n      \"eu6a\": \"<string>\"\n    },\n    \"created_at\": \"<dateTime>\",\n    \"updated_at\": \"<dateTime>\"\n  },\n  {\n    \"id\": \"<uuid>\",\n    \"slug\": \"<string>\",\n    \"labels\": {\n      \"quis_80\": \"<string>\",\n      \"laboris5_c\": \"<string>\"\n    },\n    \"created_at\": \"<dateTime>\",\n    \"updated_at\": \"<dateTime>\"\n  }\n]",
+              "createdAt": "2026-10-21T20:28:08.000Z",
+              "updatedAt": "2026-10-21T20:28:08.000Z",
+              "uid": "35240-93ebd22c-1232-4992-be4d-7b67b9974b13"
+            },
+            {
+              "id": "ddac7790-1313-4f7d-9388-31af60fe00b8",
+              "name": "Unauthorized - missing or invalid Bearer token",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/apps?cursor=<string>&limit=30&labels[dolor_a3]=<string>&labels[ut_32]=<string>&layer=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "apps"
+                  ],
+                  "query": [
+                    {
+                      "description": "Opaque pagination cursor from the previous response Link header",
+                      "key": "cursor",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Maximum number of apps to return (1-100)",
+                      "key": "limit",
+                      "value": "30"
+                    },
+                    {
+                      "description": "Filter apps by label key-value pairs (deepObject style)",
+                      "key": "labels[dolor_a3]",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Filter apps by label key-value pairs (deepObject style)",
+                      "key": "labels[ut_32]",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "Filter apps by layer ID or slug",
+                      "key": "layer",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+              "createdAt": "2026-10-21T20:28:08.000Z",
+              "updatedAt": "2026-10-21T20:28:08.000Z",
+              "uid": "35240-ddac7790-1313-4f7d-9388-31af60fe00b8"
+            }
+          ],
+          "createdAt": "2026-10-21T20:28:08.000Z",
+          "updatedAt": "2026-10-21T20:28:08.000Z",
+          "uid": "35240-8ab91f4e-5982-4ed0-8319-df0917a64b3d"
+        },
+        {
+          "name": "Create app",
+          "id": "ed671332-f7a4-4f20-bd0a-42c7e65daf2e",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
             "header": [
               {
                 "key": "Content-Type",
@@ -259,932 +897,262 @@
                 "value": "application/json"
               }
             ],
-            "method": "POST",
-            "auth": null,
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"<string>\"\n    },\n    {\n      \"key\": \"<string>\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"<string>\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"<string>\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
+              "raw": "{\n  \"slug\": \"w65ilo3fl2f5m1lvxmcpn4q7rc67xtsm8q--9a1z1-f5u-\",\n  \"labels\": {\n    \"aute09\": \"<string>\",\n    \"suntf_\": \"<string>\",\n    \"inc1\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"KZw4Y2bkXm\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"key\": \"DOZa\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
               "options": {
                 "raw": {
+                  "headerFamily": "json",
                   "language": "json"
                 }
               }
-            }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/apps",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "apps"
+              ]
+            },
+            "description": "Creates a new application. An app slug must be unique within the organization and follows DNS-compatible naming rules. Labels, layers, environment variables, and build/runtime configuration can optionally be set at creation time."
           },
           "response": [
             {
-              "id": "7f3ad0ad-6318-4419-a1d6-e7864f55a3c7",
+              "id": "3ea77b50-e80f-4cfe-be55-9b60da9f7473",
               "name": "App created successfully",
               "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
+                "method": "POST",
                 "header": [
                   {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
+                    "key": "Content-Type",
+                    "value": "application/json"
                   },
                   {
                     "key": "Accept",
                     "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
                   }
                 ],
-                "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\"\n    },\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"Ppzx\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"key\": \"OHtDf0G7\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  }\n}",
+                  "raw": "{\n  \"slug\": \"w65ilo3fl2f5m1lvxmcpn4q7rc67xtsm8q--9a1z1-f5u-\",\n  \"labels\": {\n    \"aute09\": \"<string>\",\n    \"suntf_\": \"<string>\",\n    \"inc1\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"KZw4Y2bkXm\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"key\": \"DOZa\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
                   "options": {
                     "raw": {
+                      "headerFamily": "json",
                       "language": "json"
                     }
                   }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/apps",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "apps"
+                  ]
                 }
               },
               "status": "OK",
               "code": 200,
+              "_postman_previewlanguage": "json",
               "header": [
                 {
                   "key": "Content-Type",
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"id\": \"c6eb981c-6879-15da-8a3d-ac7095b9d2a4\",\n  \"slug\": \"kcyudhs17sue53\",\n  \"labels\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\",\n      \"slug\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"slug\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"string\",\n      \"key\": \"_mrLKkZXr\",\n      \"value\": \"string\",\n      \"secret\": true,\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"string\",\n      \"key\": \"IA\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  },\n  \"created_at\": \"1995-03-11T07:08:18.581Z\",\n  \"updated_at\": \"1951-02-20T14:57:38.207Z\"\n}",
               "cookie": [],
-              "_postman_previewlanguage": "json"
+              "responseTime": null,
+              "body": "{\n  \"id\": \"<uuid>\",\n  \"slug\": \"xajw0nrzj\",\n  \"labels\": {\n    \"eub\": \"<string>\",\n    \"reprehenderite3\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\",\n      \"slug\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"slug\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"<string>\",\n      \"key\": \"D6\",\n      \"value\": \"<string>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"key\": \"n7YAa\",\n      \"value\": \"<string>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  },\n  \"created_at\": \"<dateTime>\",\n  \"updated_at\": \"<dateTime>\"\n}",
+              "createdAt": "2026-10-21T20:28:08.000Z",
+              "updatedAt": "2026-10-21T20:28:08.000Z",
+              "uid": "35240-3ea77b50-e80f-4cfe-be55-9b60da9f7473"
             },
             {
-              "id": "c64dd187-9069-4eae-bbce-00ee4ccb2526",
+              "id": "988ff130-27d3-4eec-8716-14171f346198",
               "name": "Bad request - invalid parameters or request body",
               "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
+                "method": "POST",
                 "header": [
                   {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
+                    "key": "Content-Type",
+                    "value": "application/json"
                   },
                   {
                     "key": "Accept",
                     "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
                   }
                 ],
-                "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\"\n    },\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"Ppzx\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"key\": \"OHtDf0G7\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  }\n}",
+                  "raw": "{\n  \"slug\": \"w65ilo3fl2f5m1lvxmcpn4q7rc67xtsm8q--9a1z1-f5u-\",\n  \"labels\": {\n    \"aute09\": \"<string>\",\n    \"suntf_\": \"<string>\",\n    \"inc1\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"KZw4Y2bkXm\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"key\": \"DOZa\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
                   "options": {
                     "raw": {
+                      "headerFamily": "json",
                       "language": "json"
                     }
                   }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/apps",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "apps"
+                  ]
                 }
               },
               "status": "Bad Request",
               "code": 400,
+              "_postman_previewlanguage": "json",
               "header": [
                 {
                   "key": "Content-Type",
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
               "cookie": [],
-              "_postman_previewlanguage": "json"
+              "responseTime": null,
+              "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+              "createdAt": "2026-10-21T20:28:08.000Z",
+              "updatedAt": "2026-10-21T20:28:08.000Z",
+              "uid": "35240-988ff130-27d3-4eec-8716-14171f346198"
             },
             {
-              "id": "ce8f0954-d421-42eb-b5c7-585f27310956",
+              "id": "352f6a0f-b8df-4adc-a946-4f30fc35c7f4",
               "name": "Unauthorized - missing or invalid Bearer token",
               "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
+                "method": "POST",
                 "header": [
                   {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
+                    "key": "Content-Type",
+                    "value": "application/json"
                   },
                   {
                     "key": "Accept",
                     "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
                   }
                 ],
-                "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\"\n    },\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"Ppzx\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"key\": \"OHtDf0G7\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  }\n}",
+                  "raw": "{\n  \"slug\": \"w65ilo3fl2f5m1lvxmcpn4q7rc67xtsm8q--9a1z1-f5u-\",\n  \"labels\": {\n    \"aute09\": \"<string>\",\n    \"suntf_\": \"<string>\",\n    \"inc1\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"KZw4Y2bkXm\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"key\": \"DOZa\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
                   "options": {
                     "raw": {
+                      "headerFamily": "json",
                       "language": "json"
                     }
                   }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/apps",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "apps"
+                  ]
                 }
               },
               "status": "Unauthorized",
               "code": 401,
+              "_postman_previewlanguage": "json",
               "header": [
                 {
                   "key": "Content-Type",
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
               "cookie": [],
-              "_postman_previewlanguage": "json"
+              "responseTime": null,
+              "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+              "createdAt": "2026-10-21T20:28:08.000Z",
+              "updatedAt": "2026-10-21T20:28:08.000Z",
+              "uid": "35240-352f6a0f-b8df-4adc-a946-4f30fc35c7f4"
             },
             {
-              "id": "bafd86e8-1c42-4480-a073-22f99b613a63",
+              "id": "8124c8a3-9ac0-4248-97a8-2325b6218160",
               "name": "Conflict - a resource with this identifier already exists",
               "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": []
-                },
+                "method": "POST",
                 "header": [
                   {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
+                    "key": "Content-Type",
+                    "value": "application/json"
                   },
                   {
                     "key": "Accept",
                     "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
                   }
                 ],
-                "method": "POST",
                 "body": {
                   "mode": "raw",
-                  "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\"\n    },\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"Ppzx\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"key\": \"OHtDf0G7\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  }\n}",
+                  "raw": "{\n  \"slug\": \"w65ilo3fl2f5m1lvxmcpn4q7rc67xtsm8q--9a1z1-f5u-\",\n  \"labels\": {\n    \"aute09\": \"<string>\",\n    \"suntf_\": \"<string>\",\n    \"inc1\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"key\": \"KZw4Y2bkXm\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"key\": \"DOZa\",\n      \"value\": \"<string>\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"dynamic\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
                   "options": {
                     "raw": {
+                      "headerFamily": "json",
                       "language": "json"
                     }
                   }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/apps",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "apps"
+                  ]
                 }
               },
               "status": "Conflict",
               "code": 409,
+              "_postman_previewlanguage": "json",
               "header": [
                 {
                   "key": "Content-Type",
                   "value": "application/json"
                 }
               ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
               "cookie": [],
-              "_postman_previewlanguage": "json"
+              "responseTime": null,
+              "body": "{\n  \"error\": \"<string>\",\n  \"code\": \"<string>\"\n}",
+              "createdAt": "2026-10-21T20:28:08.000Z",
+              "updatedAt": "2026-10-21T20:28:08.000Z",
+              "uid": "35240-8124c8a3-9ac0-4248-97a8-2325b6218160"
             }
           ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "eb0ed1ec-a7f5-4ac9-9dc2-a24ff92722fe",
-          "name": "Get app details",
-          "request": {
-            "name": "Get app details",
-            "description": {
-              "content": "Retrieves complete details for a specific application identified by its UUID or human-readable slug, including its labels, attached layers, environment variables, and configuration.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "apps",
-                ":app"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "app",
-                  "description": "(Required) App UUID or human-readable slug"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "9fc449e3-2db1-4d2e-81bc-2dcdbfa3b1a1",
-              "name": "App retrieved successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"id\": \"c6eb981c-6879-15da-8a3d-ac7095b9d2a4\",\n  \"slug\": \"kcyudhs17sue53\",\n  \"labels\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\",\n      \"slug\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"slug\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"string\",\n      \"key\": \"_mrLKkZXr\",\n      \"value\": \"string\",\n      \"secret\": true,\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"string\",\n      \"key\": \"IA\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  },\n  \"created_at\": \"1995-03-11T07:08:18.581Z\",\n  \"updated_at\": \"1951-02-20T14:57:38.207Z\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "febd0ca1-e023-426a-b88b-e5d2b9d3ff3f",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "b974f150-27d3-4387-a946-8956e8fb7fe0",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "5732a4bd-23c3-41d0-b7dc-eb7c79d31d11",
-          "name": "Update app",
-          "request": {
-            "name": "Update app",
-            "description": {
-              "content": "Updates one or more mutable properties of an existing application. The slug, labels, layers, environment variables, and configuration can each be modified independently. Label updates replace all existing labels. Layer updates replace all layer references. Environment variable updates use deep merge semantics.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "apps",
-                ":app"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "app",
-                  "description": "(Required) App UUID or human-readable slug"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "PATCH",
-            "auth": null,
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"<string>\",\n      \"key\": \"<string>\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"key\": \"<string>\",\n      \"value\": \"<string,null>\",\n      \"secret\": \"<boolean>\",\n      \"contexts\": \"<string>\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"<string>\",\n    \"install\": \"<string>\",\n    \"build\": \"<string>\",\n    \"predeploy\": \"<string>\",\n    \"runtime\": {\n      \"type\": \"<string>\",\n      \"entrypoint\": \"<string>\",\n      \"args\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"cwd\": \"<string>\",\n      \"spa\": \"<boolean>\"\n    },\n    \"crons\": [\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      },\n      {\n        \"name\": \"<string>\",\n        \"schedule\": \"<string>\",\n        \"handler\": \"<string>\"\n      }\n    ]\n  }\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "id": "fcc5c5d5-17d5-4dda-9863-8d1bf4213143",
-              "name": "App updated successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\"\n    },\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"string\",\n      \"key\": \"kj\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"string\",\n      \"key\": \"QB9bJt\",\n      \"value\": \"string\",\n      \"secret\": true,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"id\": \"c6eb981c-6879-15da-8a3d-ac7095b9d2a4\",\n  \"slug\": \"kcyudhs17sue53\",\n  \"labels\": {\n    \"key_0\": \"string\",\n    \"key_1\": \"string\",\n    \"key_2\": \"string\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\",\n      \"slug\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"slug\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"string\",\n      \"key\": \"_mrLKkZXr\",\n      \"value\": \"string\",\n      \"secret\": true,\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"string\",\n      \"key\": \"IA\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  },\n  \"created_at\": \"1995-03-11T07:08:18.581Z\",\n  \"updated_at\": \"1951-02-20T14:57:38.207Z\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "ee120b0f-93c1-469b-bcab-87de9d9b5d22",
-              "name": "Bad request - invalid parameters or request body",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\"\n    },\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"string\",\n      \"key\": \"kj\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"string\",\n      \"key\": \"QB9bJt\",\n      \"value\": \"string\",\n      \"secret\": true,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "f58e84ad-38c2-4e9d-b056-f99cff026cfa",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\"\n    },\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"string\",\n      \"key\": \"kj\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"string\",\n      \"key\": \"QB9bJt\",\n      \"value\": \"string\",\n      \"secret\": true,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "ad801ee6-7ee8-4873-b704-be9654913192",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PATCH",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"slug\": \"<string>\",\n  \"labels\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\"\n  },\n  \"layers\": [\n    {\n      \"id\": \"string\"\n    },\n    {\n      \"id\": \"string\"\n    }\n  ],\n  \"env_vars\": [\n    {\n      \"id\": \"string\",\n      \"key\": \"kj\",\n      \"value\": \"string\",\n      \"secret\": false,\n      \"contexts\": \"all\"\n    },\n    {\n      \"id\": \"string\",\n      \"key\": \"QB9bJt\",\n      \"value\": \"string\",\n      \"secret\": true,\n      \"contexts\": \"all\"\n    }\n  ],\n  \"config\": {\n    \"framework\": \"string\",\n    \"install\": \"string\",\n    \"build\": \"string\",\n    \"predeploy\": \"string\",\n    \"runtime\": {\n      \"type\": \"static\",\n      \"entrypoint\": \"string\",\n      \"args\": [\n        \"string\",\n        \"string\"\n      ],\n      \"cwd\": \"string\",\n      \"spa\": false\n    },\n    \"crons\": [\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      },\n      {\n        \"name\": \"string\",\n        \"schedule\": \"string\",\n        \"handler\": \"string\"\n      }\n    ]\n  }\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "be2feb77-e917-4884-8eeb-b0e05f09419b",
-          "name": "Delete app",
-          "request": {
-            "name": "Delete app",
-            "description": {
-              "content": "Permanently deletes an application and all of its revisions. This operation cannot be undone. All custom domain associations must be removed before an app can be deleted.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "apps",
-                ":app"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "app",
-                  "description": "(Required) App UUID or human-readable slug"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "DELETE",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "6f30390e-247f-468e-bfa8-41973ba70c3f",
-              "name": "App deleted successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "No Content",
-              "code": 204,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "body": "",
-              "cookie": [],
-              "_postman_previewlanguage": "text"
-            },
-            {
-              "id": "364fa766-ea52-481f-9498-0fe346387133",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "f6dc36ab-21eb-4b0d-8505-ab3c2df6e624",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "apps",
-                    ":app"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "app",
-                      "description": "(Required) App UUID or human-readable slug"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\",\n  \"code\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
+          "createdAt": "2026-10-21T20:28:08.000Z",
+          "updatedAt": "2026-10-21T20:28:08.000Z",
+          "uid": "35240-ed671332-f7a4-4f20-bd0a-42c7e65daf2e"
         }
       ],
-      "event": []
-    }
-  ],
-  "event": [],
-  "variable": [
-    {
-      "type": "string",
-      "value": "https://api.deno.com/v1",
-      "key": "baseUrl"
+      "id": "f92f5693-ec39-4fbd-9fa2-0d919b04e9be",
+      "createdAt": "2026-10-21T20:28:08.000Z",
+      "updatedAt": "2026-10-21T20:28:08.000Z",
+      "uid": "35240-f92f5693-ec39-4fbd-9fa2-0d919b04e9be"
     }
   ],
   "auth": {
@@ -1192,17 +1160,15 @@
     "bearer": [
       {
         "key": "token",
-        "value": "{{bearerToken}}"
+        "value": "{{bearerToken}}",
+        "type": "string"
       }
     ]
   },
-  "info": {
-    "_postman_id": "e0a7d266-d7cf-46c3-a7df-052bbe949e86",
-    "name": "Deno Deploy REST Apps API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": {
-      "content": "The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.\n\nContact Support:\n Name: Deno Deploy Support",
-      "type": "text/plain"
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.deno.com/v2"
     }
-  }
+  ]
 }

@@ -1,2128 +1,2086 @@
 {
+  "info": {
+    "_postman_id": "88c48d76-da2e-4481-9c0e-77d5f0003010",
+    "name": "Deno Deploy REST Domains API",
+    "description": "The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.\n\nContact Support:\n Name: Deno Deploy Support",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-10-21T20:28:20.000Z",
+    "updatedAt": "2026-10-21T20:28:20.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-88c48d76-da2e-4481-9c0e-77d5f0003010"
+  },
   "item": [
     {
-      "id": "5edb8048-455f-45dd-8f01-e8956ed64bf4",
-      "name": "Domains",
-      "description": {
-        "content": "Register and manage custom domains with TLS certificate support",
-        "type": "text/plain"
-      },
+      "name": "deployments",
       "item": [
         {
-          "id": "52267b8a-7470-4124-852f-5895607eed88",
-          "name": "Attach domain to deployment",
-          "request": {
-            "name": "Attach domain to deployment",
-            "description": {
-              "content": "Associates a custom domain with a specific deployment, routing all traffic for that domain to the deployment. The domain must already be registered and verified in the organization.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "deployments",
-                ":deploymentId",
-                "domains",
-                ":domain"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "deploymentId",
-                  "description": "(Required) Identifier of the deployment"
-                },
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "domain",
-                  "description": "(Required) The custom domain name to attach"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "PUT",
-            "auth": null
-          },
-          "response": [
+          "name": "{deploymentId}",
+          "item": [
             {
-              "id": "2a1443f8-5bf5-4e46-8489-05513ee48467",
-              "name": "Domain attached successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "deployments",
-                    ":deploymentId",
-                    "domains",
-                    ":domain"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "deploymentId",
-                      "description": "(Required) Identifier of the deployment"
-                    },
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "domain",
-                      "description": "(Required) The custom domain name to attach"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PUT",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
+              "name": "domains",
+              "item": [
                 {
-                  "key": "Content-Type",
-                  "value": "application/json"
+                  "name": "{domain}",
+                  "item": [
+                    {
+                      "name": "Attach domain to deployment",
+                      "id": "6e4e7fa0-cabd-4577-9d2d-455ab44b252c",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "PUT",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/deployments/:deploymentId/domains/:domain",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "deployments",
+                            ":deploymentId",
+                            "domains",
+                            ":domain"
+                          ],
+                          "variable": [
+                            {
+                              "id": "549c10c2-a565-4481-ad63-bbf99a2e54e7",
+                              "key": "deploymentId",
+                              "value": "<string>",
+                              "description": "(Required) Identifier of the deployment"
+                            },
+                            {
+                              "id": "f9a88066-2279-4a77-ac6c-98ebae96b772",
+                              "key": "domain",
+                              "value": "<string>",
+                              "description": "(Required) The custom domain name to attach"
+                            }
+                          ]
+                        },
+                        "description": "Associates a custom domain with a specific deployment, routing all traffic for that domain to the deployment. The domain must already be registered and verified in the organization."
+                      },
+                      "response": [
+                        {
+                          "id": "31b408fe-8d37-4452-b7b4-f82d483bd27e",
+                          "name": "Domain attached successfully",
+                          "originalRequest": {
+                            "method": "PUT",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/deployments/:deploymentId/domains/:domain",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "deployments",
+                                ":deploymentId",
+                                "domains",
+                                ":domain"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "deploymentId"
+                                },
+                                {
+                                  "key": "domain"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"domainId\": \"<uuid>\",\n  \"deploymentId\": \"<string>\"\n}",
+                          "createdAt": "2026-10-21T20:28:20.000Z",
+                          "updatedAt": "2026-10-21T20:28:20.000Z",
+                          "uid": "35240-31b408fe-8d37-4452-b7b4-f82d483bd27e"
+                        },
+                        {
+                          "id": "ee94db67-f1d0-489d-a988-bd186a32369d",
+                          "name": "Unauthorized - missing or invalid Bearer token",
+                          "originalRequest": {
+                            "method": "PUT",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/deployments/:deploymentId/domains/:domain",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "deployments",
+                                ":deploymentId",
+                                "domains",
+                                ":domain"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "deploymentId"
+                                },
+                                {
+                                  "key": "domain"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Unauthorized",
+                          "code": 401,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\"\n}",
+                          "createdAt": "2026-10-21T20:28:20.000Z",
+                          "updatedAt": "2026-10-21T20:28:20.000Z",
+                          "uid": "35240-ee94db67-f1d0-489d-a988-bd186a32369d"
+                        },
+                        {
+                          "id": "9c78d878-976e-4471-bd25-adb48d2241bd",
+                          "name": "Not found - the requested resource does not exist",
+                          "originalRequest": {
+                            "method": "PUT",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/deployments/:deploymentId/domains/:domain",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "deployments",
+                                ":deploymentId",
+                                "domains",
+                                ":domain"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "deploymentId"
+                                },
+                                {
+                                  "key": "domain"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Not Found",
+                          "code": 404,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\"\n}",
+                          "createdAt": "2026-10-21T20:28:20.000Z",
+                          "updatedAt": "2026-10-21T20:28:20.000Z",
+                          "uid": "35240-9c78d878-976e-4471-bd25-adb48d2241bd"
+                        }
+                      ],
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-6e4e7fa0-cabd-4577-9d2d-455ab44b252c"
+                    },
+                    {
+                      "name": "Detach domain from deployment",
+                      "id": "222a2838-f731-4aff-9cbb-81f1f55fb0fa",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "DELETE",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/deployments/:deploymentId/domains/:domain",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "deployments",
+                            ":deploymentId",
+                            "domains",
+                            ":domain"
+                          ],
+                          "variable": [
+                            {
+                              "id": "9fa1c6fa-af65-4596-bd80-a290f865f471",
+                              "key": "deploymentId",
+                              "value": "<string>",
+                              "description": "(Required) Identifier of the deployment"
+                            },
+                            {
+                              "id": "4b164718-c027-4434-9b71-6e8f77f8e869",
+                              "key": "domain",
+                              "value": "<string>",
+                              "description": "(Required) The custom domain name to detach"
+                            }
+                          ]
+                        },
+                        "description": "Removes the association between a custom domain and a deployment. After detachment, the domain no longer routes traffic to this deployment and can be attached to a different deployment."
+                      },
+                      "response": [
+                        {
+                          "id": "70624ddb-ab4b-4d41-bcc7-48ba3007895c",
+                          "name": "Domain detached successfully",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/deployments/:deploymentId/domains/:domain",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "deployments",
+                                ":deploymentId",
+                                "domains",
+                                ":domain"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "deploymentId"
+                                },
+                                {
+                                  "key": "domain"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": null,
+                          "createdAt": "2026-10-21T20:28:20.000Z",
+                          "updatedAt": "2026-10-21T20:28:20.000Z",
+                          "uid": "35240-70624ddb-ab4b-4d41-bcc7-48ba3007895c"
+                        },
+                        {
+                          "id": "c3731db1-e44f-4e64-bdd5-58ed8615b9ae",
+                          "name": "Unauthorized - missing or invalid Bearer token",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/deployments/:deploymentId/domains/:domain",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "deployments",
+                                ":deploymentId",
+                                "domains",
+                                ":domain"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "deploymentId"
+                                },
+                                {
+                                  "key": "domain"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Unauthorized",
+                          "code": 401,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\"\n}",
+                          "createdAt": "2026-10-21T20:28:20.000Z",
+                          "updatedAt": "2026-10-21T20:28:20.000Z",
+                          "uid": "35240-c3731db1-e44f-4e64-bdd5-58ed8615b9ae"
+                        },
+                        {
+                          "id": "2975983e-e189-4eca-94c3-8f309f5df8e5",
+                          "name": "Not found - the requested resource does not exist",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/deployments/:deploymentId/domains/:domain",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "deployments",
+                                ":deploymentId",
+                                "domains",
+                                ":domain"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "deploymentId"
+                                },
+                                {
+                                  "key": "domain"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Not Found",
+                          "code": 404,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\"\n}",
+                          "createdAt": "2026-10-21T20:28:20.000Z",
+                          "updatedAt": "2026-10-21T20:28:20.000Z",
+                          "uid": "35240-2975983e-e189-4eca-94c3-8f309f5df8e5"
+                        }
+                      ],
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-222a2838-f731-4aff-9cbb-81f1f55fb0fa"
+                    }
+                  ],
+                  "id": "4f7058d6-e48d-411e-b6a1-4cab2d64caf7",
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-4f7058d6-e48d-411e-b6a1-4cab2d64caf7"
                 }
               ],
-              "body": "{\n  \"domainId\": \"63b13c52-56e1-7eae-927c-3a5b21e0f1f6\",\n  \"deploymentId\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "fa0684c6-bc64-4b67-ada5-124b25045dcc",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "deployments",
-                    ":deploymentId",
-                    "domains",
-                    ":domain"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "deploymentId",
-                      "description": "(Required) Identifier of the deployment"
-                    },
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "domain",
-                      "description": "(Required) The custom domain name to attach"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PUT",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "ad84ebb3-4e7d-49ed-8082-2e524a4859d4",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "deployments",
-                    ":deploymentId",
-                    "domains",
-                    ":domain"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "deploymentId",
-                      "description": "(Required) Identifier of the deployment"
-                    },
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "domain",
-                      "description": "(Required) The custom domain name to attach"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "PUT",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
+              "id": "f817b18f-6b4f-4503-a4f2-177624d584a9",
+              "createdAt": "2026-10-21T20:28:20.000Z",
+              "updatedAt": "2026-10-21T20:28:20.000Z",
+              "uid": "35240-f817b18f-6b4f-4503-a4f2-177624d584a9"
             }
           ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "2e868fe5-89bd-4792-8571-31e89b0c010f",
-          "name": "Detach domain from deployment",
-          "request": {
-            "name": "Detach domain from deployment",
-            "description": {
-              "content": "Removes the association between a custom domain and a deployment. After detachment, the domain no longer routes traffic to this deployment and can be attached to a different deployment.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "deployments",
-                ":deploymentId",
-                "domains",
-                ":domain"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "deploymentId",
-                  "description": "(Required) Identifier of the deployment"
-                },
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<string>",
-                  "key": "domain",
-                  "description": "(Required) The custom domain name to detach"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "DELETE",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "83542f3a-2737-4955-a6b7-0bd112e03bb2",
-              "name": "Domain detached successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "deployments",
-                    ":deploymentId",
-                    "domains",
-                    ":domain"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "deploymentId",
-                      "description": "(Required) Identifier of the deployment"
-                    },
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "domain",
-                      "description": "(Required) The custom domain name to detach"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "body": "",
-              "cookie": [],
-              "_postman_previewlanguage": "text"
-            },
-            {
-              "id": "51545567-d2c1-4efd-9c49-813fe979b6de",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "deployments",
-                    ":deploymentId",
-                    "domains",
-                    ":domain"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "deploymentId",
-                      "description": "(Required) Identifier of the deployment"
-                    },
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "domain",
-                      "description": "(Required) The custom domain name to detach"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "555e58e4-6b6b-487f-b6e9-974a55aed323",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "deployments",
-                    ":deploymentId",
-                    "domains",
-                    ":domain"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "deploymentId",
-                      "description": "(Required) Identifier of the deployment"
-                    },
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<string>",
-                      "key": "domain",
-                      "description": "(Required) The custom domain name to detach"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "db997045-635b-47ed-9545-997b7fe31056",
-          "name": "List domains",
-          "request": {
-            "name": "List domains",
-            "description": {
-              "content": "Returns a paginated list of all custom domains registered within an organization. Includes verification status and TLS certificate information for each domain.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "organizations",
-                ":organizationId",
-                "domains"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [
-                {
-                  "disabled": false,
-                  "key": "page",
-                  "value": "1",
-                  "description": "Page number for paginated results (1-based)"
-                },
-                {
-                  "disabled": false,
-                  "key": "limit",
-                  "value": "20",
-                  "description": "Maximum number of items to return per page"
-                },
-                {
-                  "disabled": false,
-                  "key": "q",
-                  "value": "<string>",
-                  "description": "Search query to filter results by name or identifier"
-                },
-                {
-                  "disabled": false,
-                  "key": "sort",
-                  "value": "<string>",
-                  "description": "Field name to sort results by"
-                },
-                {
-                  "disabled": false,
-                  "key": "order",
-                  "value": "asc",
-                  "description": "Sort order direction"
-                }
-              ],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<uuid>",
-                  "key": "organizationId",
-                  "description": "(Required) UUID of the organization"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "4815d9aa-6416-4c98-abf5-b550f1aba076",
-              "name": "Domains listed successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "domains"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "20"
-                    },
-                    {
-                      "key": "q",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "sort",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "order",
-                      "value": "asc"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "[\n  {\n    \"id\": \"f4ef420c-f856-5a98-6742-fd49e74a50d0\",\n    \"domain\": \"string\",\n    \"token\": \"string\",\n    \"isValidated\": false,\n    \"certificates\": [\n      {\n        \"cipher\": \"string\",\n        \"expiresAt\": \"1990-05-20T06:44:46.601Z\",\n        \"createdAt\": \"2013-10-09T06:07:54.280Z\",\n        \"updatedAt\": \"2005-10-20T20:54:27.065Z\"\n      },\n      {\n        \"cipher\": \"string\",\n        \"expiresAt\": \"1987-03-08T23:23:54.189Z\",\n        \"createdAt\": \"1956-04-05T01:37:14.263Z\",\n        \"updatedAt\": \"1993-02-10T02:57:10.583Z\"\n      }\n    ],\n    \"provisioningStatus\": {\n      \"code\": \"success\"\n    },\n    \"createdAt\": \"1968-07-29T04:03:30.385Z\",\n    \"updatedAt\": \"1974-11-14T16:09:49.607Z\"\n  },\n  {\n    \"id\": \"881bf5ca-9f28-3605-3ec3-19003dd6e4b1\",\n    \"domain\": \"string\",\n    \"token\": \"string\",\n    \"isValidated\": true,\n    \"certificates\": [\n      {\n        \"cipher\": \"string\",\n        \"expiresAt\": \"1996-06-13T08:25:47.603Z\",\n        \"createdAt\": \"1979-12-15T03:46:12.308Z\",\n        \"updatedAt\": \"1976-03-17T22:37:21.579Z\"\n      },\n      {\n        \"cipher\": \"string\",\n        \"expiresAt\": \"2000-05-25T02:46:33.328Z\",\n        \"createdAt\": \"1988-09-04T15:05:20.152Z\",\n        \"updatedAt\": \"1957-05-09T23:37:18.089Z\"\n      }\n    ],\n    \"provisioningStatus\": {\n      \"code\": \"pending\"\n    },\n    \"createdAt\": \"1980-08-31T02:06:12.016Z\",\n    \"updatedAt\": \"2003-08-10T08:26:00.311Z\"\n  }\n]",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "89db2962-bca9-4629-bd73-5fdc526f7e5c",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "domains"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "20"
-                    },
-                    {
-                      "key": "q",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "sort",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "order",
-                      "value": "asc"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "d63da1e5-5d8e-4ef5-a2a5-756755d9f41b",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "domains"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [
-                    {
-                      "key": "page",
-                      "value": "1"
-                    },
-                    {
-                      "key": "limit",
-                      "value": "20"
-                    },
-                    {
-                      "key": "q",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "sort",
-                      "value": "<string>"
-                    },
-                    {
-                      "key": "order",
-                      "value": "asc"
-                    }
-                  ],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "d4a6e98d-3ddf-4446-a896-5c87951636e5",
-          "name": "Create domain",
-          "request": {
-            "name": "Create domain",
-            "description": {
-              "content": "Registers a new custom domain within the organization. After creation, the domain must be verified via DNS before it can be attached to deployments. TLS certificates can be uploaded or automatically provisioned after verification.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "organizations",
-                ":organizationId",
-                "domains"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<uuid>",
-                  "key": "organizationId",
-                  "description": "(Required) UUID of the organization"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "POST",
-            "auth": null,
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"domain\": \"<string>\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "id": "51886afc-5239-42f4-8e55-74c1002328f7",
-              "name": "Domain created successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "domains"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"domain\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"id\": \"4dca4ffc-b3ba-5c6d-6f48-8bdbaeeeb0cf\",\n  \"domain\": \"string\",\n  \"token\": \"string\",\n  \"isValidated\": true,\n  \"certificates\": [\n    {\n      \"cipher\": \"string\",\n      \"expiresAt\": \"1953-09-20T00:09:42.859Z\",\n      \"createdAt\": \"1980-08-08T01:19:54.213Z\",\n      \"updatedAt\": \"1960-10-21T08:45:49.568Z\"\n    },\n    {\n      \"cipher\": \"string\",\n      \"expiresAt\": \"1986-11-18T01:18:16.888Z\",\n      \"createdAt\": \"2010-03-20T04:51:47.687Z\",\n      \"updatedAt\": \"1965-09-30T23:17:28.046Z\"\n    }\n  ],\n  \"provisioningStatus\": {\n    \"code\": \"failed\"\n  },\n  \"createdAt\": \"1964-08-22T08:03:42.633Z\",\n  \"updatedAt\": \"1971-02-06T11:26:50.976Z\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "764aa0af-6748-400a-88b2-9e5e9ae659d3",
-              "name": "Bad request - invalid parameters or request body",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "domains"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"domain\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "1fb1fe13-9356-4e9b-9276-f905e3f01583",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "organizations",
-                    ":organizationId",
-                    "domains"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "organizationId",
-                      "description": "(Required) UUID of the organization"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"domain\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "4e195265-7c1d-4962-8c4c-1dd7087fa7e0",
-          "name": "Get domain",
-          "request": {
-            "name": "Get domain",
-            "description": {
-              "content": "Retrieves the details of a specific custom domain by its UUID, including its verification status, TLS certificate state, and current deployment association.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "domains",
-                ":domainId"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<uuid>",
-                  "key": "domainId",
-                  "description": "(Required) UUID of the custom domain"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "GET",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "9bedf3b8-541d-459b-9a7d-82b9215d40da",
-              "name": "Domain retrieved successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"id\": \"4dca4ffc-b3ba-5c6d-6f48-8bdbaeeeb0cf\",\n  \"domain\": \"string\",\n  \"token\": \"string\",\n  \"isValidated\": true,\n  \"certificates\": [\n    {\n      \"cipher\": \"string\",\n      \"expiresAt\": \"1953-09-20T00:09:42.859Z\",\n      \"createdAt\": \"1980-08-08T01:19:54.213Z\",\n      \"updatedAt\": \"1960-10-21T08:45:49.568Z\"\n    },\n    {\n      \"cipher\": \"string\",\n      \"expiresAt\": \"1986-11-18T01:18:16.888Z\",\n      \"createdAt\": \"2010-03-20T04:51:47.687Z\",\n      \"updatedAt\": \"1965-09-30T23:17:28.046Z\"\n    }\n  ],\n  \"provisioningStatus\": {\n    \"code\": \"failed\"\n  },\n  \"createdAt\": \"1964-08-22T08:03:42.633Z\",\n  \"updatedAt\": \"1971-02-06T11:26:50.976Z\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "8c2a71ee-a3ca-4c4c-ba4c-f449cddf2660",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "970b00fb-6b3d-4385-9078-d9fd13538bd3",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "GET",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "ce7c16c5-15c6-4c06-9a3c-6be7f90d8fd3",
-          "name": "Delete domain",
-          "request": {
-            "name": "Delete domain",
-            "description": {
-              "content": "Permanently removes a custom domain from the organization. Any active deployment associations must be detached before the domain can be deleted.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "domains",
-                ":domainId"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<uuid>",
-                  "key": "domainId",
-                  "description": "(Required) UUID of the custom domain"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "DELETE",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "bac9e96c-febf-47be-92b9-fe563dc79b09",
-              "name": "Domain deleted successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "body": "",
-              "cookie": [],
-              "_postman_previewlanguage": "text"
-            },
-            {
-              "id": "15b0d233-5759-4021-926b-92eb49dd9ce7",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "aab754e5-87aa-4487-b9cb-a187e1b33b2e",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "DELETE",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "73a24dda-b3ca-48cf-90d1-7d158e15df3d",
-          "name": "Verify domain ownership",
-          "request": {
-            "name": "Verify domain ownership",
-            "description": {
-              "content": "Triggers DNS-based verification for a custom domain. Deno Deploy checks for the presence of a DNS TXT record to confirm domain ownership before allowing the domain to serve traffic.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "domains",
-                ":domainId",
-                "verify"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<uuid>",
-                  "key": "domainId",
-                  "description": "(Required) UUID of the custom domain"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "POST",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "0645a687-5120-4d06-882c-7a59a8d42609",
-              "name": "Domain verification initiated successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "verify"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  }
-                ],
-                "method": "POST",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "body": "",
-              "cookie": [],
-              "_postman_previewlanguage": "text"
-            },
-            {
-              "id": "9101884a-9bc4-4a94-96dc-5c98fe1cc683",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "verify"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "56c7d242-3ade-4323-b371-68f6b42262ac",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "verify"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "9f405298-53fc-4f38-b3c6-1e3d902c9e89",
-          "name": "Upload TLS certificate",
-          "request": {
-            "name": "Upload TLS certificate",
-            "description": {
-              "content": "Uploads a custom TLS certificate and private key for a domain. The certificate must be valid for the domain and signed by a trusted certificate authority. Alternatively, certificates can be automatically provisioned via Let's Encrypt.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "domains",
-                ":domainId",
-                "certificates"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<uuid>",
-                  "key": "domainId",
-                  "description": "(Required) UUID of the custom domain"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json"
-              },
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "POST",
-            "auth": null,
-            "body": {
-              "mode": "raw",
-              "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
-              "options": {
-                "raw": {
-                  "language": "json"
-                }
-              }
-            }
-          },
-          "response": [
-            {
-              "id": "e27119a3-b765-465a-aaed-4595021d9bb2",
-              "name": "Certificate uploaded successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "certificates"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "body": "",
-              "cookie": [],
-              "_postman_previewlanguage": "text"
-            },
-            {
-              "id": "eef93177-e70c-48c4-bcb1-526b3a5f0ada",
-              "name": "Bad request - invalid parameters or request body",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "certificates"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Bad Request",
-              "code": 400,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "c1d5c79b-6ec9-4765-b061-2e05574352f9",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "certificates"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "6ace4ca8-22c3-49f1-b32c-2749bcff291f",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "certificates"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {
-                  "mode": "raw",
-                  "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
-                  "options": {
-                    "raw": {
-                      "language": "json"
-                    }
-                  }
-                }
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
-        },
-        {
-          "id": "538c5936-c82e-42d1-97c5-134c22aefe61",
-          "name": "Provision TLS certificate",
-          "request": {
-            "name": "Provision TLS certificate",
-            "description": {
-              "content": "Automatically provisions a TLS certificate for a verified domain using Let's Encrypt. The domain must be verified before this endpoint can be called.",
-              "type": "text/plain"
-            },
-            "url": {
-              "path": [
-                "domains",
-                ":domainId",
-                "certificates",
-                "provision"
-              ],
-              "host": [
-                "{{baseUrl}}"
-              ],
-              "query": [],
-              "variable": [
-                {
-                  "disabled": false,
-                  "type": "any",
-                  "value": "<uuid>",
-                  "key": "domainId",
-                  "description": "(Required) UUID of the custom domain"
-                }
-              ]
-            },
-            "header": [
-              {
-                "key": "Accept",
-                "value": "application/json"
-              }
-            ],
-            "method": "POST",
-            "auth": null
-          },
-          "response": [
-            {
-              "id": "e8ef6f5c-235c-4d8b-98f3-274e2e4f29a7",
-              "name": "Certificate provisioning initiated successfully",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "certificates",
-                    "provision"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  }
-                ],
-                "method": "POST",
-                "body": {}
-              },
-              "status": "OK",
-              "code": 200,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "text/plain"
-                }
-              ],
-              "body": "",
-              "cookie": [],
-              "_postman_previewlanguage": "text"
-            },
-            {
-              "id": "bf62dbf7-5757-4011-94fb-bfef76b26372",
-              "name": "Unauthorized - missing or invalid Bearer token",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "certificates",
-                    "provision"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {}
-              },
-              "status": "Unauthorized",
-              "code": 401,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            },
-            {
-              "id": "d8b0c689-b289-4c3e-909a-53891ad77236",
-              "name": "Not found - the requested resource does not exist",
-              "originalRequest": {
-                "url": {
-                  "path": [
-                    "domains",
-                    ":domainId",
-                    "certificates",
-                    "provision"
-                  ],
-                  "host": [
-                    "{{baseUrl}}"
-                  ],
-                  "query": [],
-                  "variable": [
-                    {
-                      "disabled": false,
-                      "type": "any",
-                      "value": "<uuid>",
-                      "key": "domainId",
-                      "description": "(Required) UUID of the custom domain"
-                    }
-                  ]
-                },
-                "header": [
-                  {
-                    "description": {
-                      "content": "Added as a part of security scheme: bearer",
-                      "type": "text/plain"
-                    },
-                    "key": "Authorization",
-                    "value": "Bearer <token>"
-                  },
-                  {
-                    "key": "Accept",
-                    "value": "application/json"
-                  }
-                ],
-                "method": "POST",
-                "body": {}
-              },
-              "status": "Not Found",
-              "code": 404,
-              "header": [
-                {
-                  "key": "Content-Type",
-                  "value": "application/json"
-                }
-              ],
-              "body": "{\n  \"error\": \"string\"\n}",
-              "cookie": [],
-              "_postman_previewlanguage": "json"
-            }
-          ],
-          "event": [],
-          "protocolProfileBehavior": {
-            "disableBodyPruning": true
-          }
+          "id": "98ceaa5d-cbd6-44b9-89aa-181d07a6d83d",
+          "createdAt": "2026-10-21T20:28:20.000Z",
+          "updatedAt": "2026-10-21T20:28:20.000Z",
+          "uid": "35240-98ceaa5d-cbd6-44b9-89aa-181d07a6d83d"
         }
       ],
-      "event": []
-    }
-  ],
-  "event": [],
-  "variable": [
+      "id": "c7902032-2a68-48d8-a7bd-3d5cf46e5328",
+      "createdAt": "2026-10-21T20:28:20.000Z",
+      "updatedAt": "2026-10-21T20:28:20.000Z",
+      "uid": "35240-c7902032-2a68-48d8-a7bd-3d5cf46e5328"
+    },
     {
-      "type": "string",
-      "value": "https://api.deno.com/v1",
-      "key": "baseUrl"
+      "name": "organizations",
+      "item": [
+        {
+          "name": "{organizationId}",
+          "item": [
+            {
+              "name": "domains",
+              "item": [
+                {
+                  "name": "List domains",
+                  "id": "7dd8d0bb-196c-4e2f-b6a1-bdb92591d2ea",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/organizations/:organizationId/domains?page=1&limit=20&q=<string>&sort=<string>&order=asc",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "organizations",
+                        ":organizationId",
+                        "domains"
+                      ],
+                      "query": [
+                        {
+                          "description": "Page number for paginated results (1-based)",
+                          "key": "page",
+                          "value": "1"
+                        },
+                        {
+                          "description": "Maximum number of items to return per page",
+                          "key": "limit",
+                          "value": "20"
+                        },
+                        {
+                          "description": "Search query to filter results by name or identifier",
+                          "key": "q",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Field name to sort results by",
+                          "key": "sort",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "Sort order direction",
+                          "key": "order",
+                          "value": "asc"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "id": "eb4a9d91-d10e-4d0f-b84a-319b923f9964",
+                          "key": "organizationId",
+                          "value": "<uuid>",
+                          "description": "(Required) UUID of the organization"
+                        }
+                      ]
+                    },
+                    "description": "Returns a paginated list of all custom domains registered within an organization. Includes verification status and TLS certificate information for each domain."
+                  },
+                  "response": [
+                    {
+                      "id": "4146b39c-3226-471b-a068-e4d19440a245",
+                      "name": "Domains listed successfully",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/domains?page=1&limit=20&q=<string>&sort=<string>&order=asc",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "domains"
+                          ],
+                          "query": [
+                            {
+                              "description": "Page number for paginated results (1-based)",
+                              "key": "page",
+                              "value": "1"
+                            },
+                            {
+                              "description": "Maximum number of items to return per page",
+                              "key": "limit",
+                              "value": "20"
+                            },
+                            {
+                              "description": "Search query to filter results by name or identifier",
+                              "key": "q",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Field name to sort results by",
+                              "key": "sort",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Sort order direction",
+                              "key": "order",
+                              "value": "asc"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "[\n  {\n    \"id\": \"<uuid>\",\n    \"domain\": \"<string>\",\n    \"token\": \"<string>\",\n    \"isValidated\": \"<boolean>\",\n    \"certificates\": [\n      {\n        \"cipher\": \"<string>\",\n        \"expiresAt\": \"<dateTime>\",\n        \"createdAt\": \"<dateTime>\",\n        \"updatedAt\": \"<dateTime>\"\n      },\n      {\n        \"cipher\": \"<string>\",\n        \"expiresAt\": \"<dateTime>\",\n        \"createdAt\": \"<dateTime>\",\n        \"updatedAt\": \"<dateTime>\"\n      }\n    ],\n    \"provisioningStatus\": {\n      \"code\": \"manual\"\n    },\n    \"createdAt\": \"<dateTime>\",\n    \"updatedAt\": \"<dateTime>\"\n  },\n  {\n    \"id\": \"<uuid>\",\n    \"domain\": \"<string>\",\n    \"token\": \"<string>\",\n    \"isValidated\": \"<boolean>\",\n    \"certificates\": [\n      {\n        \"cipher\": \"<string>\",\n        \"expiresAt\": \"<dateTime>\",\n        \"createdAt\": \"<dateTime>\",\n        \"updatedAt\": \"<dateTime>\"\n      },\n      {\n        \"cipher\": \"<string>\",\n        \"expiresAt\": \"<dateTime>\",\n        \"createdAt\": \"<dateTime>\",\n        \"updatedAt\": \"<dateTime>\"\n      }\n    ],\n    \"provisioningStatus\": {\n      \"code\": \"manual\"\n    },\n    \"createdAt\": \"<dateTime>\",\n    \"updatedAt\": \"<dateTime>\"\n  }\n]",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-4146b39c-3226-471b-a068-e4d19440a245"
+                    },
+                    {
+                      "id": "1dd89939-5d52-465b-8826-fc08aeb3d4d1",
+                      "name": "Unauthorized - missing or invalid Bearer token",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/domains?page=1&limit=20&q=<string>&sort=<string>&order=asc",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "domains"
+                          ],
+                          "query": [
+                            {
+                              "description": "Page number for paginated results (1-based)",
+                              "key": "page",
+                              "value": "1"
+                            },
+                            {
+                              "description": "Maximum number of items to return per page",
+                              "key": "limit",
+                              "value": "20"
+                            },
+                            {
+                              "description": "Search query to filter results by name or identifier",
+                              "key": "q",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Field name to sort results by",
+                              "key": "sort",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Sort order direction",
+                              "key": "order",
+                              "value": "asc"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Unauthorized",
+                      "code": 401,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-1dd89939-5d52-465b-8826-fc08aeb3d4d1"
+                    },
+                    {
+                      "id": "c9abcd46-a70d-48b1-bea2-f92099dd9f70",
+                      "name": "Not found - the requested resource does not exist",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/domains?page=1&limit=20&q=<string>&sort=<string>&order=asc",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "domains"
+                          ],
+                          "query": [
+                            {
+                              "description": "Page number for paginated results (1-based)",
+                              "key": "page",
+                              "value": "1"
+                            },
+                            {
+                              "description": "Maximum number of items to return per page",
+                              "key": "limit",
+                              "value": "20"
+                            },
+                            {
+                              "description": "Search query to filter results by name or identifier",
+                              "key": "q",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Field name to sort results by",
+                              "key": "sort",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "Sort order direction",
+                              "key": "order",
+                              "value": "asc"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Not Found",
+                      "code": 404,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-c9abcd46-a70d-48b1-bea2-f92099dd9f70"
+                    }
+                  ],
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-7dd8d0bb-196c-4e2f-b6a1-bdb92591d2ea"
+                },
+                {
+                  "name": "Create domain",
+                  "id": "7492a59a-a0e3-4d20-b7e6-d53a60f246cc",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"domain\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/organizations/:organizationId/domains",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "organizations",
+                        ":organizationId",
+                        "domains"
+                      ],
+                      "variable": [
+                        {
+                          "id": "d9a80899-9781-43ba-b20c-2b9c75221cb6",
+                          "key": "organizationId",
+                          "value": "<uuid>",
+                          "description": "(Required) UUID of the organization"
+                        }
+                      ]
+                    },
+                    "description": "Registers a new custom domain within the organization. After creation, the domain must be verified via DNS before it can be attached to deployments. TLS certificates can be uploaded or automatically provisioned after verification."
+                  },
+                  "response": [
+                    {
+                      "id": "0de4e223-17ee-48e8-ab45-bab01473e030",
+                      "name": "Domain created successfully",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"domain\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/domains",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "domains"
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"id\": \"<uuid>\",\n  \"domain\": \"<string>\",\n  \"token\": \"<string>\",\n  \"isValidated\": \"<boolean>\",\n  \"certificates\": [\n    {\n      \"cipher\": \"<string>\",\n      \"expiresAt\": \"<dateTime>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\"\n    },\n    {\n      \"cipher\": \"<string>\",\n      \"expiresAt\": \"<dateTime>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\"\n    }\n  ],\n  \"provisioningStatus\": {\n    \"code\": \"failed\"\n  },\n  \"createdAt\": \"<dateTime>\",\n  \"updatedAt\": \"<dateTime>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-0de4e223-17ee-48e8-ab45-bab01473e030"
+                    },
+                    {
+                      "id": "af3c98ff-d10c-4611-984f-32081b148e8b",
+                      "name": "Bad request - invalid parameters or request body",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"domain\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/domains",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "domains"
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Bad Request",
+                      "code": 400,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-af3c98ff-d10c-4611-984f-32081b148e8b"
+                    },
+                    {
+                      "id": "4dd13bd4-5f2c-4578-bba4-f346a24ab30d",
+                      "name": "Unauthorized - missing or invalid Bearer token",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"domain\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/organizations/:organizationId/domains",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "organizations",
+                            ":organizationId",
+                            "domains"
+                          ],
+                          "variable": [
+                            {
+                              "key": "organizationId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Unauthorized",
+                      "code": 401,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-4dd13bd4-5f2c-4578-bba4-f346a24ab30d"
+                    }
+                  ],
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-7492a59a-a0e3-4d20-b7e6-d53a60f246cc"
+                }
+              ],
+              "id": "e23a34b3-65cd-4976-9454-d12787b18da9",
+              "createdAt": "2026-10-21T20:28:20.000Z",
+              "updatedAt": "2026-10-21T20:28:20.000Z",
+              "uid": "35240-e23a34b3-65cd-4976-9454-d12787b18da9"
+            }
+          ],
+          "id": "28d87edc-5143-42a9-9dfa-554788a2882e",
+          "createdAt": "2026-10-21T20:28:20.000Z",
+          "updatedAt": "2026-10-21T20:28:20.000Z",
+          "uid": "35240-28d87edc-5143-42a9-9dfa-554788a2882e"
+        }
+      ],
+      "id": "f1123912-5d05-42d1-b83f-3b4cfedb5303",
+      "createdAt": "2026-10-21T20:28:20.000Z",
+      "updatedAt": "2026-10-21T20:28:20.000Z",
+      "uid": "35240-f1123912-5d05-42d1-b83f-3b4cfedb5303"
+    },
+    {
+      "name": "domains",
+      "item": [
+        {
+          "name": "{domainId}",
+          "item": [
+            {
+              "name": "verify",
+              "item": [
+                {
+                  "name": "Verify domain ownership",
+                  "id": "b25693aa-4d45-41ad-a9b6-e3dbbfb2c059",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/domains/:domainId/verify",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "domains",
+                        ":domainId",
+                        "verify"
+                      ],
+                      "variable": [
+                        {
+                          "id": "aca0b533-b31b-4839-b1fb-1516e39f5bc8",
+                          "key": "domainId",
+                          "value": "<uuid>",
+                          "description": "(Required) UUID of the custom domain"
+                        }
+                      ]
+                    },
+                    "description": "Triggers DNS-based verification for a custom domain. Deno Deploy checks for the presence of a DNS TXT record to confirm domain ownership before allowing the domain to serve traffic."
+                  },
+                  "response": [
+                    {
+                      "id": "bb8600d2-bc79-4768-906e-8e3ea63c524d",
+                      "name": "Domain verification initiated successfully",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/domains/:domainId/verify",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "domains",
+                            ":domainId",
+                            "verify"
+                          ],
+                          "variable": [
+                            {
+                              "key": "domainId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "text",
+                      "header": [],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": null,
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-bb8600d2-bc79-4768-906e-8e3ea63c524d"
+                    },
+                    {
+                      "id": "1ca8ecf5-9547-4bd8-ad19-60a069e6d346",
+                      "name": "Unauthorized - missing or invalid Bearer token",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/domains/:domainId/verify",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "domains",
+                            ":domainId",
+                            "verify"
+                          ],
+                          "variable": [
+                            {
+                              "key": "domainId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Unauthorized",
+                      "code": 401,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-1ca8ecf5-9547-4bd8-ad19-60a069e6d346"
+                    },
+                    {
+                      "id": "a2ce7827-8e9c-4b42-b68f-e16adbed65d9",
+                      "name": "Not found - the requested resource does not exist",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/domains/:domainId/verify",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "domains",
+                            ":domainId",
+                            "verify"
+                          ],
+                          "variable": [
+                            {
+                              "key": "domainId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Not Found",
+                      "code": 404,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-a2ce7827-8e9c-4b42-b68f-e16adbed65d9"
+                    }
+                  ],
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-b25693aa-4d45-41ad-a9b6-e3dbbfb2c059"
+                }
+              ],
+              "id": "b1c51fac-4662-4a2d-8166-d1c0512bdaf5",
+              "createdAt": "2026-10-21T20:28:20.000Z",
+              "updatedAt": "2026-10-21T20:28:20.000Z",
+              "uid": "35240-b1c51fac-4662-4a2d-8166-d1c0512bdaf5"
+            },
+            {
+              "name": "certificates",
+              "item": [
+                {
+                  "name": "provision",
+                  "item": [
+                    {
+                      "name": "Provision TLS certificate",
+                      "id": "7db7d51c-a3ea-43ec-a2ed-f55f612a8ef8",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/domains/:domainId/certificates/provision",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "domains",
+                            ":domainId",
+                            "certificates",
+                            "provision"
+                          ],
+                          "variable": [
+                            {
+                              "id": "0c0bcc15-4ebe-4baf-b402-182e1744e2a5",
+                              "key": "domainId",
+                              "value": "<uuid>",
+                              "description": "(Required) UUID of the custom domain"
+                            }
+                          ]
+                        },
+                        "description": "Automatically provisions a TLS certificate for a verified domain using Let's Encrypt. The domain must be verified before this endpoint can be called."
+                      },
+                      "response": [
+                        {
+                          "id": "cdaa2fec-e84a-4254-8213-11764c485790",
+                          "name": "Certificate provisioning initiated successfully",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/domains/:domainId/certificates/provision",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "domains",
+                                ":domainId",
+                                "certificates",
+                                "provision"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "domainId"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "text",
+                          "header": [],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": null,
+                          "createdAt": "2026-10-21T20:28:20.000Z",
+                          "updatedAt": "2026-10-21T20:28:20.000Z",
+                          "uid": "35240-cdaa2fec-e84a-4254-8213-11764c485790"
+                        },
+                        {
+                          "id": "52acc180-54aa-4187-966a-0f1870ca304e",
+                          "name": "Unauthorized - missing or invalid Bearer token",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/domains/:domainId/certificates/provision",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "domains",
+                                ":domainId",
+                                "certificates",
+                                "provision"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "domainId"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Unauthorized",
+                          "code": 401,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\"\n}",
+                          "createdAt": "2026-10-21T20:28:20.000Z",
+                          "updatedAt": "2026-10-21T20:28:20.000Z",
+                          "uid": "35240-52acc180-54aa-4187-966a-0f1870ca304e"
+                        },
+                        {
+                          "id": "c16f4fab-1b60-4f9c-aab4-cf2ea0db89a0",
+                          "name": "Not found - the requested resource does not exist",
+                          "originalRequest": {
+                            "method": "POST",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/domains/:domainId/certificates/provision",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "domains",
+                                ":domainId",
+                                "certificates",
+                                "provision"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "domainId"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "Not Found",
+                          "code": 404,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"error\": \"<string>\"\n}",
+                          "createdAt": "2026-10-21T20:28:20.000Z",
+                          "updatedAt": "2026-10-21T20:28:20.000Z",
+                          "uid": "35240-c16f4fab-1b60-4f9c-aab4-cf2ea0db89a0"
+                        }
+                      ],
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-7db7d51c-a3ea-43ec-a2ed-f55f612a8ef8"
+                    }
+                  ],
+                  "id": "a3868d5b-03a0-4799-9f80-dc18a7d5adac",
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-a3868d5b-03a0-4799-9f80-dc18a7d5adac"
+                },
+                {
+                  "name": "Upload TLS certificate",
+                  "id": "34aa3976-c275-477e-b50a-4c79a5ab05cf",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/domains/:domainId/certificates",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "domains",
+                        ":domainId",
+                        "certificates"
+                      ],
+                      "variable": [
+                        {
+                          "id": "911f21f8-25a0-496e-90d3-2a82b2720976",
+                          "key": "domainId",
+                          "value": "<uuid>",
+                          "description": "(Required) UUID of the custom domain"
+                        }
+                      ]
+                    },
+                    "description": "Uploads a custom TLS certificate and private key for a domain. The certificate must be valid for the domain and signed by a trusted certificate authority. Alternatively, certificates can be automatically provisioned via Let's Encrypt."
+                  },
+                  "response": [
+                    {
+                      "id": "588aece4-5133-4511-a9fb-52f85c1c3c79",
+                      "name": "Certificate uploaded successfully",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/domains/:domainId/certificates",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "domains",
+                            ":domainId",
+                            "certificates"
+                          ],
+                          "variable": [
+                            {
+                              "key": "domainId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "text",
+                      "header": [],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": null,
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-588aece4-5133-4511-a9fb-52f85c1c3c79"
+                    },
+                    {
+                      "id": "bf57b77e-5364-4e1c-a110-2069ee27e4a7",
+                      "name": "Bad request - invalid parameters or request body",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/domains/:domainId/certificates",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "domains",
+                            ":domainId",
+                            "certificates"
+                          ],
+                          "variable": [
+                            {
+                              "key": "domainId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Bad Request",
+                      "code": 400,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-bf57b77e-5364-4e1c-a110-2069ee27e4a7"
+                    },
+                    {
+                      "id": "274f7675-959d-42ae-bc68-2728c0fd1cd3",
+                      "name": "Unauthorized - missing or invalid Bearer token",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/domains/:domainId/certificates",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "domains",
+                            ":domainId",
+                            "certificates"
+                          ],
+                          "variable": [
+                            {
+                              "key": "domainId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Unauthorized",
+                      "code": 401,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-274f7675-959d-42ae-bc68-2728c0fd1cd3"
+                    },
+                    {
+                      "id": "9d5903e2-ed01-4667-b97a-7c80f2ba1719",
+                      "name": "Not found - the requested resource does not exist",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"certificatePem\": \"<string>\",\n  \"privateKeyPem\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/domains/:domainId/certificates",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "domains",
+                            ":domainId",
+                            "certificates"
+                          ],
+                          "variable": [
+                            {
+                              "key": "domainId"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "Not Found",
+                      "code": 404,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"error\": \"<string>\"\n}",
+                      "createdAt": "2026-10-21T20:28:20.000Z",
+                      "updatedAt": "2026-10-21T20:28:20.000Z",
+                      "uid": "35240-9d5903e2-ed01-4667-b97a-7c80f2ba1719"
+                    }
+                  ],
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-34aa3976-c275-477e-b50a-4c79a5ab05cf"
+                }
+              ],
+              "id": "81ef67d3-9c6f-48b7-982b-6164823fd1d2",
+              "createdAt": "2026-10-21T20:28:20.000Z",
+              "updatedAt": "2026-10-21T20:28:20.000Z",
+              "uid": "35240-81ef67d3-9c6f-48b7-982b-6164823fd1d2"
+            },
+            {
+              "name": "Get domain",
+              "id": "7c4b8095-da2b-40f3-bc0e-3e13fe77d2bc",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/domains/:domainId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "domains",
+                    ":domainId"
+                  ],
+                  "variable": [
+                    {
+                      "id": "642415c3-cfae-4d5d-b315-5473fccb33ee",
+                      "key": "domainId",
+                      "value": "<uuid>",
+                      "description": "(Required) UUID of the custom domain"
+                    }
+                  ]
+                },
+                "description": "Retrieves the details of a specific custom domain by its UUID, including its verification status, TLS certificate state, and current deployment association."
+              },
+              "response": [
+                {
+                  "id": "3a6ce479-5bfd-49ad-a72c-bbfda6a711ad",
+                  "name": "Domain retrieved successfully",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/domains/:domainId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "domains",
+                        ":domainId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "domainId"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"id\": \"<uuid>\",\n  \"domain\": \"<string>\",\n  \"token\": \"<string>\",\n  \"isValidated\": \"<boolean>\",\n  \"certificates\": [\n    {\n      \"cipher\": \"<string>\",\n      \"expiresAt\": \"<dateTime>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\"\n    },\n    {\n      \"cipher\": \"<string>\",\n      \"expiresAt\": \"<dateTime>\",\n      \"createdAt\": \"<dateTime>\",\n      \"updatedAt\": \"<dateTime>\"\n    }\n  ],\n  \"provisioningStatus\": {\n    \"code\": \"failed\"\n  },\n  \"createdAt\": \"<dateTime>\",\n  \"updatedAt\": \"<dateTime>\"\n}",
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-3a6ce479-5bfd-49ad-a72c-bbfda6a711ad"
+                },
+                {
+                  "id": "48f0c16d-bf9e-4aec-b8cf-d901af9cf92c",
+                  "name": "Unauthorized - missing or invalid Bearer token",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/domains/:domainId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "domains",
+                        ":domainId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "domainId"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-48f0c16d-bf9e-4aec-b8cf-d901af9cf92c"
+                },
+                {
+                  "id": "3ac1917c-f33a-4b41-8e7c-7ad833d58ff5",
+                  "name": "Not found - the requested resource does not exist",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/domains/:domainId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "domains",
+                        ":domainId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "domainId"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-3ac1917c-f33a-4b41-8e7c-7ad833d58ff5"
+                }
+              ],
+              "createdAt": "2026-10-21T20:28:20.000Z",
+              "updatedAt": "2026-10-21T20:28:20.000Z",
+              "uid": "35240-7c4b8095-da2b-40f3-bc0e-3e13fe77d2bc"
+            },
+            {
+              "name": "Delete domain",
+              "id": "a7853bda-fc4a-4aac-911d-645d9b145af5",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/domains/:domainId",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "domains",
+                    ":domainId"
+                  ],
+                  "variable": [
+                    {
+                      "id": "c601545f-8c14-4310-89db-1c8393072c46",
+                      "key": "domainId",
+                      "value": "<uuid>",
+                      "description": "(Required) UUID of the custom domain"
+                    }
+                  ]
+                },
+                "description": "Permanently removes a custom domain from the organization. Any active deployment associations must be detached before the domain can be deleted."
+              },
+              "response": [
+                {
+                  "id": "e0aa49c3-a1d0-49bb-ba2c-81cda7a8f746",
+                  "name": "Domain deleted successfully",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/domains/:domainId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "domains",
+                        ":domainId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "domainId"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-e0aa49c3-a1d0-49bb-ba2c-81cda7a8f746"
+                },
+                {
+                  "id": "6cbeb6f0-9a39-422b-a90c-bed5167a1d59",
+                  "name": "Unauthorized - missing or invalid Bearer token",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/domains/:domainId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "domains",
+                        ":domainId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "domainId"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-6cbeb6f0-9a39-422b-a90c-bed5167a1d59"
+                },
+                {
+                  "id": "93a9a109-b449-45e2-a427-7439d0c243b2",
+                  "name": "Not found - the requested resource does not exist",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/domains/:domainId",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "domains",
+                        ":domainId"
+                      ],
+                      "variable": [
+                        {
+                          "key": "domainId"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "Not Found",
+                  "code": 404,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"error\": \"<string>\"\n}",
+                  "createdAt": "2026-10-21T20:28:20.000Z",
+                  "updatedAt": "2026-10-21T20:28:20.000Z",
+                  "uid": "35240-93a9a109-b449-45e2-a427-7439d0c243b2"
+                }
+              ],
+              "createdAt": "2026-10-21T20:28:20.000Z",
+              "updatedAt": "2026-10-21T20:28:20.000Z",
+              "uid": "35240-a7853bda-fc4a-4aac-911d-645d9b145af5"
+            }
+          ],
+          "id": "c3ac24cc-1651-4a7c-9ba0-a5ff498332d0",
+          "createdAt": "2026-10-21T20:28:20.000Z",
+          "updatedAt": "2026-10-21T20:28:20.000Z",
+          "uid": "35240-c3ac24cc-1651-4a7c-9ba0-a5ff498332d0"
+        }
+      ],
+      "id": "39bb2431-5481-4bf9-9cd6-8320e90f0278",
+      "createdAt": "2026-10-21T20:28:20.000Z",
+      "updatedAt": "2026-10-21T20:28:20.000Z",
+      "uid": "35240-39bb2431-5481-4bf9-9cd6-8320e90f0278"
     }
   ],
   "auth": {
@@ -2130,17 +2088,15 @@
     "bearer": [
       {
         "key": "token",
-        "value": "{{bearerToken}}"
+        "value": "{{bearerToken}}",
+        "type": "string"
       }
     ]
   },
-  "info": {
-    "_postman_id": "58980382-1c20-4468-a35c-85a3cf840a9b",
-    "name": "Deno Deploy REST Apps Domains API",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "description": {
-      "content": "The Deno Deploy REST API (v1) provides programmatic access to manage projects and deployments on the Deno Deploy serverless edge platform. It exposes endpoints for creating and managing organizations, projects, deployments, domains, and KV databases, as well as retrieving analytics and usage metrics. Authentication uses HTTP Bearer tokens generated from the Deno Deploy dashboard. This v1 API is scheduled for sunset on July 20, 2026; users should migrate to the v2 API.\n\nContact Support:\n Name: Deno Deploy Support",
-      "type": "text/plain"
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.deno.com/v1"
     }
-  }
+  ]
 }
